@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AED9EA24-52F5-46A4-9F62-2462EA077123}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenTibia</RootNamespace>
+    <AssemblyName>OpenTibia</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="7zip\Common\CommandLineParser.cs" />
+    <Compile Include="7zip\Common\CRC.cs" />
+    <Compile Include="7zip\Common\InBuffer.cs" />
+    <Compile Include="7zip\Common\OutBuffer.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="7zip\ICoder.cs" />
+    <Compile Include="OpenTibia.Animation\Animator.cs" />
+    <Compile Include="OpenTibia.Animation\FrameDuration.cs" />
+    <Compile Include="OpenTibia.Animation\FrameGroup.cs" />
+    <Compile Include="OpenTibia.Client\ClientImpl.cs" />
+    <Compile Include="OpenTibia.Client\IClient.cs" />
+    <Compile Include="OpenTibia.Client\Sprites\Sprite.cs" />
+    <Compile Include="OpenTibia.Client\Sprites\SpriteListChangedArgs.cs" />
+    <Compile Include="OpenTibia.Client\Sprites\SpriteSheet.cs" />
+    <Compile Include="OpenTibia.Client\Sprites\SpriteStorage.cs" />
+    <Compile Include="OpenTibia.Client\Things\ClothSlot.cs" />
+    <Compile Include="OpenTibia.Client\Things\DatFlags.cs" />
+    <Compile Include="OpenTibia.Client\Things\DatFormat.cs" />
+    <Compile Include="OpenTibia.Client\Things\MarketCategory.cs" />
+    <Compile Include="OpenTibia.Obd\ObdDecoder.cs" />
+    <Compile Include="OpenTibia.Obd\ObdEncoder.cs" />
+    <Compile Include="OpenTibia.Obd\ObdFlags.cs" />
+    <Compile Include="OpenTibia.Obd\ObdVersion.cs" />
+    <Compile Include="OpenTibia.Obd\ObjectData.cs" />
+    <Compile Include="OpenTibia.Client\Things\ThingListChangedArgs.cs" />
+    <Compile Include="OpenTibia.Client\Things\ThingType.cs" />
+    <Compile Include="OpenTibia.Client\Things\ThingTypeSerializer.cs" />
+    <Compile Include="OpenTibia.Client\Things\ThingTypeStorage.cs" />
+    <Compile Include="OpenTibia.Collections\SpriteGroup.cs" />
+    <Compile Include="OpenTibia.Controls\ColorChangedArgs.cs" />
+    <Compile Include="OpenTibia.Controls\EightBitColorGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OpenTibia.Controls\HsiColorGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OpenTibia.Controls\SpriteListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OpenTibia.Controls\ThingTypeListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OpenTibia.Core\IStorage.cs" />
+    <Compile Include="OpenTibia.Core\Version.cs" />
+    <Compile Include="OpenTibia.Core\VersionListChangedArgs.cs" />
+    <Compile Include="OpenTibia.Core\VersionStorage.cs" />
+    <Compile Include="OpenTibia.Geom\Direction.cs" />
+    <Compile Include="OpenTibia.Geom\Position.cs" />
+    <Compile Include="OpenTibia.Geom\Rect.cs" />
+    <Compile Include="OpenTibia.IO\BinaryTreeReader.cs" />
+    <Compile Include="OpenTibia.IO\BinaryTreeWriter.cs" />
+    <Compile Include="OpenTibia.IO\FlagsWriter.cs" />
+    <Compile Include="OpenTibia.IO\SpecialChar.cs" />
+    <Compile Include="OpenTibia.Utils\BitmapLocker.cs" />
+    <Compile Include="OpenTibia.Utils\Clock.cs" />
+    <Compile Include="OpenTibia.Utils\ColorUtils.cs" />
+    <Compile Include="OpenTibia.Utils\LZMACoder.cs" />
+    <Compile Include="OpenTibia.Utils\OutfitData.cs" />
+    <Compile Include="OpenTibia.Utils\PathUtils.cs" />
+    <Compile Include="OpenTibia.Utils\PropertySorter.cs" />
+    <Compile Include="OpenTibia.Utils\SpriteCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
