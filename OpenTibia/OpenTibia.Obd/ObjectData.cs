@@ -146,7 +146,7 @@ namespace OpenTibia.Obd
         {
             get
             {
-                return (byte)this.ThingType.frameGroups.Count;
+                return (byte)this.ThingType.FrameGroupCount;
             }
         }
 
@@ -163,7 +163,7 @@ namespace OpenTibia.Obd
 
         public bool HasFrameGroup(FrameGroupType type)
         {
-            return this.type.frameGroups.ContainsKey(type);
+            return this.type.FrameGroups.ContainsKey(type);
         }
 
         public FrameGroup GetFrameGroup(FrameGroupType groupType)

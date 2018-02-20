@@ -155,7 +155,7 @@ namespace OpenTibia.Client.Things
             bool extendedEnabled = (features & ClientFeatures.Extended) == ClientFeatures.Extended;
             bool frameDurationsEnabled = (features & ClientFeatures.FrameDurations) == ClientFeatures.FrameDurations;
             bool frameGroupsEnabled = (features & ClientFeatures.FrameGroups) == ClientFeatures.FrameGroups;
-            byte groupCount = 1;
+            int groupCount = 1;
 
             // write frame group count.
             if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
