@@ -1,6 +1,6 @@
 #region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ namespace OpenTibia.Utils
     {
         #region | Public Methods |
 
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context) 
+        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
@@ -43,7 +43,7 @@ namespace OpenTibia.Utils
         {
             PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(value, attributes);
             ArrayList orderedProperties = new ArrayList();
-            
+
             foreach (PropertyDescriptor pd in pdc)
             {
                 Attribute attribute = pd.Attributes[typeof(PropertyOrderAttribute)];

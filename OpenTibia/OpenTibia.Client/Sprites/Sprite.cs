@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -296,7 +296,7 @@ namespace OpenTibia.Client.Sprites
                     if (alphaCount < length && index < length)
                     {
                         writer.Write(chunkSize); // Writes the length of the transparent pixels
-                        coloredPos = writer.BaseStream.Position; // Save colored position 
+                        coloredPos = writer.BaseStream.Position; // Save colored position
                         writer.BaseStream.Seek(2, SeekOrigin.Current); // Skip colored position
                         chunkSize = 0;
 
@@ -395,7 +395,7 @@ namespace OpenTibia.Client.Sprites
                     if (alphaCount < length && index < length)
                     {
                         writer.Write(chunkSize); // Writes the length of the transparent pixels
-                        coloredPos = writer.BaseStream.Position; // Save colored position 
+                        coloredPos = writer.BaseStream.Position; // Save colored position
                         writer.BaseStream.Seek(2, SeekOrigin.Current); // Skip colored position
                         chunkSize = 0;
 

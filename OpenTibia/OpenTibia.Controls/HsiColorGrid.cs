@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ namespace OpenTibia.Controls
     public class HsiColorGrid : Control
     {
         #region Protected Properties
-        
+
         protected int columns;
         protected int rows;
         protected int length;
@@ -75,7 +75,7 @@ namespace OpenTibia.Controls
         #endregion
 
         #region Events
-        
+
         public event ColorChangedHandler ColorChanged;
 
         #endregion
@@ -126,7 +126,7 @@ namespace OpenTibia.Controls
         #endregion
 
         #region Protected Methods
-        
+
         protected int HitTest(Point point)
         {
             if (point.X > this.bounds.Left && point.X < this.bounds.Right && point.Y > this.bounds.Top && point.Y < this.bounds.Bottom)

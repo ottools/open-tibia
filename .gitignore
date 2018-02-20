@@ -11,3 +11,7 @@ obj/
 # StyleCop
 stylecop.*
 *cache
+*.lock
+*.ide
+*.ide-shm
+*.ide-wal

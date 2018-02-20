@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ namespace OpenTibia.Client.Things
 {
     public class ThingTypeStorage : IStorage, IDisposable
     {
-        #region | Constructor| 
+        #region | Constructor|
 
         private ThingTypeStorage()
         {
@@ -65,7 +65,7 @@ namespace OpenTibia.Client.Things
         public Core.Version Version { get; private set; }
 
         public Dictionary<ushort, ThingType> Items { get; private set; }
-        
+
         public ushort ItemCount { get; private set; }
 
         public Dictionary<ushort, ThingType> Outfits { get; private set; }
@@ -313,7 +313,7 @@ namespace OpenTibia.Client.Things
 
                 return true;
             }
-            
+
             return false;
         }
 

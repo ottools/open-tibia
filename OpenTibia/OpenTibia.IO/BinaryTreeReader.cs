@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace OpenTibia.IO
     public class BinaryTreeReader : IDisposable
     {
         #region Private Properties
-        
+
         private BinaryReader reader;
         private long currentNodePosition;
         private uint currentNodeSize;

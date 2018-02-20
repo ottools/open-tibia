@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ namespace OpenTibia.Animation
         #endregion
 
         #region Public Methods
-        
+
         public int GetTotalSprites()
         {
             return this.Width * this.Height * this.PatternX * this.PatternY * this.PatternZ * this.Frames * this.Layers;

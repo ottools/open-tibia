@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ namespace OpenTibia.Utils
             {
                 hsi = 0;
             }
-            
+
             if (hsi % steps == 0)
             {
                 hue = 0;
@@ -80,7 +80,7 @@ namespace OpenTibia.Utils
                 hue = hsi % steps * (1.0d / 18.0d);
                 saturation = 1.0d;
                 intensity = 1.0d;
-                
+
                 switch ((int)(hsi / steps))
                 {
                     case 0:
@@ -119,12 +119,12 @@ namespace OpenTibia.Utils
                         break;
                 }
             }
-            
+
             if (intensity == 0)
             {
                 return Color.Black;
             }
-            
+
             if (saturation == 0)
             {
                 byte value = (byte)(intensity * 255);

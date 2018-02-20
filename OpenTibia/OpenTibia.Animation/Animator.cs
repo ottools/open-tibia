@@ -1,6 +1,6 @@
 ﻿#region Licence
 /**
-* Copyright (C) 2015 Open Tibia Tools <https://github.com/ottools/open-tibia>
+* Copyright © 2015-2018 OTTools <https://github.com/ottools/open-tibia>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@ namespace OpenTibia.Animation
     public class Animator
     {
         #region Private Properties
-        
+
         private static readonly Random Random = new Random();
 
         private int frames;
@@ -68,7 +68,7 @@ namespace OpenTibia.Animation
         #endregion
 
         #region Constructor
-        
+
         public Animator(int frames, int startFrame, int loopCount, AnimationMode mode, FrameDuration[] durations)
         {
             this.frames = frames;
@@ -171,7 +171,7 @@ namespace OpenTibia.Animation
                 {
                     this.currentFrameDuration = this.currentFrameDuration - elapsed;
                 }
-                
+
                 this.lastTime = timestamp;
             }
         }
@@ -197,7 +197,7 @@ namespace OpenTibia.Animation
             {
                 return nextFrame;
             }
-            
+
             if (this.loopCount == 0)
             {
                 return 0;
@@ -236,7 +236,7 @@ namespace OpenTibia.Animation
             long time = Clock.ElapsedMilliseconds;
             long elapsed = time % totalDuration;
             long totalTime = 0;
-            
+
             for (int i = 0; i < this.frames; i++)
             {
                 long duration = this.durations[i].Duration;
@@ -247,10 +247,10 @@ namespace OpenTibia.Animation
                     this.currentFrameDuration = (int)(duration - timeDiff);
                     break;
                 }
-                
+
                 totalTime += duration;
             }
-            
+
             this.lastTime = time;
         }
 
