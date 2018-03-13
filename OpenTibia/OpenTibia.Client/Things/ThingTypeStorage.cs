@@ -609,7 +609,7 @@ namespace OpenTibia.Client.Things
                     for (ushort id = 100; id <= this.ItemCount; id++)
                     {
                         ThingType item = this.Items[id];
-                        if (!ThingTypeSerializer.WriteProperties(item, this.Version.Format, writer) ||
+                        if (!ThingTypeSerializer.WriteProperties(item, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(item, features, writer))
                         {
                             throw new Exception("Items list cannot be compiled.");
@@ -630,7 +630,7 @@ namespace OpenTibia.Client.Things
                     for (ushort id = 1; id <= this.OutfitCount; id++)
                     {
                         ThingType outfit = onlyOneGroup ? ThingType.ToSingleFrameGroup(this.Outfits[id]) : this.Outfits[id];
-                        if (!ThingTypeSerializer.WriteProperties(outfit, this.Version.Format, writer) ||
+                        if (!ThingTypeSerializer.WriteProperties(outfit, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(outfit, features, writer))
                         {
                             throw new Exception("Outfits list cannot be compiled.");
@@ -648,7 +648,7 @@ namespace OpenTibia.Client.Things
                     for (ushort id = 1; id <= this.EffectCount; id++)
                     {
                         ThingType effect = this.Effects[id];
-                        if (!ThingTypeSerializer.WriteProperties(effect, this.Version.Format, writer) ||
+                        if (!ThingTypeSerializer.WriteProperties(effect, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(effect, features, writer))
                         {
                             throw new Exception("Effects list cannot be compiled.");
@@ -666,7 +666,7 @@ namespace OpenTibia.Client.Things
                     for (ushort id = 1; id <= this.MissileCount; id++)
                     {
                         ThingType missile = this.Missiles[id];
-                        if (!ThingTypeSerializer.WriteProperties(missile, this.Version.Format, writer) ||
+                        if (!ThingTypeSerializer.WriteProperties(missile, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(missile, features, writer))
                         {
                             throw new Exception("Missiles list cannot be compiled.");
