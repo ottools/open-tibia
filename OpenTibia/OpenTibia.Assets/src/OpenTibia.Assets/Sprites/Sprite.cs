@@ -152,7 +152,7 @@ namespace OpenTibia.Assets
             return sprite;
         }
 
-        public static byte[] CompressBGRA(byte[] pixels, bool transparent)
+        public static byte[] CompressBGRA(ReadOnlySpan<byte> pixels, bool transparent)
         {
             if (pixels == null)
             {
@@ -244,7 +244,7 @@ namespace OpenTibia.Assets
             return data;
         }
 
-        public static byte[] CompressARGB(byte[] pixels, bool transparent)
+        public static byte[] CompressARGB(ReadOnlySpan<byte> pixels, bool transparent)
         {
             if (pixels == null)
             {
@@ -338,7 +338,7 @@ namespace OpenTibia.Assets
             return data;
         }
 
-        public static byte[] Compress(byte[] pixels, bool transparent, SpritePixelFormat format)
+        public static byte[] Compress(ReadOnlySpan<byte> pixels, bool transparent, SpritePixelFormat format)
         {
             if (format == SpritePixelFormat.Bgra)
             {
@@ -350,7 +350,7 @@ namespace OpenTibia.Assets
             }
         }
 
-        public static void Uncompress(byte[] data, bool transparent, byte[] buffer, SpritePixelFormat format)
+        public static void Uncompress(ReadOnlySpan<byte> data, bool transparent, byte[] buffer, SpritePixelFormat format)
         {
             if (data == null)
             {
