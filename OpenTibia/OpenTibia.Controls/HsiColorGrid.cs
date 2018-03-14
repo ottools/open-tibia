@@ -18,13 +18,11 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Utils;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-#endregion
 
 namespace OpenTibia.Controls
 {

@@ -22,10 +22,8 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Utils;
 using System;
-#endregion
 
 namespace OpenTibia.Animation
 {
@@ -50,86 +48,72 @@ namespace OpenTibia.Animation
 
     public class Animator
     {
-        #region Private Properties
-
         private static readonly Random Random = new Random();
 
-        private int frames;
-        private int startFrame;
-        private int loopCount;
-        private AnimationMode mode;
-        private FrameDuration[] durations;
-        private long lastTime;
-        private int currentFrameDuration;
-        private int currentFrame;
-        private int currentLoop;
-        private AnimationDirection currentDirection;
-
-        #endregion
-
-        #region Constructor
+        private int m_frames;
+        private int m_startFrame;
+        private int m_loopCount;
+        private AnimationMode m_mode;
+        private FrameDuration[] m_durations;
+        private long m_lastTime;
+        private int m_currentFrameDuration;
+        private int m_currentFrame;
+        private int m_currentLoop;
+        private AnimationDirection m_currentDirection;
 
         public Animator(int frames, int startFrame, int loopCount, AnimationMode mode, FrameDuration[] durations)
         {
-            this.frames = frames;
-            this.startFrame = startFrame;
-            this.loopCount = loopCount;
-            this.mode = mode;
-            this.durations = durations;
-            this.Frame = (int)FrameMode.Automatic;
+            m_frames = frames;
+            m_startFrame = startFrame;
+            m_loopCount = loopCount;
+            m_mode = mode;
+            m_durations = durations;
+            Frame = (int)FrameMode.Automatic;
         }
 
         public Animator(FrameGroup frameGroup)
         {
-            this.frames = frameGroup.Frames;
-            this.startFrame = frameGroup.StartFrame;
-            this.loopCount = frameGroup.LoopCount;
-            this.mode = frameGroup.AnimationMode;
-            this.durations = frameGroup.FrameDurations;
-            this.Frame = (int)FrameMode.Automatic;
+            m_frames = frameGroup.Frames;
+            m_startFrame = frameGroup.StartFrame;
+            m_loopCount = frameGroup.LoopCount;
+            m_mode = frameGroup.AnimationMode;
+            m_durations = frameGroup.FrameDurations;
+            Frame = (int)FrameMode.Automatic;
         }
-
-        #endregion
-
-        #region Public Properties
 
         public int Frame
         {
-            get
-            {
-                return this.currentFrame;
-            }
-
+            get => m_currentFrame;
             set
             {
-                if (this.currentFrame != value)
+                if (m_currentFrame != value)
                 {
-                    if (this.mode == AnimationMode.Asynchronous)
+                    if (m_mode == AnimationMode.Asynchronous)
                     {
                         if (value == (ushort)FrameMode.Asynchronous)
                         {
-                            this.currentFrame = 0;
+                            m_currentFrame = 0;
                         }
                         else if (value == (ushort)FrameMode.Random)
                         {
-                            this.currentFrame = Random.Next(0, this.frames);
+                            m_currentFrame = Random.Next(0, m_frames);
                         }
-                        else if (value >= 0 && value < this.frames)
+                        else if (value >= 0 && value < m_frames)
                         {
-                            this.currentFrame = value;
+                            m_currentFrame = value;
                         }
                         else
                         {
-                            this.currentFrame = this.GetStartFrame();
+                            m_currentFrame = GetStartFrame();
                         }
 
-                        this.IsComplete = false;
-                        this.lastTime = Clock.ElapsedMilliseconds;
-                        this.currentFrameDuration = this.durations[this.currentFrame].Duration;
+                        IsComplete = false;
+                        m_lastTime = Clock.ElapsedMilliseconds;
+                        m_currentFrameDuration = m_durations[m_currentFrame].Duration;
                     }
                     else
                     {
-                        this.CalculateSynchronous();
+                        CalculateSynchronous();
                     }
                 }
             }
@@ -137,123 +121,113 @@ namespace OpenTibia.Animation
 
         public bool IsComplete { get; private set; }
 
-        #endregion
-
-        #region Public Methods
-
         public void Update(long timestamp)
         {
-            if (timestamp != this.lastTime && !this.IsComplete)
+            if (timestamp != m_lastTime && !IsComplete)
             {
-                int elapsed = (int)(timestamp - this.lastTime);
-                if (elapsed >= this.currentFrameDuration)
+                int elapsed = (int)(timestamp - m_lastTime);
+                if (elapsed >= m_currentFrameDuration)
                 {
-                    int frame = loopCount < 0 ? this.GetPingPongFrame() : this.GetLoopFrame();
-                    if (this.currentFrame != frame)
+                    int frame = m_loopCount < 0 ? GetPingPongFrame() : GetLoopFrame();
+                    if (m_currentFrame != frame)
                     {
-                        int duration = this.durations[frame].Duration - (elapsed - this.currentFrameDuration);
-                        if (duration < 0 && this.mode == AnimationMode.Synchronous)
+                        int duration = m_durations[frame].Duration - (elapsed - m_currentFrameDuration);
+                        if (duration < 0 && m_mode == AnimationMode.Synchronous)
                         {
-                            this.CalculateSynchronous();
+                            CalculateSynchronous();
                         }
                         else
                         {
-                            this.currentFrame = frame;
-                            this.currentFrameDuration = duration < 0 ? 0 : duration;
+                            m_currentFrame = frame;
+                            m_currentFrameDuration = duration < 0 ? 0 : duration;
                         }
                     }
                     else
                     {
-                        this.IsComplete = true;
+                        IsComplete = true;
                     }
                 }
                 else
                 {
-                    this.currentFrameDuration = this.currentFrameDuration - elapsed;
+                    m_currentFrameDuration = m_currentFrameDuration - elapsed;
                 }
 
-                this.lastTime = timestamp;
+                m_lastTime = timestamp;
             }
         }
 
         public int GetStartFrame()
         {
-            if (this.startFrame > -1)
+            if (m_startFrame > -1)
             {
-                return this.startFrame;
+                return m_startFrame;
             }
 
-            return Random.Next(0, this.frames);
+            return Random.Next(0, m_frames);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private int GetLoopFrame()
         {
-            int nextFrame = (this.currentFrame + 1);
-            if (nextFrame < this.frames)
+            int nextFrame = (m_currentFrame + 1);
+            if (nextFrame < m_frames)
             {
                 return nextFrame;
             }
 
-            if (this.loopCount == 0)
+            if (m_loopCount == 0)
             {
                 return 0;
             }
 
-            if (this.currentLoop < (loopCount - 1))
+            if (m_currentLoop < (m_loopCount - 1))
             {
-                this.currentLoop++;
+                m_currentLoop++;
                 return 0;
             }
 
-            return this.currentFrame;
+            return m_currentFrame;
         }
 
         private int GetPingPongFrame()
         {
-            int count = this.currentDirection == AnimationDirection.Forward ? 1 : -1;
-            int nextFrame = this.currentFrame + count;
-            if (this.currentFrame + count < 0 || nextFrame >= frames)
+            int count = m_currentDirection == AnimationDirection.Forward ? 1 : -1;
+            int nextFrame = m_currentFrame + count;
+            if (m_currentFrame + count < 0 || nextFrame >= m_frames)
             {
-                this.currentDirection = this.currentDirection == AnimationDirection.Forward ? AnimationDirection.Backward : AnimationDirection.Forward;
+                m_currentDirection = m_currentDirection == AnimationDirection.Forward ? AnimationDirection.Backward : AnimationDirection.Forward;
                 count *= -1;
             }
 
-            return this.currentFrame + count;
+            return m_currentFrame + count;
         }
 
         private void CalculateSynchronous()
         {
             int totalDuration = 0;
-            for (int i = 0; i < this.frames; i++)
+            for (int i = 0; i < m_frames; i++)
             {
-                totalDuration += durations[i].Duration;
+                totalDuration += m_durations[i].Duration;
             }
 
             long time = Clock.ElapsedMilliseconds;
             long elapsed = time % totalDuration;
             long totalTime = 0;
 
-            for (int i = 0; i < this.frames; i++)
+            for (int i = 0; i < m_frames; i++)
             {
-                long duration = this.durations[i].Duration;
+                long duration = m_durations[i].Duration;
                 if (elapsed >= totalTime && elapsed < totalTime + duration)
                 {
-                    this.currentFrame = i;
+                    m_currentFrame = i;
                     long timeDiff = elapsed - totalTime;
-                    this.currentFrameDuration = (int)(duration - timeDiff);
+                    m_currentFrameDuration = (int)(duration - timeDiff);
                     break;
                 }
 
                 totalTime += duration;
             }
 
-            this.lastTime = time;
+            m_lastTime = time;
         }
-
-        #endregion
     }
 }

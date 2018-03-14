@@ -26,26 +26,20 @@ namespace OpenTibia.Assets
 {
     public class AssetsVersion
     {
-        #region Constructor
-
         public AssetsVersion(ushort value, string description, uint datSignature, uint sprSignature, uint otbValue)
         {
-            this.Value = value;
-            this.Description = string.IsNullOrEmpty(description) ? $"Client {value / 100}.{value % 100}" : description;
-            this.DatSignature = datSignature;
-            this.SprSignature = sprSignature;
-            this.OtbValue = otbValue;
-            this.Format = VesionValueToDatFormat(value);
+            Value = value;
+            Description = string.IsNullOrEmpty(description) ? $"Client {value / 100}.{value % 100}" : description;
+            DatSignature = datSignature;
+            SprSignature = sprSignature;
+            OtbValue = otbValue;
+            Format = VesionValueToDatFormat(value);
         }
 
         public AssetsVersion(ushort value, uint datSignature, uint sprSignature, uint otbValue) : this(value, null, datSignature, sprSignature, otbValue)
         {
             ////
         }
-
-        #endregion
-
-        #region Public Properties
 
         public ushort Value { get; private set; }
 
@@ -59,26 +53,12 @@ namespace OpenTibia.Assets
 
         public MetadataFormat Format { get; private set; }
 
-        public bool IsValid
-        {
-            get
-            {
-                return this.Value != 0 && !string.IsNullOrEmpty(this.Description) && this.DatSignature != 0 && this.SprSignature != 0 && this.OtbValue != 0;
-            }
-        }
-
-        #endregion
-
-        #region Public Methods
+        public bool IsValid => Value != 0 && DatSignature != 0 && SprSignature != 0 && OtbValue != 0;
 
         public override string ToString()
         {
-            return this.Description;
+            return Description;
         }
-
-        #endregion
-
-        #region Public Static Methods
 
         public static MetadataFormat VesionValueToDatFormat(ushort value)
         {
@@ -134,7 +114,5 @@ namespace OpenTibia.Assets
 
             return MetadataFormat.InvalidFormat;
         }
-
-        #endregion
     }
 }

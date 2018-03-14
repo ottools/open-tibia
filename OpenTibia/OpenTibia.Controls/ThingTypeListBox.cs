@@ -22,12 +22,9 @@
 */
 #endregion
 
-#region Using Statements
-using OpenTibia.Assets;
 using OpenTibia.Assets;
 using System.Drawing;
 using System.Windows.Forms;
-#endregion
 
 namespace OpenTibia.Controls
 {

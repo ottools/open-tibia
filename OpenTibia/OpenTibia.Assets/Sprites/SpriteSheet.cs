@@ -22,60 +22,41 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Geom;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class SpriteSheet
     {
-        #region Constructor
-
-        public SpriteSheet(Bitmap bitmap, Dictionary<int, Rect> rectList)
+        public SpriteSheet(Bitmap bitmap, Dictionary<int, Rect> ractangles)
         {
-            if (bitmap == null)
+            if (ractangles == null || ractangles.Count == 0)
             {
-                throw new ArgumentNullException(nameof(bitmap));
+                throw new ArgumentNullException(nameof(ractangles));
             }
 
-            if (rectList == null || rectList.Count == 0)
-            {
-                throw new ArgumentNullException(nameof(rectList));
-            }
-
-            this.Bitmap = bitmap;
-            this.RectList = rectList;
+            Bitmap = bitmap ?? throw new ArgumentNullException(nameof(bitmap));
+            RectList = ractangles;
         }
 
-        #endregion
+        public Bitmap Bitmap { get; }
 
-        #region Public Properties
-
-        public Bitmap Bitmap { get; private set; }
-
-        public Dictionary<int, Rect> RectList { get; private set; }
-
-        #endregion
-
-        #region Public Methods
+        public Dictionary<int, Rect> RectList { get; }
 
         public bool Save(string path, ImageFormat format)
         {
-            this.Bitmap.Save(path, format);
+            Bitmap.Save(path, format);
             return true;
         }
 
         public bool Save(string path)
         {
-            this.Bitmap.Save(path, ImageFormat.Png);
+            Bitmap.Save(path, ImageFormat.Png);
             return true;
         }
-
-        #endregion
     }
 }

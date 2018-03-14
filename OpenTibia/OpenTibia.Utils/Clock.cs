@@ -22,49 +22,24 @@
 */
 #endregion
 
-#region Using Statements
-using System;
 using System.Diagnostics;
-#endregion
 
 namespace OpenTibia.Utils
 {
     public static class Clock
     {
-        #region Private Static Properties
-
         private static Stopwatch stopwatch;
-
-        #endregion
-
-        #region Static Constructor
 
         static Clock()
         {
             stopwatch = new Stopwatch();
         }
 
-        #endregion
-
-        #region Public Static Properties
-
-        public static long ElapsedMilliseconds
-        {
-            get
-            {
-                return stopwatch.ElapsedMilliseconds;
-            }
-        }
-
-        #endregion
-
-        #region Public Static Methods
+        public static long ElapsedMilliseconds => stopwatch.ElapsedMilliseconds;
 
         public static void Start()
         {
             stopwatch.Start();
         }
-
-        #endregion
     }
 }

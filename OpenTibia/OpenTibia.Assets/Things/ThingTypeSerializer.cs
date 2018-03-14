@@ -22,20 +22,16 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
 using OpenTibia.IO;
 using System;
 using System.IO;
 using System.Text;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public static class ThingTypeSerializer
     {
-        #region | Public Static Methods |
-
         public static bool ReadProperties(ThingType thing, MetadataFormat format, BinaryReader reader)
         {
             if (format >= MetadataFormat.Format_1010)
@@ -85,9 +81,9 @@ namespace OpenTibia.Assets
                 }
 
                 group.Layers = reader.ReadByte();
-                group.PatternX = reader.ReadByte();
-                group.PatternY = reader.ReadByte();
-                group.PatternZ = patternZEnabled ? reader.ReadByte() : (byte)1;
+                group.PatternsX = reader.ReadByte();
+                group.PatternsY = reader.ReadByte();
+                group.PatternsZ = patternZEnabled ? reader.ReadByte() : (byte)1;
                 group.Frames = reader.ReadByte();
 
                 if (frameDurationsEnabled && group.Frames > 1)
@@ -183,12 +179,12 @@ namespace OpenTibia.Assets
                 }
 
                 writer.Write(group.Layers);     // write layers
-                writer.Write(group.PatternX);   // write pattern X
-                writer.Write(group.PatternY);   // write pattern Y
+                writer.Write(group.PatternsX);   // write pattern X
+                writer.Write(group.PatternsY);   // write pattern Y
 
                 if (patternZEnabled)
                 {
-                    writer.Write(group.PatternZ); // write pattern Z
+                    writer.Write(group.PatternsZ); // write pattern Z
                 }
 
                 writer.Write(group.Frames); // write frames
@@ -224,10 +220,6 @@ namespace OpenTibia.Assets
 
             return true;
         }
-
-        #endregion
-
-        #region | Private Static Methods |
 
         private static bool ReadProperties_1010_1099(ThingType thing, BinaryReader reader, MetadataFormat format)
         {
@@ -662,7 +654,5 @@ namespace OpenTibia.Assets
             writer.Write(MetadataFlags_1010_1099.LastFlag);
             return true;
         }
-
-        #endregion
     }
 }

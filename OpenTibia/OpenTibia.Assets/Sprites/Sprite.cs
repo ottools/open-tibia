@@ -22,38 +22,26 @@
 */
 #endregion
 
-#region Using Statements
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class Sprite
     {
-        #region Constants
-
         public const byte DefaultSize = 32;
         public const ushort PixelsDataSize = 4096; // 32*32*4
 
-        #endregion
-
-        #region Private Properties
-
-        private bool transparent = false;
-        private Bitmap bitmap = null;
-
-        #endregion
-
-        #region Contructor
+        private bool m_transparent;
+        private Bitmap m_bitmap;
 
         public Sprite(uint id, bool transparent)
         {
-            this.ID = id;
-            this.Transparent = transparent;
+            ID = id;
+            Transparent = transparent;
         }
 
         public Sprite(uint id) : this(id, false)
@@ -66,53 +54,38 @@ namespace OpenTibia.Assets
             ////
         }
 
-        #endregion
-
-        #region Public Properties
-
         public uint ID { get; set; }
 
         public byte[] CompressedPixels { get; internal set; }
 
-        public int Length
-        {
-            get { return this.CompressedPixels == null ? 0 : this.CompressedPixels.Length; }
-        }
+        public int Length => CompressedPixels != null ? CompressedPixels.Length : 0;
 
         public bool Transparent
         {
-            get
-            {
-                return this.transparent;
-            }
-
+            get => m_transparent;
             set
             {
-                if (this.transparent != value)
+                if (m_transparent != value)
                 {
-                    if (this.Length != 0)
+                    if (Length != 0)
                     {
-                        byte[] pixels = UncompressPixelsBGRA(this.CompressedPixels, this.transparent);
+                        byte[] pixels = UncompressPixelsBGRA(CompressedPixels, m_transparent);
 
-                        this.transparent = value;
-                        this.CompressedPixels = CompressPixelsBGRA(pixels, this.transparent);
-                        this.bitmap = null;
+                        m_transparent = value;
+                        CompressedPixels = CompressPixelsBGRA(pixels, m_transparent);
+                        m_bitmap = null;
                     }
                     else
                     {
-                        this.transparent = value;
+                        m_transparent = value;
                     }
                 }
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         public override string ToString()
         {
-            return this.ID.ToString();
+            return ID.ToString();
         }
 
         /// <summary>
@@ -121,8 +94,8 @@ namespace OpenTibia.Assets
         /// <returns></returns>
         public byte[] GetBGRAPixels()
         {
-            byte[] bytes = this.CompressedPixels != null ? this.CompressedPixels : EmptyArray;
-            return UncompressPixelsBGRA(bytes, this.transparent);
+            byte[] bytes = CompressedPixels ?? EmptyArray;
+            return UncompressPixelsBGRA(bytes, m_transparent);
         }
 
         /// <summary>
@@ -131,8 +104,8 @@ namespace OpenTibia.Assets
         /// <returns></returns>
         public byte[] GetARGBPixels()
         {
-            byte[] bytes = this.CompressedPixels != null ? this.CompressedPixels : EmptyArray;
-            return UncompressPixelsARGB(bytes, this.transparent);
+            byte[] bytes = CompressedPixels ?? EmptyArray;
+            return UncompressPixelsARGB(bytes, m_transparent);
         }
 
         /// <summary>
@@ -146,8 +119,8 @@ namespace OpenTibia.Assets
                 throw new Exception("Invalid sprite pixels length");
             }
 
-            this.CompressedPixels = CompressPixelsBGRA(pixels, this.transparent);
-            this.bitmap = null;
+            CompressedPixels = CompressPixelsBGRA(pixels, m_transparent);
+            m_bitmap = null;
         }
 
         /// <summary>
@@ -161,28 +134,28 @@ namespace OpenTibia.Assets
                 throw new Exception("Invalid sprite pixels length");
             }
 
-            this.CompressedPixels = CompressPixelsARGB(pixels, this.transparent);
-            this.bitmap = null;
+            CompressedPixels = CompressPixelsARGB(pixels, m_transparent);
+            m_bitmap = null;
         }
 
         public Bitmap GetBitmap()
         {
-            if (this.bitmap != null)
+            if (m_bitmap != null)
             {
-                return this.bitmap;
+                return m_bitmap;
             }
 
-            this.bitmap = new Bitmap(DefaultSize, DefaultSize, PixelFormat.Format32bppArgb);
+            m_bitmap = new Bitmap(DefaultSize, DefaultSize, PixelFormat.Format32bppArgb);
 
-            byte[] pixels = this.GetBGRAPixels();
+            byte[] pixels = GetBGRAPixels();
             if (pixels != null)
             {
-                BitmapData bitmapData = this.bitmap.LockBits(Rectangle, ImageLockMode.ReadWrite, this.bitmap.PixelFormat);
+                BitmapData bitmapData = m_bitmap.LockBits(Rectangle, ImageLockMode.ReadWrite, m_bitmap.PixelFormat);
                 Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
-                this.bitmap.UnlockBits(bitmapData);
+                m_bitmap.UnlockBits(bitmapData);
             }
 
-            return this.bitmap;
+            return m_bitmap;
         }
 
         public void SetBitmap(Bitmap bitmap)
@@ -197,26 +170,18 @@ namespace OpenTibia.Assets
                 throw new ArgumentException("Invalid bitmap size", nameof(bitmap));
             }
 
-            this.CompressedPixels = CompressBitmap(bitmap, this.transparent);
-            this.bitmap = bitmap;
+            CompressedPixels = CompressBitmap(bitmap, m_transparent);
+            m_bitmap = bitmap;
         }
 
         public Sprite Clone()
         {
-            Sprite clone = new Sprite(this.ID, this.transparent);
-            clone.CompressedPixels = this.CompressedPixels != null ? (byte[])this.CompressedPixels.Clone() : null;
+            Sprite clone = new Sprite(ID, m_transparent);
+            clone.CompressedPixels = CompressedPixels != null ? (byte[])CompressedPixels.Clone() : null;
             return clone;
         }
 
-        #endregion
-
-        #region Class Properties
-
         private static readonly byte[] EmptyArray = new byte[0];
-
-        #endregion
-
-        #region Class Methods
 
         public static byte[] CompressBitmap(Bitmap bitmap)
         {
@@ -606,12 +571,6 @@ namespace OpenTibia.Assets
             return UncompressPixelsARGB(compressedPixels, false);
         }
 
-        #endregion
-
-        #region Class Properties
-
         public static readonly Rectangle Rectangle = new Rectangle(0, 0, DefaultSize, DefaultSize);
-
-        #endregion
     }
 }

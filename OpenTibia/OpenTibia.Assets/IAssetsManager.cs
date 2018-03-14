@@ -22,7 +22,6 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
 using OpenTibia.Common;
 using OpenTibia.Geom;
@@ -30,27 +29,20 @@ using OpenTibia.Obd;
 using OpenTibia.Utils;
 using System;
 using System.Drawing;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public interface IAssetsManager : IDisposable
     {
-        #region | Events |
+        event EventHandler AssetsLoaded;
 
-        event EventHandler ClientLoaded;
+        event EventHandler AssetsChanged;
 
-        event EventHandler ClientChanged;
+        event EventHandler AssetsCompiled;
 
-        event EventHandler ClientCompiled;
-
-        event EventHandler ClientUnloaded;
+        event EventHandler AssetsUnloaded;
 
         event ProgressHandler ProgressChanged;
-
-        #endregion
-
-        #region | Properties |
 
         ThingTypeStorage Things { get; }
 
@@ -59,10 +51,6 @@ namespace OpenTibia.Assets
         bool Changed { get; }
 
         bool Loaded { get; }
-
-        #endregion
-
-        #region | Methods |
 
         bool CreateEmpty(AssetsVersion version, AssetsFeatures features);
 
@@ -107,7 +95,5 @@ namespace OpenTibia.Assets
         bool Save(string datPath, string sprPath, AssetsVersion version);
 
         bool Save();
-
-        #endregion
     }
 }

@@ -22,9 +22,7 @@
 */
 #endregion
 
-#region Using Statements
 using System;
-#endregion
 
 namespace OpenTibia.Geom
 {

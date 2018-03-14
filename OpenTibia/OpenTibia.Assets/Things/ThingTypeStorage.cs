@@ -22,31 +22,23 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Common;
 using OpenTibia.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class ThingTypeStorage : IStorage, IDisposable
     {
-        #region | Constructor|
-
         private ThingTypeStorage()
         {
-            this.Items = new Dictionary<ushort, ThingType>();
-            this.Outfits = new Dictionary<ushort, ThingType>();
-            this.Effects = new Dictionary<ushort, ThingType>();
-            this.Missiles = new Dictionary<ushort, ThingType>();
+            Items = new Dictionary<ushort, ThingType>();
+            Outfits = new Dictionary<ushort, ThingType>();
+            Effects = new Dictionary<ushort, ThingType>();
+            Missiles = new Dictionary<ushort, ThingType>();
         }
-
-        #endregion
-
-        #region | Events |
 
         public event ThingListChangedHandler StorageChanged;
 
@@ -55,10 +47,6 @@ namespace OpenTibia.Assets
         public event StorageHandler StorageDisposed;
 
         public event ProgressHandler ProgressChanged;
-
-        #endregion
-
-        #region | Public Propeties |
 
         public string FilePath { get; private set; }
 
@@ -86,7 +74,7 @@ namespace OpenTibia.Assets
         {
             get
             {
-                return this.Loaded && this.FilePath == null;
+                return Loaded && FilePath == null;
             }
         }
 
@@ -96,10 +84,6 @@ namespace OpenTibia.Assets
 
         public bool Disposed { get; private set; }
 
-        #endregion
-
-        #region | Public Methods |
-
         public bool AddThing(ThingType thing)
         {
             if (thing == null)
@@ -107,24 +91,24 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(thing));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            ThingType changedThing = this.InternalAddThing(thing);
+            ThingType changedThing = InternalAddThing(thing);
             if (changedThing != null)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Add));
+                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Add));
                 }
 
                 return true;
@@ -140,12 +124,12 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(things));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || things.Length == 0)
+            if (!Loaded || things.Length == 0)
             {
                 return false;
             }
@@ -154,7 +138,7 @@ namespace OpenTibia.Assets
 
             for (int i = 0; i < things.Length; i++)
             {
-                ThingType thing = this.InternalAddThing(things[i]);
+                ThingType thing = InternalAddThing(things[i]);
                 if (thing != null)
                 {
                     changedThings.Add(thing);
@@ -163,11 +147,11 @@ namespace OpenTibia.Assets
 
             if (changedThings.Count != 0)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Add));
+                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Add));
                 }
 
                 return true;
@@ -183,24 +167,24 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(thing));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            ThingType changedThing = this.InternalReplaceThing(thing, this.GetThing(replaceId, thing.Category));
+            ThingType changedThing = InternalReplaceThing(thing, GetThing(replaceId, thing.Category));
             if (changedThing != null)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
+                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
                 }
 
                 return true;
@@ -216,24 +200,24 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(thing));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            ThingType changedThing = this.InternalReplaceThing(thing, this.GetThing(thing.ID, thing.Category));
+            ThingType changedThing = InternalReplaceThing(thing, GetThing(thing.ID, thing.Category));
             if (changedThing != null)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
+                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
                 }
 
                 return true;
@@ -249,12 +233,12 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(things));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || things.Length == 0)
+            if (!Loaded || things.Length == 0)
             {
                 return false;
             }
@@ -266,7 +250,7 @@ namespace OpenTibia.Assets
                 ThingType thing = things[i];
                 if (thing != null)
                 {
-                    thing = this.InternalReplaceThing(thing, this.GetThing(thing.ID, thing.Category));
+                    thing = InternalReplaceThing(thing, GetThing(thing.ID, thing.Category));
                     if (thing != null)
                     {
                         changedThings.Add(thing);
@@ -276,11 +260,11 @@ namespace OpenTibia.Assets
 
             if (changedThings.Count != 0)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Replace));
+                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Replace));
                 }
 
                 return true;
@@ -291,24 +275,24 @@ namespace OpenTibia.Assets
 
         public bool RemoveThing(ushort id, ThingCategory category)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || category == ThingCategory.Invalid)
+            if (!Loaded || category == ThingCategory.Invalid)
             {
                 return false;
             }
 
-            ThingType changedThing = this.InternalRemoveThing(id, category);
+            ThingType changedThing = InternalRemoveThing(id, category);
             if (changedThing != null)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
+                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
                 }
 
                 return true;
@@ -324,24 +308,24 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(thing));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || thing.Category == ThingCategory.Invalid)
+            if (!Loaded || thing.Category == ThingCategory.Invalid)
             {
                 return false;
             }
 
-            ThingType changedThing = this.InternalRemoveThing(thing.ID, thing.Category);
+            ThingType changedThing = InternalRemoveThing(thing.ID, thing.Category);
             if (changedThing != null)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
+                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
                 }
 
                 return true;
@@ -357,12 +341,12 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(things));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || things.Length == 0)
+            if (!Loaded || things.Length == 0)
             {
                 return false;
             }
@@ -374,7 +358,7 @@ namespace OpenTibia.Assets
                 ThingType thing = things[i];
                 if (thing != null)
                 {
-                    thing = this.InternalRemoveThing(thing.ID, thing.Category);
+                    thing = InternalRemoveThing(thing.ID, thing.Category);
                     if (thing != null)
                     {
                         changedThings.Add(thing);
@@ -384,11 +368,11 @@ namespace OpenTibia.Assets
 
             if (changedThings.Count != 0)
             {
-                this.Changed = true;
+                Changed = true;
 
-                if (this.StorageChanged != null)
+                if (StorageChanged != null)
                 {
-                    this.StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Remove));
+                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Remove));
                 }
 
                 return true;
@@ -399,7 +383,7 @@ namespace OpenTibia.Assets
 
         public bool HasThing(ushort id, ThingCategory category)
         {
-            if (!this.Loaded || category == ThingCategory.Invalid)
+            if (!Loaded || category == ThingCategory.Invalid)
             {
                 return false;
             }
@@ -407,16 +391,16 @@ namespace OpenTibia.Assets
             switch (category)
             {
                 case ThingCategory.Item:
-                    return this.Items.ContainsKey(id);
+                    return Items.ContainsKey(id);
 
                 case ThingCategory.Outfit:
-                    return this.Outfits.ContainsKey(id);
+                    return Outfits.ContainsKey(id);
 
                 case ThingCategory.Effect:
-                    return this.Effects.ContainsKey(id);
+                    return Effects.ContainsKey(id);
 
                 case ThingCategory.Missile:
-                    return this.Missiles.ContainsKey(id);
+                    return Missiles.ContainsKey(id);
             }
 
             return false;
@@ -424,12 +408,12 @@ namespace OpenTibia.Assets
 
         public ThingType GetThing(ushort id, ThingCategory category)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded || id == 0 || category == ThingCategory.Invalid)
+            if (!Loaded || id == 0 || category == ThingCategory.Invalid)
             {
                 return null;
             }
@@ -438,9 +422,9 @@ namespace OpenTibia.Assets
             {
                 case ThingCategory.Item:
                     {
-                        if (this.Items.ContainsKey(id))
+                        if (Items.ContainsKey(id))
                         {
-                            return this.Items[id];
+                            return Items[id];
                         }
 
                         break;
@@ -448,9 +432,9 @@ namespace OpenTibia.Assets
 
                 case ThingCategory.Outfit:
                     {
-                        if (this.Outfits.ContainsKey(id))
+                        if (Outfits.ContainsKey(id))
                         {
-                            return this.Outfits[id];
+                            return Outfits[id];
                         }
 
                         break;
@@ -458,9 +442,9 @@ namespace OpenTibia.Assets
 
                 case ThingCategory.Effect:
                     {
-                        if (this.Effects.ContainsKey(id))
+                        if (Effects.ContainsKey(id))
                         {
-                            return this.Effects[id];
+                            return Effects[id];
                         }
 
                         break;
@@ -468,9 +452,9 @@ namespace OpenTibia.Assets
 
                 case ThingCategory.Missile:
                     {
-                        if (this.Missiles.ContainsKey(id))
+                        if (Missiles.ContainsKey(id))
                         {
-                            return this.Missiles[id];
+                            return Missiles[id];
                         }
 
                         break;
@@ -482,14 +466,14 @@ namespace OpenTibia.Assets
 
         public ThingType GetItem(ushort id)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (this.Loaded && this.Items.ContainsKey(id))
+            if (Loaded && Items.ContainsKey(id))
             {
-                return this.Items[id];
+                return Items[id];
             }
 
             return null;
@@ -497,14 +481,14 @@ namespace OpenTibia.Assets
 
         public ThingType GetOutfit(ushort id)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (this.Loaded && this.Outfits.ContainsKey(id))
+            if (Loaded && Outfits.ContainsKey(id))
             {
-                return this.Outfits[id];
+                return Outfits[id];
             }
 
             return null;
@@ -512,14 +496,14 @@ namespace OpenTibia.Assets
 
         public ThingType GetEffect(ushort id)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (this.Loaded && this.Effects.ContainsKey(id))
+            if (Loaded && Effects.ContainsKey(id))
             {
-                return this.Effects[id];
+                return Effects[id];
             }
 
             return null;
@@ -527,14 +511,14 @@ namespace OpenTibia.Assets
 
         public ThingType GetMissile(ushort id)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (this.Loaded && this.Missiles.ContainsKey(id))
+            if (Loaded && Missiles.ContainsKey(id))
             {
-                return this.Missiles[id];
+                return Missiles[id];
             }
 
             return null;
@@ -552,12 +536,12 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
@@ -576,15 +560,15 @@ namespace OpenTibia.Assets
                 Directory.CreateDirectory(directory);
             }
 
-            if (!this.Changed && this.Version.Equals(version) && this.ClientFeatures == features &&
-                this.FilePath != null && !this.FilePath.Equals(path))
+            if (!Changed && Version.Equals(version) && ClientFeatures == features &&
+                FilePath != null && !FilePath.Equals(path))
             {
                 // just copy the content if nothing has changed.
-                File.Copy(this.FilePath, path, true);
+                File.Copy(FilePath, path, true);
 
-                if (this.ProgressChanged != null)
+                if (ProgressChanged != null)
                 {
-                    this.ProgressChanged(this, 100);
+                    ProgressChanged(this, 100);
                 }
             }
             else
@@ -597,18 +581,18 @@ namespace OpenTibia.Assets
                     writer.Write(version.DatSignature);
 
                     // write item, outfit, effect and missile count.
-                    writer.Write(this.ItemCount);
-                    writer.Write(this.OutfitCount);
-                    writer.Write(this.EffectCount);
-                    writer.Write(this.MissileCount);
+                    writer.Write(ItemCount);
+                    writer.Write(OutfitCount);
+                    writer.Write(EffectCount);
+                    writer.Write(MissileCount);
 
-                    int total = this.ItemCount + this.OutfitCount + this.EffectCount + this.MissileCount;
+                    int total = ItemCount + OutfitCount + EffectCount + MissileCount;
                     int compiled = 0;
 
                     // write item list.
-                    for (ushort id = 100; id <= this.ItemCount; id++)
+                    for (ushort id = 100; id <= ItemCount; id++)
                     {
-                        ThingType item = this.Items[id];
+                        ThingType item = Items[id];
                         if (!ThingTypeSerializer.WriteProperties(item, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(item, features, writer))
                         {
@@ -617,19 +601,19 @@ namespace OpenTibia.Assets
                     }
 
                     // update progress.
-                    if (this.ProgressChanged != null)
+                    if (ProgressChanged != null)
                     {
-                        compiled += this.ItemCount;
-                        this.ProgressChanged(this, (compiled * 100) / total);
+                        compiled += ItemCount;
+                        ProgressChanged(this, (compiled * 100) / total);
                     }
 
-                    bool onlyOneGroup = ((this.ClientFeatures & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups) &&
+                    bool onlyOneGroup = ((ClientFeatures & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups) &&
                                         ((features & AssetsFeatures.FrameGroups) != AssetsFeatures.FrameGroups);
 
                     // write outfit list.
-                    for (ushort id = 1; id <= this.OutfitCount; id++)
+                    for (ushort id = 1; id <= OutfitCount; id++)
                     {
-                        ThingType outfit = onlyOneGroup ? ThingType.ToSingleFrameGroup(this.Outfits[id]) : this.Outfits[id];
+                        ThingType outfit = onlyOneGroup ? ThingType.ToSingleFrameGroup(Outfits[id]) : Outfits[id];
                         if (!ThingTypeSerializer.WriteProperties(outfit, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(outfit, features, writer))
                         {
@@ -638,16 +622,16 @@ namespace OpenTibia.Assets
                     }
 
                     // update progress.
-                    if (this.ProgressChanged != null)
+                    if (ProgressChanged != null)
                     {
-                        compiled += this.OutfitCount;
-                        this.ProgressChanged(this, (compiled * 100) / total);
+                        compiled += OutfitCount;
+                        ProgressChanged(this, (compiled * 100) / total);
                     }
 
                     // write effect list.
-                    for (ushort id = 1; id <= this.EffectCount; id++)
+                    for (ushort id = 1; id <= EffectCount; id++)
                     {
-                        ThingType effect = this.Effects[id];
+                        ThingType effect = Effects[id];
                         if (!ThingTypeSerializer.WriteProperties(effect, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(effect, features, writer))
                         {
@@ -656,16 +640,16 @@ namespace OpenTibia.Assets
                     }
 
                     // update progress.
-                    if (this.ProgressChanged != null)
+                    if (ProgressChanged != null)
                     {
-                        compiled += this.EffectCount;
-                        this.ProgressChanged(this, (compiled * 100) / total);
+                        compiled += EffectCount;
+                        ProgressChanged(this, (compiled * 100) / total);
                     }
 
                     // write missile list.
-                    for (ushort id = 1; id <= this.MissileCount; id++)
+                    for (ushort id = 1; id <= MissileCount; id++)
                     {
-                        ThingType missile = this.Missiles[id];
+                        ThingType missile = Missiles[id];
                         if (!ThingTypeSerializer.WriteProperties(missile, version.Format, writer) ||
                             !ThingTypeSerializer.WriteTexturePatterns(missile, features, writer))
                         {
@@ -674,10 +658,10 @@ namespace OpenTibia.Assets
                     }
 
                     // update progress.
-                    if (this.ProgressChanged != null)
+                    if (ProgressChanged != null)
                     {
-                        compiled += this.MissileCount;
-                        this.ProgressChanged(this, (compiled * 100) / total);
+                        compiled += MissileCount;
+                        ProgressChanged(this, (compiled * 100) / total);
                     }
                 }
 
@@ -689,14 +673,14 @@ namespace OpenTibia.Assets
                 File.Move(tmpPath, path);
             }
 
-            this.FilePath = path;
-            this.Version = version;
-            this.ClientFeatures = features;
-            this.Changed = false;
+            FilePath = path;
+            Version = version;
+            ClientFeatures = features;
+            Changed = false;
 
-            if (this.StorageCompiled != null)
+            if (StorageCompiled != null)
             {
-                this.StorageCompiled(this);
+                StorageCompiled(this);
             }
 
             return true;
@@ -704,24 +688,24 @@ namespace OpenTibia.Assets
 
         public bool Save(string path, AssetsVersion version)
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            return this.Save(path, version, AssetsFeatures.None);
+            return Save(path, version, AssetsFeatures.None);
         }
 
         public bool Save()
         {
-            if (this.Disposed)
+            if (Disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (this.Changed && !this.IsTemporary)
+            if (Changed && !IsTemporary)
             {
-                return this.Save(this.FilePath, this.Version, this.ClientFeatures);
+                return Save(FilePath, Version, ClientFeatures);
             }
 
             return true;
@@ -729,39 +713,35 @@ namespace OpenTibia.Assets
 
         public void Dispose()
         {
-            this.Disposed = true;
+            Disposed = true;
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return;
             }
 
-            this.FilePath = null;
-            this.Version = null;
-            this.Items.Clear();
-            this.Items = null;
-            this.ItemCount = 0;
-            this.Outfits.Clear();
-            this.Outfits = null;
-            this.OutfitCount = 0;
-            this.Effects.Clear();
-            this.Effects = null;
-            this.EffectCount = 0;
-            this.Missiles.Clear();
-            this.Missiles = null;
-            this.MissileCount = 0;
-            this.Changed = false;
-            this.Loaded = false;
+            FilePath = null;
+            Version = null;
+            Items.Clear();
+            Items = null;
+            ItemCount = 0;
+            Outfits.Clear();
+            Outfits = null;
+            OutfitCount = 0;
+            Effects.Clear();
+            Effects = null;
+            EffectCount = 0;
+            Missiles.Clear();
+            Missiles = null;
+            MissileCount = 0;
+            Changed = false;
+            Loaded = false;
 
-            if (this.StorageDisposed != null)
+            if (StorageDisposed != null)
             {
-                this.StorageDisposed(this);
+                StorageDisposed(this);
             }
         }
-
-        #endregion
-
-        #region | Private Methods |
 
         private bool InternalCreate(AssetsVersion version, AssetsFeatures features)
         {
@@ -770,32 +750,32 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            if (this.Loaded)
+            if (Loaded)
             {
                 return true;
             }
 
             if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
+                features |= version.Format >= MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Format >= MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Format >= MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Format >= MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
-            this.Version = version;
-            this.ClientFeatures = features;
-            this.Items.Add(100, ThingType.Create(100, ThingCategory.Item));
-            this.ItemCount = 100;
-            this.Outfits.Add(1, ThingType.Create(1, ThingCategory.Outfit));
-            this.OutfitCount = 1;
-            this.Effects.Add(1, ThingType.Create(1, ThingCategory.Effect));
-            this.EffectCount = 1;
-            this.Missiles.Add(1, ThingType.Create(1, ThingCategory.Missile));
-            this.MissileCount = 1;
-            this.Changed = true;
-            this.Loaded = true;
-            this.Disposed = false;
+            Version = version;
+            ClientFeatures = features;
+            Items.Add(100, ThingType.Create(100, ThingCategory.Item));
+            ItemCount = 100;
+            Outfits.Add(1, ThingType.Create(1, ThingCategory.Outfit));
+            OutfitCount = 1;
+            Effects.Add(1, ThingType.Create(1, ThingCategory.Effect));
+            EffectCount = 1;
+            Missiles.Add(1, ThingType.Create(1, ThingCategory.Missile));
+            MissileCount = 1;
+            Changed = true;
+            Loaded = true;
+            Disposed = false;
             return true;
         }
 
@@ -816,17 +796,17 @@ namespace OpenTibia.Assets
                 throw new FileNotFoundException($"File not found: {path}", path);
             }
 
-            if (this.Loaded)
+            if (Loaded)
             {
                 return true;
             }
 
             if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
+                features |= version.Format >= MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Format >= MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Format >= MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Format >= MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
             using (FileStream stream = new FileStream(path, FileMode.Open))
@@ -840,16 +820,16 @@ namespace OpenTibia.Assets
                     throw new Exception(string.Format(message, version.DatSignature, signature));
                 }
 
-                this.ItemCount = reader.ReadUInt16();
-                this.OutfitCount = reader.ReadUInt16();
-                this.EffectCount = reader.ReadUInt16();
-                this.MissileCount = reader.ReadUInt16();
+                ItemCount = reader.ReadUInt16();
+                OutfitCount = reader.ReadUInt16();
+                EffectCount = reader.ReadUInt16();
+                MissileCount = reader.ReadUInt16();
 
-                int total = this.ItemCount + this.OutfitCount + this.EffectCount + this.MissileCount;
+                int total = ItemCount + OutfitCount + EffectCount + MissileCount;
                 int loaded = 0;
 
                 // load item list.
-                for (ushort id = 100; id <= this.ItemCount; id++)
+                for (ushort id = 100; id <= ItemCount; id++)
                 {
                     ThingType item = new ThingType(id, ThingCategory.Item);
                     if (!ThingTypeSerializer.ReadProperties(item, version.Format, reader) ||
@@ -858,18 +838,18 @@ namespace OpenTibia.Assets
                         throw new Exception("Items list cannot be loaded.");
                     }
 
-                    this.Items.Add(id, item);
+                    Items.Add(id, item);
                 }
 
                 // update progress.
-                if (this.ProgressChanged != null)
+                if (ProgressChanged != null)
                 {
-                    loaded += this.ItemCount;
-                    this.ProgressChanged(this, (loaded * 100) / total);
+                    loaded += ItemCount;
+                    ProgressChanged(this, (loaded * 100) / total);
                 }
 
                 // load outfit list.
-                for (ushort id = 1; id <= this.OutfitCount; id++)
+                for (ushort id = 1; id <= OutfitCount; id++)
                 {
                     ThingType outfit = new ThingType(id, ThingCategory.Outfit);
                     if (!ThingTypeSerializer.ReadProperties(outfit, version.Format, reader) ||
@@ -878,18 +858,18 @@ namespace OpenTibia.Assets
                         throw new Exception("Outfits list cannot be loaded.");
                     }
 
-                    this.Outfits.Add(id, outfit);
+                    Outfits.Add(id, outfit);
                 }
 
                 // update progress.
-                if (this.ProgressChanged != null)
+                if (ProgressChanged != null)
                 {
-                    loaded += this.OutfitCount;
-                    this.ProgressChanged(this, (loaded * 100) / total);
+                    loaded += OutfitCount;
+                    ProgressChanged(this, (loaded * 100) / total);
                 }
 
                 // load effect list.
-                for (ushort id = 1; id <= this.EffectCount; id++)
+                for (ushort id = 1; id <= EffectCount; id++)
                 {
                     ThingType effect = new ThingType(id, ThingCategory.Effect);
                     if (!ThingTypeSerializer.ReadProperties(effect, version.Format, reader) ||
@@ -898,18 +878,18 @@ namespace OpenTibia.Assets
                         throw new Exception("Effects list cannot be loaded.");
                     }
 
-                    this.Effects.Add(id, effect);
+                    Effects.Add(id, effect);
                 }
 
                 // update progress.
-                if (this.ProgressChanged != null)
+                if (ProgressChanged != null)
                 {
-                    loaded += this.EffectCount;
-                    this.ProgressChanged(this, (loaded * 100) / total);
+                    loaded += EffectCount;
+                    ProgressChanged(this, (loaded * 100) / total);
                 }
 
                 // load missile list.
-                for (ushort id = 1; id <= this.MissileCount; id++)
+                for (ushort id = 1; id <= MissileCount; id++)
                 {
                     ThingType missile = new ThingType(id, ThingCategory.Missile);
                     if (!ThingTypeSerializer.ReadProperties(missile, version.Format, reader) ||
@@ -918,23 +898,23 @@ namespace OpenTibia.Assets
                         throw new Exception("Missiles list cannot be loaded.");
                     }
 
-                    this.Missiles.Add(id, missile);
+                    Missiles.Add(id, missile);
                 }
 
                 // update progress.
-                if (this.ProgressChanged != null)
+                if (ProgressChanged != null)
                 {
-                    loaded += this.MissileCount;
-                    this.ProgressChanged(this, (loaded * 100) / total);
+                    loaded += MissileCount;
+                    ProgressChanged(this, (loaded * 100) / total);
                 }
             }
 
-            this.FilePath = path;
-            this.Version = version;
-            this.ClientFeatures = features;
-            this.Changed = false;
-            this.Loaded = true;
-            this.Disposed = false;
+            FilePath = path;
+            Version = version;
+            ClientFeatures = features;
+            Changed = false;
+            Loaded = true;
+            Disposed = false;
             return true;
         }
 
@@ -950,23 +930,23 @@ namespace OpenTibia.Assets
             switch (thing.Category)
             {
                 case ThingCategory.Item:
-                    id = ++this.ItemCount;
-                    this.Items.Add(id, thing);
+                    id = ++ItemCount;
+                    Items.Add(id, thing);
                     break;
 
                 case ThingCategory.Outfit:
-                    id = ++this.OutfitCount;
-                    this.Outfits.Add(id, thing);
+                    id = ++OutfitCount;
+                    Outfits.Add(id, thing);
                     break;
 
                 case ThingCategory.Effect:
-                    id = ++this.EffectCount;
-                    this.Effects.Add(id, thing);
+                    id = ++EffectCount;
+                    Effects.Add(id, thing);
                     break;
 
                 case ThingCategory.Missile:
-                    id = ++this.MissileCount;
-                    this.Missiles.Add(id, thing);
+                    id = ++MissileCount;
+                    Missiles.Add(id, thing);
                     break;
             }
 
@@ -976,7 +956,7 @@ namespace OpenTibia.Assets
 
         private ThingType InternalReplaceThing(ThingType newThing, ThingType oldThing)
         {
-            if (newThing == null || oldThing == null || newThing.Category != oldThing .Category || !this.HasThing(oldThing.ID, oldThing.Category))
+            if (newThing == null || oldThing == null || newThing.Category != oldThing .Category || !HasThing(oldThing.ID, oldThing.Category))
             {
                 return null;
             }
@@ -984,19 +964,19 @@ namespace OpenTibia.Assets
             switch (oldThing.Category)
             {
                 case ThingCategory.Item:
-                    this.Items[oldThing.ID] = newThing;
+                    Items[oldThing.ID] = newThing;
                     break;
 
                 case ThingCategory.Outfit:
-                    this.Outfits[oldThing.ID] = newThing;
+                    Outfits[oldThing.ID] = newThing;
                     break;
 
                 case ThingCategory.Effect:
-                    this.Effects[oldThing.ID] = newThing;
+                    Effects[oldThing.ID] = newThing;
                     break;
 
                 case ThingCategory.Missile:
-                    this.Missiles[oldThing.ID] = newThing;
+                    Missiles[oldThing.ID] = newThing;
                     break;
             }
 
@@ -1006,7 +986,7 @@ namespace OpenTibia.Assets
 
         private ThingType InternalRemoveThing(ushort id, ThingCategory category)
         {
-            if (id == 0 || category == ThingCategory.Invalid || !this.HasThing(id, category))
+            if (id == 0 || category == ThingCategory.Invalid || !HasThing(id, category))
             {
                 return null;
             }
@@ -1015,67 +995,63 @@ namespace OpenTibia.Assets
 
             if (category == ThingCategory.Item)
             {
-                changedThing = this.Items[id];
+                changedThing = Items[id];
 
-                if (id == this.ItemCount && id != 100)
+                if (id == ItemCount && id != 100)
                 {
-                    this.ItemCount = (ushort)(this.ItemCount - 1);
-                    this.Items.Remove(id);
+                    ItemCount = (ushort)(ItemCount - 1);
+                    Items.Remove(id);
                 }
                 else
                 {
-                    this.Items[id] = ThingType.Create(id, category);
+                    Items[id] = ThingType.Create(id, category);
                 }
             }
             else if (category == ThingCategory.Outfit)
             {
-                changedThing = this.Outfits[id];
+                changedThing = Outfits[id];
 
-                if (id == this.OutfitCount && id != 1)
+                if (id == OutfitCount && id != 1)
                 {
-                    this.OutfitCount = (ushort)(this.OutfitCount - 1);
-                    this.Outfits.Remove(id);
+                    OutfitCount = (ushort)(OutfitCount - 1);
+                    Outfits.Remove(id);
                 }
                 else
                 {
-                    this.Outfits[id] = ThingType.Create(id, category);
+                    Outfits[id] = ThingType.Create(id, category);
                 }
             }
             else if (category == ThingCategory.Effect)
             {
-                changedThing = this.Effects[id];
+                changedThing = Effects[id];
 
-                if (id == this.EffectCount && id != 1)
+                if (id == EffectCount && id != 1)
                 {
-                    this.EffectCount = (ushort)(this.EffectCount - 1);
-                    this.Effects.Remove(id);
+                    EffectCount = (ushort)(EffectCount - 1);
+                    Effects.Remove(id);
                 }
                 else
                 {
-                    this.Effects[id] = ThingType.Create(id, category);
+                    Effects[id] = ThingType.Create(id, category);
                 }
             }
             else if (category == ThingCategory.Missile)
             {
-                changedThing = this.Missiles[id];
+                changedThing = Missiles[id];
 
-                if (id == this.MissileCount && id != 1)
+                if (id == MissileCount && id != 1)
                 {
-                    this.MissileCount = (ushort)(this.MissileCount - 1);
-                    this.Missiles.Remove(id);
+                    MissileCount = (ushort)(MissileCount - 1);
+                    Missiles.Remove(id);
                 }
                 else
                 {
-                    this.Missiles[id] = ThingType.Create(id, category);
+                    Missiles[id] = ThingType.Create(id, category);
                 }
             }
 
             return changedThing;
         }
-
-        #endregion
-
-        #region | Public Static Methods |
 
         public static ThingTypeStorage Create(AssetsVersion version, AssetsFeatures features)
         {
@@ -1120,7 +1096,5 @@ namespace OpenTibia.Assets
 
             return null;
         }
-
-        #endregion
     }
 }

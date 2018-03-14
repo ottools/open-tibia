@@ -22,31 +22,23 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Assets;
 using System;
-#endregion
 
 namespace OpenTibia.Animation
 {
     public class FrameDuration
     {
-        #region | Private Properties |
-
         private static readonly Random Random = new Random();
-
-        #endregion
-
-        #region | Constructor |
 
         public FrameDuration(int minimum, int maximum)
         {
-            this.SetTo(minimum, maximum);
+            SetTo(minimum, maximum);
         }
 
         public FrameDuration(uint minimum, uint maximum)
         {
-            this.SetTo((int)minimum, (int)maximum);
+            SetTo((int)minimum, (int)maximum);
         }
 
         public FrameDuration(ThingCategory category)
@@ -54,24 +46,20 @@ namespace OpenTibia.Animation
             switch (category)
             {
                 case ThingCategory.Item:
-                    this.SetTo(500, 500);
+                    SetTo(500, 500);
                     break;
 
                 case ThingCategory.Outfit:
-                    this.SetTo(300, 300);
+                    SetTo(300, 300);
                     break;
 
                 case ThingCategory.Effect:
-                    this.SetTo(100, 100);
+                    SetTo(100, 100);
                     break;
             }
 
-            this.SetTo(0, 0);
+            SetTo(0, 0);
         }
-
-        #endregion
-
-        #region | Public Properties |
 
         public int Minimum { get; private set; }
 
@@ -81,18 +69,14 @@ namespace OpenTibia.Animation
         {
             get
             {
-                if (this.Minimum == this.Maximum)
+                if (Minimum == Maximum)
                 {
-                    return this.Minimum;
+                    return Minimum;
                 }
 
-                return (this.Minimum + Random.Next(0, this.Maximum - this.Minimum));
+                return (Minimum + Random.Next(0, Maximum - Minimum));
             }
         }
-
-        #endregion
-
-        #region | Public Methods |
 
         public FrameDuration SetTo(int minimum, int maximum)
         {
@@ -101,26 +85,24 @@ namespace OpenTibia.Animation
                 throw new ArgumentException("The minimum value may not be greater than the maximum value.");
             }
 
-            this.Minimum = minimum;
-            this.Maximum = maximum;
+            Minimum = minimum;
+            Maximum = maximum;
             return this;
         }
 
         public FrameDuration CopyFrom(FrameDuration fd)
         {
-            return this.SetTo(fd.Minimum, fd.Maximum);
+            return SetTo(fd.Minimum, fd.Maximum);
         }
 
         public FrameDuration CopyTo(FrameDuration fd)
         {
-            return fd.SetTo(this.Minimum, this.Maximum);
+            return fd.SetTo(Minimum, Maximum);
         }
 
         public FrameDuration Clone()
         {
-            return new FrameDuration(this.Minimum, this.Maximum);
+            return new FrameDuration(Minimum, Maximum);
         }
-
-        #endregion
     }
 }

@@ -193,7 +193,7 @@ namespace OpenTibia.Assets
                 for (int i = 0; i < 2; i++)
                 {
                     FrameGroup group = FrameGroup.Create();
-                    group.PatternX = 4; // directions
+                    group.PatternsX = 4; // directions
                     group.Frames = 3;   // animations
                     group.IsAnimation = true;
                     group.SpriteIDs = new uint[group.GetTotalSprites()];
@@ -213,8 +213,8 @@ namespace OpenTibia.Assets
 
                 if (category == ThingCategory.Missile)
                 {
-                    group.PatternX = 3;
-                    group.PatternY = 3;
+                    group.PatternsX = 3;
+                    group.PatternsY = 3;
                     group.SpriteIDs = new uint[group.GetTotalSprites()];
                 }
 
@@ -260,11 +260,11 @@ namespace OpenTibia.Assets
 
                 for (byte f = 0; f < group.Frames; f++)
                 {
-                    for (byte z = 0; z < group.PatternZ; z++)
+                    for (byte z = 0; z < group.PatternsZ; z++)
                     {
-                        for (byte y = 0; y < group.PatternY; y++)
+                        for (byte y = 0; y < group.PatternsY; y++)
                         {
-                            for (byte x = 0; x < group.PatternX; x++)
+                            for (byte x = 0; x < group.PatternsX; x++)
                             {
                                 for (byte l = 0; l < group.Layers; l++)
                                 {

@@ -24,28 +24,17 @@
 
 namespace OpenTibia.Utils
 {
-    public class OutfitData
+    public struct OutfitData
     {
-        #region | Constructor |
-
-        public OutfitData(ushort type, byte head, byte body, byte legs, byte feet, byte addons)
+        public OutfitData(ushort type = 0, byte head = 0, byte body = 0, byte legs = 0, byte feet = 0, byte addons = 0)
         {
-            this.Type = type;
-            this.Head = head;
-            this.Body = body;
-            this.Legs = legs;
-            this.Feet = feet;
-            this.Addons = addons;
+            Type = type;
+            Head = head;
+            Body = body;
+            Legs = legs;
+            Feet = feet;
+            Addons = addons;
         }
-
-        public OutfitData() : this(0, 0, 0, 0, 0, 0)
-        {
-             ////
-        }
-
-        #endregion
-
-        #region | Public Properties |
 
         public ushort Type { get; set; }
 
@@ -58,7 +47,5 @@ namespace OpenTibia.Utils
         public byte Feet { get; set; }
 
         public byte Addons { get; set; }
-
-        #endregion
     }
 }

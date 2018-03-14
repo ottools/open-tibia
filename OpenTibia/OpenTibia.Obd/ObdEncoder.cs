@@ -22,23 +22,18 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Assets;
 using OpenTibia.Assets;
 using OpenTibia.IO;
 using OpenTibia.Utils;
 using System;
 using System.IO;
 using System.Text;
-#endregion
 
 namespace OpenTibia.Obd
 {
     public static class ObdEncoder
     {
-        #region | Public Static Methods |
-
         public static byte[] Encode(ObjectData data, ObdVersion obdVersion)
         {
             if (obdVersion == ObdVersion.Version3)
@@ -56,10 +51,6 @@ namespace OpenTibia.Obd
 
             return null;
         }
-
-        #endregion
-
-        #region | Private Static Methods |
 
         private static byte[] EncodeV1(ObjectData data)
         {
@@ -108,9 +99,9 @@ namespace OpenTibia.Obd
                 }
 
                 writer.Write(group.Layers);
-                writer.Write(group.PatternX);
-                writer.Write(group.PatternY);
-                writer.Write(group.PatternZ);
+                writer.Write(group.PatternsX);
+                writer.Write(group.PatternsY);
+                writer.Write(group.PatternsZ);
                 writer.Write(group.Frames);
 
                 Sprite[] sprites = data.Sprites[FrameGroupType.Default];
@@ -166,9 +157,9 @@ namespace OpenTibia.Obd
                 }
 
                 writer.Write(group.Layers);
-                writer.Write(group.PatternX);
-                writer.Write(group.PatternY);
-                writer.Write(group.PatternZ);
+                writer.Write(group.PatternsX);
+                writer.Write(group.PatternsY);
+                writer.Write(group.PatternsZ);
                 writer.Write(group.Frames);
 
                 if (group.IsAnimation)
@@ -437,7 +428,5 @@ namespace OpenTibia.Obd
             output.Write(ObdFlags.LastFlag);
             return true;
         }
-
-        #endregion
     }
 }

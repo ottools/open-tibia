@@ -22,14 +22,12 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Assets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml;
-#endregion
 
 namespace OpenTibia.Common
 {
@@ -37,16 +35,10 @@ namespace OpenTibia.Common
 
     public class VersionStorage : IStorage
     {
-        #region Constructor
-
         public VersionStorage()
         {
-            this.Versions = new List<AssetsVersion>();
+            Versions = new List<AssetsVersion>();
         }
-
-        #endregion
-
-        #region Events
 
         public event EventHandler StorageLoaded;
 
@@ -56,29 +48,15 @@ namespace OpenTibia.Common
 
         public event EventHandler StorageUnloaded;
 
-        #endregion
-
-        #region Public Properties
-
         public List<AssetsVersion> Versions { get; private set; }
 
         public string FilePath { get; private set; }
 
-        public bool IsTemporary
-        {
-            get
-            {
-                return this.Loaded && this.FilePath == null;
-            }
-        }
+        public bool IsTemporary => Loaded && FilePath == null;
 
         public bool Changed { get; private set; }
 
         public bool Loaded { get; private set; }
-
-        #endregion
-
-        #region Public Methods
 
         public bool Load(string path)
         {
@@ -93,7 +71,7 @@ namespace OpenTibia.Common
                 throw new FileNotFoundException(message, "path");
             }
 
-            if (this.Loaded && !this.Unload())
+            if (Loaded && !Unload())
             {
                 return false;
             }
@@ -120,118 +98,103 @@ namespace OpenTibia.Common
                     throw new Exception("Invalid signatures.");
                 }
 
-                for (int i = 0; i < this.Versions.Count; i++)
+                for (int i = 0; i < Versions.Count; i++)
                 {
-                    AssetsVersion version = this.Versions[i];
+                    AssetsVersion version = Versions[i];
                     if (version.DatSignature == datSignature && version.SprSignature == sprSignature)
                     {
                         throw new Exception("Duplicated signatures.");
                     }
                 }
 
-                this.Versions.Add(new AssetsVersion(value, description, datSignature, sprSignature, otbValue));
+                Versions.Add(new AssetsVersion(value, description, datSignature, sprSignature, otbValue));
             }
 
-            this.FilePath = path;
-            this.Changed = false;
-            this.Loaded = true;
+            FilePath = path;
+            Changed = false;
+            Loaded = true;
 
-            if (this.StorageLoaded != null)
-            {
-                this.StorageLoaded(this, new EventArgs());
-            }
+            StorageLoaded?.Invoke(this, new EventArgs());
 
             return true;
         }
 
         public bool AddVersion(AssetsVersion version)
         {
-            if (!this.Loaded || version == null || !version.IsValid || this.GetBySignatures(version.DatSignature, version.SprSignature) != null)
+            if (!Loaded || version == null || !version.IsValid || GetBySignatures(version.DatSignature, version.SprSignature) != null)
             {
                 return false;
             }
 
-            this.Versions.Add(version);
-            this.Changed = true;
+            Versions.Add(version);
+            Changed = true;
 
-            if (this.StorageChanged != null)
-            {
-                this.StorageChanged(this, new VersionListChangedArgs(version, StorageChangeType.Add));
-            }
+            StorageChanged?.Invoke(this, new VersionListChangedArgs(version, StorageChangeType.Add));
 
             return true;
         }
 
         public bool ReplaceVersion(AssetsVersion newVersion, uint oldDatSignature, uint oldSprSignature)
         {
-            if (!this.Loaded || newVersion == null || !newVersion.IsValid || oldDatSignature == 0 || oldSprSignature == 0)
+            if (!Loaded || newVersion == null || !newVersion.IsValid || oldDatSignature == 0 || oldSprSignature == 0)
             {
                 return false;
             }
 
-            AssetsVersion oldVersion = this.GetBySignatures(oldDatSignature, oldSprSignature);
+            AssetsVersion oldVersion = GetBySignatures(oldDatSignature, oldSprSignature);
             if (oldVersion == null)
             {
                 return false;
             }
 
-            int index = this.Versions.IndexOf(oldVersion);
-            this.Versions[index] = newVersion;
-            this.Changed = true;
+            int index = Versions.IndexOf(oldVersion);
+            Versions[index] = newVersion;
+            Changed = true;
 
-            if (this.StorageChanged != null)
-            {
-                this.StorageChanged(this, new VersionListChangedArgs(oldVersion, StorageChangeType.Replace));
-            }
+            StorageChanged?.Invoke(this, new VersionListChangedArgs(oldVersion, StorageChangeType.Replace));
 
             return true;
         }
 
         public bool ReplaceVersion(AssetsVersion newVersion)
         {
-            if (!this.Loaded || newVersion == null || !newVersion.IsValid)
+            if (!Loaded || newVersion == null || !newVersion.IsValid)
             {
                 return false;
             }
 
-            AssetsVersion oldVersion = this.GetBySignatures(newVersion.DatSignature, newVersion.SprSignature);
+            AssetsVersion oldVersion = GetBySignatures(newVersion.DatSignature, newVersion.SprSignature);
             if (oldVersion == null)
             {
                 return false;
             }
 
-            int index = this.Versions.IndexOf(oldVersion);
-            this.Versions[index] = newVersion;
-            this.Changed = true;
+            int index = Versions.IndexOf(oldVersion);
+            Versions[index] = newVersion;
+            Changed = true;
 
-            if (this.StorageChanged != null)
-            {
-                this.StorageChanged(this, new VersionListChangedArgs(oldVersion, StorageChangeType.Replace));
-            }
+            StorageChanged?.Invoke(this, new VersionListChangedArgs(oldVersion, StorageChangeType.Replace));
 
             return true;
         }
 
         public bool RemoveVersion(uint datSignature, uint sprSignature)
         {
-            if (!this.Loaded || datSignature == 0 || sprSignature == 0)
+            if (!Loaded || datSignature == 0 || sprSignature == 0)
             {
                 return false;
             }
 
-            AssetsVersion version = this.GetBySignatures(datSignature, sprSignature);
+            AssetsVersion version = GetBySignatures(datSignature, sprSignature);
             if (version == null)
             {
                 return false;
             }
 
-            this.Versions.Remove(version);
-            this.Changed = true;
+            Versions.Remove(version);
+            Changed = true;
 
-            if (this.StorageChanged != null)
-            {
-                this.StorageChanged(this, new VersionListChangedArgs(version, StorageChangeType.Remove));
-            }
+            StorageChanged?.Invoke(this, new VersionListChangedArgs(version, StorageChangeType.Remove));
 
             return true;
         }
@@ -240,9 +203,9 @@ namespace OpenTibia.Common
         {
             if (dat != 0 && spr != 0)
             {
-                for (int i = 0; i < this.Versions.Count; i++)
+                for (int i = 0; i < Versions.Count; i++)
                 {
-                    AssetsVersion version = this.Versions[i];
+                    AssetsVersion version = Versions[i];
                     if (version.DatSignature == dat && version.SprSignature == spr)
                     {
                         return version;
@@ -257,7 +220,7 @@ namespace OpenTibia.Common
         {
             if (dat > 0 && spr > 0)
             {
-                return this.GetBySignatures((uint)dat, (uint)spr);
+                return GetBySignatures((uint)dat, (uint)spr);
             }
 
             return null;
@@ -269,9 +232,9 @@ namespace OpenTibia.Common
 
             if (value != 0)
             {
-                for (int i = 0; i < this.Versions.Count; i++)
+                for (int i = 0; i < Versions.Count; i++)
                 {
-                    AssetsVersion version = this.Versions[i];
+                    AssetsVersion version = Versions[i];
                     if (version.Value == value)
                     {
                         found.Add(version);
@@ -286,7 +249,7 @@ namespace OpenTibia.Common
         {
             if (value > 0)
             {
-                return this.GetByVersionValue((uint)value);
+                return GetByVersionValue((uint)value);
             }
 
             return null;
@@ -298,9 +261,9 @@ namespace OpenTibia.Common
 
             if (otb != 0)
             {
-                for (int i = 0; i < this.Versions.Count; i++)
+                for (int i = 0; i < Versions.Count; i++)
                 {
-                    AssetsVersion version = this.Versions[i];
+                    AssetsVersion version = Versions[i];
                     if (version.OtbValue == otb)
                     {
                         found.Add(version);
@@ -315,7 +278,7 @@ namespace OpenTibia.Common
         {
             if (otb > 0)
             {
-                return this.GetByOtbValue((uint)otb);
+                return GetByOtbValue((uint)otb);
             }
 
             return null;
@@ -323,14 +286,14 @@ namespace OpenTibia.Common
 
         public AssetsVersion[] GetAllVersions()
         {
-            return this.Versions.ToArray();
+            return Versions.ToArray();
         }
 
         public bool Save()
         {
-            if (this.Changed && !this.IsTemporary)
+            if (Changed && !IsTemporary)
             {
-                return this.Save(this.FilePath);
+                return Save(FilePath);
             }
 
             return false;
@@ -343,12 +306,12 @@ namespace OpenTibia.Common
                 throw new ArgumentNullException(nameof(path));
             }
 
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            if (!this.Changed && this.FilePath != null && path.Equals(this.FilePath))
+            if (!Changed && FilePath != null && path.Equals(FilePath))
             {
                 return true;
             }
@@ -366,7 +329,7 @@ namespace OpenTibia.Common
                     writer.WriteStartDocument();
                     writer.WriteStartElement("versions");
 
-                    foreach (AssetsVersion version in this.Versions)
+                    foreach (AssetsVersion version in Versions)
                     {
                         writer.WriteStartElement("version");
                         writer.WriteAttributeString("value", version.Value.ToString());
@@ -388,37 +351,29 @@ namespace OpenTibia.Common
                 return false;
             }
 
-            this.FilePath = path;
-            this.Changed = false;
+            FilePath = path;
+            Changed = false;
 
-            if (this.StorageCompiled != null)
-            {
-                this.StorageCompiled(this, new EventArgs());
-            }
+            StorageCompiled?.Invoke(this, new EventArgs());
 
             return true;
         }
 
         public bool Unload()
         {
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            this.Versions.Clear();
-            this.FilePath = null;
-            this.Changed = false;
-            this.Loaded = false;
+            Versions.Clear();
+            FilePath = null;
+            Changed = false;
+            Loaded = false;
 
-            if (this.StorageUnloaded != null)
-            {
-                this.StorageUnloaded(this, new EventArgs());
-            }
+            StorageUnloaded?.Invoke(this, new EventArgs());
 
             return true;
         }
-
-        #endregion
     }
 }

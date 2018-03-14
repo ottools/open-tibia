@@ -22,31 +22,21 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Common;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class ThingListChangedArgs
     {
-        #region | Constructor |
-
         public ThingListChangedArgs(ThingType[] changedThings, StorageChangeType changeType)
         {
-            this.ChangedThings = changedThings;
-            this.ChangeType = changeType;
+            ChangedThings = changedThings;
+            ChangeType = changeType;
         }
 
-        #endregion
+        public ThingType[] ChangedThings { get; }
 
-        #region | Public Properties |
-
-        public ThingType[] ChangedThings { get; private set; }
-
-        public StorageChangeType ChangeType { get; private set; }
-
-        #endregion
+        public StorageChangeType ChangeType { get; }
     }
 
     public delegate void ThingListChangedHandler(object sender, ThingListChangedArgs e);

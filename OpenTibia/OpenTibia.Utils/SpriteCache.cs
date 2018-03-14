@@ -22,79 +22,66 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Assets;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-#endregion
 
 namespace OpenTibia.Utils
 {
     public class SpriteCache
     {
-        #region Private Properties
-
-        private Dictionary<ushort, Bitmap> items;
-        private Dictionary<ushort, Bitmap> outfits;
-        private Dictionary<ushort, Bitmap> effects;
-        private Dictionary<ushort, Bitmap> missiles;
-
-        #endregion
-
-        #region Constructor
+        private Dictionary<ushort, Bitmap> m_items;
+        private Dictionary<ushort, Bitmap> m_outfits;
+        private Dictionary<ushort, Bitmap> m_effects;
+        private Dictionary<ushort, Bitmap> m_missiles;
 
         public SpriteCache()
         {
-            this.items = new Dictionary<ushort, Bitmap>();
-            this.outfits = new Dictionary<ushort, Bitmap>();
-            this.effects = new Dictionary<ushort, Bitmap>();
-            this.missiles = new Dictionary<ushort, Bitmap>();
+            m_items = new Dictionary<ushort, Bitmap>();
+            m_outfits = new Dictionary<ushort, Bitmap>();
+            m_effects = new Dictionary<ushort, Bitmap>();
+            m_missiles = new Dictionary<ushort, Bitmap>();
         }
-
-        #endregion
-
-        #region Public Methods
 
         public void SetPicture(ushort id, ThingCategory category, Bitmap bitmap)
         {
             switch (category)
             {
                 case ThingCategory.Item:
-                    this.items[id] = bitmap;
+                    m_items[id] = bitmap;
                     break;
 
                 case ThingCategory.Outfit:
-                    this.outfits[id] = bitmap;
+                    m_outfits[id] = bitmap;
                     break;
 
                 case ThingCategory.Effect:
-                    this.effects[id] = bitmap;
+                    m_effects[id] = bitmap;
                     break;
 
                 case ThingCategory.Missile:
-                    this.missiles[id] = bitmap;
+                    m_missiles[id] = bitmap;
                     break;
             }
         }
 
         public Bitmap GetPicture(ushort id, ThingCategory category)
         {
-            if (category == ThingCategory.Item && this.items.ContainsKey(id))
+            if (category == ThingCategory.Item && m_items.ContainsKey(id))
             {
-                return this.items[id];
+                return m_items[id];
             }
-            else if (category == ThingCategory.Outfit && this.outfits.ContainsKey(id))
+            else if (category == ThingCategory.Outfit && m_outfits.ContainsKey(id))
             {
-                return this.outfits[id];
+                return m_outfits[id];
             }
-            else if (category == ThingCategory.Effect && this.effects.ContainsKey(id))
+            else if (category == ThingCategory.Effect && m_effects.ContainsKey(id))
             {
-                return this.effects[id];
+                return m_effects[id];
             }
-            else if (category == ThingCategory.Missile && this.missiles.ContainsKey(id))
+            else if (category == ThingCategory.Missile && m_missiles.ContainsKey(id))
             {
-                return this.missiles[id];
+                return m_missiles[id];
             }
 
             return null;
@@ -102,12 +89,10 @@ namespace OpenTibia.Utils
 
         public void Clear()
         {
-            this.items.Clear();
-            this.outfits.Clear();
-            this.effects.Clear();
-            this.missiles.Clear();
+            m_items.Clear();
+            m_outfits.Clear();
+            m_effects.Clear();
+            m_missiles.Clear();
         }
-
-        #endregion
     }
 }

@@ -22,11 +22,9 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Assets;
 using OpenTibia.Obd;
 using System.IO;
-#endregion
 
 namespace OpenTibia.IO
 {

@@ -22,38 +22,28 @@
 */
 #endregion
 
-#region Using Statements
-using System;
 using System.Drawing;
-#endregion
 
 namespace OpenTibia.Controls
 {
     public class ColorChangedArgs
     {
-        #region Constructor
-
         public ColorChangedArgs(Color oldRgbColor, Color newRgbColor, int oldColor, int newColor)
         {
-            this.OldRgbColor = oldRgbColor;
-            this.NewRgbColor = newRgbColor;
-            this.OldColor = oldColor;
-            this.NewColor = newColor;
+            OldRgbColor = oldRgbColor;
+            NewRgbColor = newRgbColor;
+            OldColor = oldColor;
+            NewColor = newColor;
         }
 
-        #endregion
+        public Color OldRgbColor { get; }
 
-        #region Public Properties
+        public Color NewRgbColor { get; }
 
-        public Color OldRgbColor { get; private set; }
+        public int OldColor { get; }
 
-        public Color NewRgbColor { get; private set; }
+        public int NewColor { get; }
 
-        public int OldColor { get; private set; }
-
-        public int NewColor { get; private set; }
-
-        #endregion
     }
 
     public delegate void ColorChangedHandler(object sender, ColorChangedArgs e);

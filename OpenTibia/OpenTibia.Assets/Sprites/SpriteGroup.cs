@@ -22,22 +22,18 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class SpriteGroup : Dictionary<FrameGroupType, Sprite[]>
     {
-        #region Public Methods
-
         public Sprite GetSprite(int index, FrameGroupType groupType)
         {
-            if (this.ContainsKey(groupType))
+            if (ContainsKey(groupType))
             {
                 Sprite[] group = this[groupType];
 
@@ -64,7 +60,7 @@ namespace OpenTibia.Assets
 
         public Bitmap GetSpriteBitmap(int index, FrameGroupType groupType)
         {
-            if (this.ContainsKey(groupType))
+            if (ContainsKey(groupType))
             {
                 Sprite[] group = this[groupType];
 
@@ -96,13 +92,13 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(sprites));
             }
 
-            if (this.ContainsKey(groupType))
+            if (ContainsKey(groupType))
             {
                 this[groupType] = sprites;
             }
             else
             {
-                this.Add(groupType, sprites);
+                Add(groupType, sprites);
             }
         }
 
@@ -110,9 +106,9 @@ namespace OpenTibia.Assets
         {
             SpriteGroup clone = new SpriteGroup();
 
-            foreach (KeyValuePair<FrameGroupType, Sprite[]> item in this)
+            foreach (var kpv in this)
             {
-                Sprite[] sprites = item.Value;
+                Sprite[] sprites = kpv.Value;
                 int length = sprites.Length;
                 Sprite[] cloneSprites = new Sprite[length];
 
@@ -121,12 +117,10 @@ namespace OpenTibia.Assets
                     cloneSprites[i] = sprites[i].Clone();
                 }
 
-                clone.Add(item.Key, cloneSprites);
+                clone.Add(kpv.Key, cloneSprites);
             }
 
             return clone;
         }
-
-        #endregion
     }
 }

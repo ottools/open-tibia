@@ -22,9 +22,7 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Collections;
 using OpenTibia.Common;
 using OpenTibia.Geom;
 using OpenTibia.Obd;
@@ -35,67 +33,36 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-#endregion
 
 namespace OpenTibia.Assets
 {
     public class AssetsManager : IAssetsManager
     {
-        #region | Private properties |
-
         private readonly OutfitData outfitDataHelper = new OutfitData();
-        private SpriteCache spriteCache;
-
-        #endregion
-
-        #region | Constructor |
+        private SpriteCache m_spriteCache;
 
         public AssetsManager()
         {
-            this.spriteCache = new SpriteCache();
+            m_spriteCache = new SpriteCache();
         }
 
-        #endregion
+        public event EventHandler AssetsLoaded;
 
-        #region | Events |
+        public event EventHandler AssetsChanged;
 
-        public event EventHandler ClientLoaded;
+        public event EventHandler AssetsCompiled;
 
-        public event EventHandler ClientChanged;
-
-        public event EventHandler ClientCompiled;
-
-        public event EventHandler ClientUnloaded;
+        public event EventHandler AssetsUnloaded;
 
         public event ProgressHandler ProgressChanged;
-
-        #endregion
-
-        #region | Public Properties |
 
         public ThingTypeStorage Things { get; private set; }
 
         public SpriteStorage Sprites { get; private set; }
 
-        public bool Changed
-        {
-            get
-            {
-                return this.Things != null && this.Sprites != null && (this.Things.Changed || this.Sprites.Changed);
-            }
-        }
+        public bool Changed => Things != null && Sprites != null && (Things.Changed || Sprites.Changed);
 
-        public bool Loaded
-        {
-            get
-            {
-                return this.Things != null && this.Sprites != null && this.Things.Loaded && this.Sprites.Loaded;
-            }
-        }
-
-        #endregion
-
-        #region | Public Methods |
+        public bool Loaded => Things != null && Sprites != null && Things.Loaded && Sprites.Loaded;
 
         public bool CreateEmpty(AssetsVersion version, AssetsFeatures features)
         {
@@ -104,38 +71,38 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            this.Things = ThingTypeStorage.Create(version, features);
-            if (this.Things == null)
+            Things = ThingTypeStorage.Create(version, features);
+            if (Things == null)
             {
                 return false;
             }
 
-            this.Sprites = SpriteStorage.Create(version, features);
-            if (this.Sprites == null)
+            Sprites = SpriteStorage.Create(version, features);
+            if (Sprites == null)
             {
                 return false;
             }
 
-            this.Things.ProgressChanged += new ProgressHandler(this.StorageProgressChanged_Handler);
-            this.Things.StorageChanged += new ThingListChangedHandler(this.ThingListChanged_Handler);
-            this.Things.StorageCompiled += new StorageHandler(this.StorageCompiled_Handler);
-            this.Things.StorageDisposed += new StorageHandler(this.StorageDisposed_Handler);
-            this.Sprites.StorageChanged += new SpriteListChangedHandler(this.SpriteListChanged_Handler);
-            this.Sprites.ProgressChanged += new ProgressHandler(this.StorageProgressChanged_Handler);
-            this.Sprites.StorageCompiled += new StorageHandler(this.StorageCompiled_Handler);
-            this.Sprites.StorageDisposed += new StorageHandler(this.StorageDisposed_Handler);
+            Things.ProgressChanged += StorageProgressChanged_Handler;
+            Things.StorageChanged += ThingListChanged_Handler;
+            Things.StorageCompiled += StorageCompiled_Handler;
+            Things.StorageDisposed += StorageDisposed_Handler;
+            Sprites.StorageChanged += SpriteListChanged_Handler;
+            Sprites.ProgressChanged += StorageProgressChanged_Handler;
+            Sprites.StorageCompiled += StorageCompiled_Handler;
+            Sprites.StorageDisposed += StorageDisposed_Handler;
 
-            if (this.Loaded && this.ClientLoaded != null)
+            if (Loaded && AssetsLoaded != null)
             {
-                this.ClientLoaded(this, new EventArgs());
+                AssetsLoaded(this, new EventArgs());
             }
 
-            return this.Loaded;
+            return Loaded;
         }
 
         public bool CreateEmpty(AssetsVersion version)
         {
-            return this.CreateEmpty(version, AssetsFeatures.None);
+            return CreateEmpty(version, AssetsFeatures.None);
         }
 
         public bool Load(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
@@ -155,43 +122,43 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            this.Things = ThingTypeStorage.Load(datPath, version, features);
-            if (this.Things == null)
+            Things = ThingTypeStorage.Load(datPath, version, features);
+            if (Things == null)
             {
                 return false;
             }
 
-            this.Sprites = SpriteStorage.Load(sprPath, version, features);
-            if (this.Sprites == null)
+            Sprites = SpriteStorage.Load(sprPath, version, features);
+            if (Sprites == null)
             {
                 return false;
             }
 
-            this.Things.ProgressChanged += new ProgressHandler(this.StorageProgressChanged_Handler);
-            this.Things.StorageChanged += new ThingListChangedHandler(this.ThingListChanged_Handler);
-            this.Things.StorageCompiled += new StorageHandler(this.StorageCompiled_Handler);
-            this.Things.StorageDisposed += new StorageHandler(this.StorageDisposed_Handler);
-            this.Sprites.StorageChanged += new SpriteListChangedHandler(this.SpriteListChanged_Handler);
-            this.Sprites.ProgressChanged += new ProgressHandler(this.StorageProgressChanged_Handler);
-            this.Sprites.StorageCompiled += new StorageHandler(this.StorageCompiled_Handler);
-            this.Sprites.StorageDisposed += new StorageHandler(this.StorageDisposed_Handler);
+            Things.ProgressChanged += StorageProgressChanged_Handler;
+            Things.StorageChanged += ThingListChanged_Handler;
+            Things.StorageCompiled += StorageCompiled_Handler;
+            Things.StorageDisposed += StorageDisposed_Handler;
+            Sprites.StorageChanged += SpriteListChanged_Handler;
+            Sprites.ProgressChanged += StorageProgressChanged_Handler;
+            Sprites.StorageCompiled += StorageCompiled_Handler;
+            Sprites.StorageDisposed += StorageDisposed_Handler;
 
-            if (this.Loaded && this.ClientLoaded != null)
+            if (Loaded && AssetsLoaded != null)
             {
-                this.ClientLoaded(this, new EventArgs());
+                AssetsLoaded(this, new EventArgs());
             }
 
-            return this.Loaded;
+            return Loaded;
         }
 
         public bool Load(string datPath, string sprPath, AssetsVersion version)
         {
-            return this.Load(datPath, sprPath, version, AssetsFeatures.None);
+            return Load(datPath, sprPath, version, AssetsFeatures.None);
         }
 
         public FrameGroup GetFrameGroup(ushort id, ThingCategory category, FrameGroupType groupType)
         {
-            ThingType type = this.Things.GetThing(id, category);
+            ThingType type = Things.GetThing(id, category);
             if (type != null)
             {
                 return type.GetFrameGroup(groupType);
@@ -202,7 +169,7 @@ namespace OpenTibia.Assets
 
         public ObjectData GetThingData(ushort id, ThingCategory category, bool singleFrameGroup)
         {
-            ThingType thing = this.Things.GetThing(id, category);
+            ThingType thing = Things.GetThing(id, category);
             if (thing == null)
             {
                 return null;
@@ -226,7 +193,7 @@ namespace OpenTibia.Assets
 
                 for (int s = 0; s < length; s++)
                 {
-                    sprites[s] = this.Sprites.GetSprite(frameGroup.SpriteIDs[s]);
+                    sprites[s] = Sprites.GetSprite(frameGroup.SpriteIDs[s]);
                 }
 
                 spriteGroups.Add(groupType, sprites);
@@ -237,18 +204,18 @@ namespace OpenTibia.Assets
 
         public ObjectData GetThingData(ushort id, ThingCategory category)
         {
-            return this.GetThingData(id, category, false);
+            return GetThingData(id, category, false);
         }
 
         public Bitmap GetObjectImage(ushort id, ThingCategory category, FrameGroupType groupType)
         {
-            ThingType thing = this.Things.GetThing(id, category);
+            ThingType thing = Things.GetThing(id, category);
             if (thing == null)
             {
                 return null;
             }
 
-            Bitmap bitmap = this.spriteCache.GetPicture(id, category);
+            Bitmap bitmap = m_spriteCache.GetPicture(id, category);
             if (bitmap != null)
             {
                 return bitmap;
@@ -269,7 +236,7 @@ namespace OpenTibia.Assets
             if (category == ThingCategory.Outfit)
             {
                 layers = 1;
-                x = (byte)(2 % group.PatternX);
+                x = (byte)(2 % group.PatternsX);
             }
 
             // draw sprite
@@ -284,7 +251,7 @@ namespace OpenTibia.Assets
                         int px = (group.Width - w - 1) * Sprite.DefaultSize;
                         int py = (group.Height - h - 1) * Sprite.DefaultSize;
 
-                        lockBitmap.CopyPixels(this.Sprites.GetSpriteBitmap(spriteId), px, py);
+                        lockBitmap.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
                     }
                 }
             }
@@ -292,18 +259,18 @@ namespace OpenTibia.Assets
             lockBitmap.UnlockBits();
             lockBitmap.Dispose();
 
-            this.spriteCache.SetPicture(id, category, bitmap);
+            m_spriteCache.SetPicture(id, category, bitmap);
             return bitmap;
         }
 
         public Bitmap GetObjectImage(ushort id, ThingCategory category)
         {
-            return this.GetObjectImage(id, category, FrameGroupType.Default);
+            return GetObjectImage(id, category, FrameGroupType.Default);
         }
 
         public Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data, bool mount)
         {
-            ThingType thing = this.Things.GetThing(id, ThingCategory.Outfit);
+            ThingType thing = Things.GetThing(id, ThingCategory.Outfit);
             if (thing == null)
             {
                 return null;
@@ -312,7 +279,7 @@ namespace OpenTibia.Assets
             FrameGroup group = thing.GetFrameGroup(FrameGroupType.Default);
             if (group.Layers < 2)
             {
-                return this.GetObjectImage(id, ThingCategory.Outfit, FrameGroupType.Default);
+                return GetObjectImage(id, ThingCategory.Outfit, FrameGroupType.Default);
             }
 
             int width = Sprite.DefaultSize * group.Width;
@@ -329,10 +296,10 @@ namespace OpenTibia.Assets
             blendLocker.LockBits();
             bitmapLocker.LockBits();
 
-            byte x = (byte)((byte)direction % group.PatternX);
-            byte z = mount && group.PatternZ > 1 ? (byte)1 : (byte)0;
+            byte x = (byte)((byte)direction % group.PatternsX);
+            byte z = mount && group.PatternsZ > 1 ? (byte)1 : (byte)0;
 
-            for (int y = 0; y < group.PatternY; y++)
+            for (int y = 0; y < group.PatternsY; y++)
             {
                 if (y == 0 || (data.Addons & 1 << (y - 1)) != 0)
                 {
@@ -344,11 +311,11 @@ namespace OpenTibia.Assets
                             uint spriteId = group.SpriteIDs[index];
                             int px = (group.Width - w - 1) * Sprite.DefaultSize;
                             int py = (group.Height - h - 1) * Sprite.DefaultSize;
-                            grayLocker.CopyPixels(this.Sprites.GetSpriteBitmap(spriteId), px, py);
+                            grayLocker.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
 
                             index = group.GetSpriteIndex(w, h, 1, x, y, z, 0);
                             spriteId = group.SpriteIDs[index];
-                            blendLocker.CopyPixels(this.Sprites.GetSpriteBitmap(spriteId), px, py);
+                            blendLocker.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
                         }
                     }
 
@@ -369,14 +336,14 @@ namespace OpenTibia.Assets
 
         public Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data)
         {
-            return this.GetObjectImage(id, direction, data, false);
+            return GetObjectImage(id, direction, data, false);
         }
 
         public Bitmap GetObjectImage(ThingType thing, FrameGroupType groupType)
         {
             if (thing != null)
             {
-                return this.GetObjectImage(thing.ID, thing.Category, groupType);
+                return GetObjectImage(thing.ID, thing.Category, groupType);
             }
 
             return null;
@@ -386,7 +353,7 @@ namespace OpenTibia.Assets
         {
             if (thing != null)
             {
-                return this.GetObjectImage(thing.ID, thing.Category, FrameGroupType.Default);
+                return GetObjectImage(thing.ID, thing.Category, FrameGroupType.Default);
             }
 
             return null;
@@ -394,15 +361,15 @@ namespace OpenTibia.Assets
 
         public SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType)
         {
-            ThingType thing = this.Things.GetThing(id, category);
+            ThingType thing = Things.GetThing(id, category);
             if (thing == null)
             {
                 return null;
             }
 
             FrameGroup group = thing.GetFrameGroup(groupType);
-            int totalX = group.PatternZ * group.PatternX * group.Layers;
-            int totalY = group.Frames * group.PatternY;
+            int totalX = group.PatternsZ * group.PatternsX * group.Layers;
+            int totalY = group.Frames * group.PatternsY;
             int bitmapWidth = (totalX * group.Width) * Sprite.DefaultSize;
             int bitmapHeight = (totalY * group.Height) * Sprite.DefaultSize;
             int pixelsWidth = group.Width * Sprite.DefaultSize;
@@ -415,11 +382,11 @@ namespace OpenTibia.Assets
 
             for (int f = 0; f < group.Frames; f++)
             {
-                for (int z = 0; z < group.PatternZ; z++)
+                for (int z = 0; z < group.PatternsZ; z++)
                 {
-                    for (int y = 0; y < group.PatternY; y++)
+                    for (int y = 0; y < group.PatternsY; y++)
                     {
-                        for (int x = 0; x < group.PatternX; x++)
+                        for (int x = 0; x < group.PatternsX; x++)
                         {
                             for (int l = 0; l < group.Layers; l++)
                             {
@@ -436,7 +403,7 @@ namespace OpenTibia.Assets
                                         int px = ((group.Width - w - 1) * Sprite.DefaultSize);
                                         int py = ((group.Height - h - 1) * Sprite.DefaultSize);
                                         uint spriteId = group.SpriteIDs[index];
-                                        lockBitmap.CopyPixels(this.Sprites.GetSpriteBitmap(spriteId), px + fx, py + fy);
+                                        lockBitmap.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px + fx, py + fy);
                                     }
                                 }
                             }
@@ -452,13 +419,13 @@ namespace OpenTibia.Assets
 
         public SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType, OutfitData outfitData)
         {
-            ThingType thing = this.Things.GetThing(id, category);
+            ThingType thing = Things.GetThing(id, category);
             if (thing == null)
             {
                 return null;
             }
 
-            SpriteSheet rawSpriteSheet = this.GetSpriteSheet(id, category, groupType);
+            SpriteSheet rawSpriteSheet = GetSpriteSheet(id, category, groupType);
 
             FrameGroup group = thing.GetFrameGroup(groupType);
             if (group.Layers < 2)
@@ -466,10 +433,8 @@ namespace OpenTibia.Assets
                 return rawSpriteSheet;
             }
 
-            outfitData = outfitData == null ? outfitDataHelper : outfitData;
-
-            int totalX = group.PatternZ * group.PatternX * group.Layers;
-            int totalY = group.Frames * group.PatternY;
+            int totalX = group.PatternsZ * group.PatternsX * group.Layers;
+            int totalY = group.Frames * group.PatternsY;
             int bitmapWidth = (totalX * group.Width) * Sprite.DefaultSize;
             int bitmapHeight = (totalY * group.Height) * Sprite.DefaultSize;
             int pixelsWidth = group.Width * Sprite.DefaultSize;
@@ -481,12 +446,12 @@ namespace OpenTibia.Assets
 
             for (int f = 0; f < group.Frames; f++)
             {
-                for (int z = 0; z < group.PatternZ; z++)
+                for (int z = 0; z < group.PatternsZ; z++)
                 {
-                    for (int x = 0; x < group.PatternX; x++)
+                    for (int x = 0; x < group.PatternsX; x++)
                     {
-                        int index = (((f % group.Frames * group.PatternZ + z) * group.PatternY) * group.PatternX + x) * group.Layers;
-                        rectList[index] = new Rect((z * group.PatternX + x) * pixelsWidth, f * pixelsHeight, pixelsWidth, pixelsHeight);
+                        int index = (((f % group.Frames * group.PatternsZ + z) * group.PatternsY) * group.PatternsX + x) * group.Layers;
+                        rectList[index] = new Rect((z * group.PatternsX + x) * pixelsWidth, f * pixelsHeight, pixelsWidth, pixelsHeight);
                     }
                 }
             }
@@ -499,24 +464,24 @@ namespace OpenTibia.Assets
             blendLocker.LockBits();
             bitmapLocker.LockBits();
 
-            for (int y = 0; y < group.PatternY; y++)
+            for (int y = 0; y < group.PatternsY; y++)
             {
                 if (y == 0 || (outfitData.Addons & 1 << (y - 1)) != 0)
                 {
                     for (int f = 0; f < group.Frames; f++)
                     {
-                        for (int z = 0; z < group.PatternZ; z++)
+                        for (int z = 0; z < group.PatternsZ; z++)
                         {
-                            for (int x = 0; x < group.PatternX; x++)
+                            for (int x = 0; x < group.PatternsX; x++)
                             {
                                 // gets gray bitmap
-                                int i = (((f % group.Frames * group.PatternZ + z) * group.PatternY + y) * group.PatternX + x) * group.Layers;
+                                int i = (((f % group.Frames * group.PatternsZ + z) * group.PatternsY + y) * group.PatternsX + x) * group.Layers;
                                 Rect rect = rawSpriteSheet.RectList[i];
                                 int rx = rect.X;
                                 int ry = rect.Y;
                                 int rw = rect.Width;
                                 int rh = rect.Height;
-                                int index = (((f * group.PatternZ + z) * group.PatternY) * group.PatternX + x) * group.Layers;
+                                int index = (((f * group.PatternsZ + z) * group.PatternsY) * group.PatternsX + x) * group.Layers;
                                 rect = rectList[index];
                                 int px = rect.X;
                                 int py = rect.Y;
@@ -551,22 +516,22 @@ namespace OpenTibia.Assets
 
         public ThingType[] GetAllItems()
         {
-            return Enumerable.ToArray(this.Things.Items.Values);
+            return Enumerable.ToArray(Things.Items.Values);
         }
 
         public ThingType[] GetAllOutfits()
         {
-            return Enumerable.ToArray(this.Things.Outfits.Values);
+            return Enumerable.ToArray(Things.Outfits.Values);
         }
 
         public ThingType[] GetAllEffects()
         {
-            return Enumerable.ToArray(this.Things.Effects.Values);
+            return Enumerable.ToArray(Things.Effects.Values);
         }
 
         public ThingType[] GetAllMissiles()
         {
-            return Enumerable.ToArray(this.Things.Missiles.Values);
+            return Enumerable.ToArray(Things.Missiles.Values);
         }
 
         public bool Save(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
@@ -586,12 +551,12 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            if (!this.Things.Save(datPath, version, features))
+            if (!Things.Save(datPath, version, features))
             {
                 return false;
             }
 
-            if (!this.Sprites.Save(sprPath, version, features))
+            if (!Sprites.Save(sprPath, version, features))
             {
                 return false;
             }
@@ -601,107 +566,92 @@ namespace OpenTibia.Assets
 
         public bool Save(string datPath, string sprPath, AssetsVersion version)
         {
-            return this.Save(datPath, sprPath, version, AssetsFeatures.None);
+            return Save(datPath, sprPath, version, AssetsFeatures.None);
         }
 
         public bool Save()
         {
-            return this.Things.Save() && this.Sprites.Save();
+            return Things.Save() && Sprites.Save();
         }
 
         public bool Unload()
         {
-            if (!this.Loaded)
+            if (!Loaded)
             {
                 return false;
             }
 
-            if (this.Things != null)
+            if (Things != null)
             {
-                this.Things.ProgressChanged -= new ProgressHandler(this.StorageProgressChanged_Handler);
-                this.Things.StorageChanged -= new ThingListChangedHandler(this.ThingListChanged_Handler);
-                this.Things.StorageCompiled -= new StorageHandler(this.StorageCompiled_Handler);
-                this.Things.StorageDisposed -= new StorageHandler(this.StorageDisposed_Handler);
-                this.Things.Dispose();
-                this.Things = null;
+                Things.ProgressChanged -= StorageProgressChanged_Handler;
+                Things.StorageChanged -= ThingListChanged_Handler;
+                Things.StorageCompiled -= StorageCompiled_Handler;
+                Things.StorageDisposed -= StorageDisposed_Handler;
+                Things.Dispose();
+                Things = null;
             }
 
-            if (this.Sprites != null)
+            if (Sprites != null)
             {
-                this.Sprites.ProgressChanged -= new ProgressHandler(this.StorageProgressChanged_Handler);
-                this.Sprites.StorageChanged -= new SpriteListChangedHandler(this.SpriteListChanged_Handler);
-                this.Sprites.StorageCompiled -= new StorageHandler(this.StorageCompiled_Handler);
-                this.Sprites.StorageDisposed -= new StorageHandler(this.StorageDisposed_Handler);
-                this.Sprites.Dispose();
-                this.Sprites = null;
+                Sprites.ProgressChanged -= StorageProgressChanged_Handler;
+                Sprites.StorageChanged -= SpriteListChanged_Handler;
+                Sprites.StorageCompiled -= StorageCompiled_Handler;
+                Sprites.StorageDisposed -= StorageDisposed_Handler;
+                Sprites.Dispose();
+                Sprites = null;
             }
 
-            this.spriteCache.Clear();
+            m_spriteCache.Clear();
 
-            if (this.ClientUnloaded != null)
-            {
-                this.ClientUnloaded(this, new EventArgs());
-            }
+            AssetsUnloaded?.Invoke(this, new EventArgs());
 
             return true;
         }
 
         public void Dispose()
         {
-            this.Unload();
+            Unload();
         }
-
-        #endregion
-
-        #region | Event Handlers |
 
         private void StorageCompiled_Handler(IStorage sender)
         {
-            if (!this.Changed && sender == this.Sprites && this.ClientCompiled != null)
+            if (!Changed && sender == Sprites && AssetsCompiled != null)
             {
-                this.ClientCompiled(this, new EventArgs());
+                AssetsCompiled(this, new EventArgs());
             }
         }
 
         private void StorageDisposed_Handler(IStorage sender)
         {
-            if (!this.Loaded && this.ClientUnloaded != null)
+            if (!Loaded && AssetsUnloaded != null)
             {
-                this.ClientUnloaded(this, new EventArgs());
+                AssetsUnloaded(this, new EventArgs());
             }
         }
 
         private void ThingListChanged_Handler(object sender, ThingListChangedArgs e)
         {
-            if (this.ClientChanged != null)
-            {
-                this.ClientChanged(this, new EventArgs());
-            }
+            AssetsChanged?.Invoke(this, new EventArgs());
         }
 
         private void SpriteListChanged_Handler(object sender, SpriteListChangedArgs e)
         {
-            if (this.ClientChanged != null)
-            {
-                this.ClientChanged(this, new EventArgs());
-            }
+            AssetsChanged?.Invoke(this, new EventArgs());
         }
 
         private void StorageProgressChanged_Handler(object sender, int percentage)
         {
-            if (this.ProgressChanged != null)
+            if (ProgressChanged != null)
             {
-                if (sender == this.Things)
+                if (sender == Things)
                 {
-                    this.ProgressChanged(this, percentage / 2);
+                    ProgressChanged(this, percentage / 2);
                 }
                 else
                 {
-                    this.ProgressChanged(this, (percentage / 2) + 50);
+                    ProgressChanged(this, (percentage / 2) + 50);
                 }
             }
         }
-
-        #endregion
     }
 }

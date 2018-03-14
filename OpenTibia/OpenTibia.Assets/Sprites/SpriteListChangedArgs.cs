@@ -22,9 +22,7 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Common;
-#endregion
 
 namespace OpenTibia.Assets
 {
@@ -32,22 +30,14 @@ namespace OpenTibia.Assets
 
     public class SpriteListChangedArgs
     {
-        #region Constructor
-
         public SpriteListChangedArgs(Sprite[] changedSprites, StorageChangeType changeType)
         {
-            this.ChangedSprites = changedSprites;
-            this.ChangeType = changeType;
+            ChangedSprites = changedSprites;
+            ChangeType = changeType;
         }
 
-        #endregion
+        public Sprite[] ChangedSprites { get; }
 
-        #region Public Properties
-
-        public Sprite[] ChangedSprites { get; private set; }
-
-        public StorageChangeType ChangeType { get; private set; }
-
-        #endregion
+        public StorageChangeType ChangeType { get; }
     }
 }

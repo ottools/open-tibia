@@ -22,23 +22,17 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
 using OpenTibia.Assets;
-using OpenTibia.Assets;
-using OpenTibia.Collections;
 using OpenTibia.Utils;
 using System;
 using System.IO;
 using System.Text;
-#endregion
 
 namespace OpenTibia.Obd
 {
     public class ObdDecoder
     {
-        #region | Public Static Methods |
-
         public static ObjectData Decode(byte[] bytes)
         {
             if (bytes == null)
@@ -72,10 +66,6 @@ namespace OpenTibia.Obd
 
             return null;
         }
-
-        #endregion
-
-        #region | Private Static Methods |
 
         private static ObjectData DecodeV1(BinaryReader reader)
         {
@@ -129,9 +119,9 @@ namespace OpenTibia.Obd
             }
 
             group.Layers = reader.ReadByte();
-            group.PatternX = reader.ReadByte();
-            group.PatternY = reader.ReadByte();
-            group.PatternZ = reader.ReadByte();
+            group.PatternsX = reader.ReadByte();
+            group.PatternsY = reader.ReadByte();
+            group.PatternsZ = reader.ReadByte();
             group.Frames = reader.ReadByte();
 
             if (group.Frames > 1)
@@ -190,7 +180,5 @@ namespace OpenTibia.Obd
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

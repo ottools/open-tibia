@@ -22,11 +22,9 @@
 */
 #endregion
 
-#region Using Statements
 using System;
 using System.IO;
 using System.Windows.Forms;
-#endregion
 
 namespace OpenTibia.Utils
 {
@@ -36,33 +34,18 @@ namespace OpenTibia.Utils
         /// The folder containing the application's installed files.
         /// </summary>
         public static string ApplicationDirectory
-        {
-            get
-            {
-                return Path.GetDirectoryName(Application.ExecutablePath);
-            }
-        }
+            => Path.GetDirectoryName(Application.ExecutablePath);
 
         /// <summary>
         /// Path to the user's application directory
         /// </summary>
         public static string UserDirectory
-        {
-            get
-            {
-                return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            }
-        }
+            => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         /// <summary>
         /// Path to the plugin directory
         /// </summary>
         public static string PluginDirectory
-        {
-            get
-            {
-                return Path.Combine(ApplicationDirectory, "Plugins");
-            }
-        }
+            => Path.Combine(ApplicationDirectory, "Plugins");
     }
 }

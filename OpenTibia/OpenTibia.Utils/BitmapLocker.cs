@@ -22,77 +22,61 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Utils;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-#endregion
 
 namespace OpenTibia.Utilities
 {
     public class BitmapLocker : IDisposable
     {
-        #region Private Properties
-
-        private Bitmap bitmap;
-        private BitmapData bitmapData;
-        private IntPtr address = IntPtr.Zero;
-
-        #endregion
-
-        #region Constructor
+        private Bitmap m_bitmap;
+        private BitmapData m_bitmapData;
+        private IntPtr m_address = IntPtr.Zero;
 
         public BitmapLocker(Bitmap bitmap)
         {
-            this.bitmap = bitmap;
-            this.Width = bitmap.Width;
-            this.Height = bitmap.Height;
-            this.Length = bitmap.Width * bitmap.Height * 4;
-            this.Pixels = new byte[this.Length];
+            m_bitmap = bitmap;
+            Width = bitmap.Width;
+            Height = bitmap.Height;
+            Length = bitmap.Width * bitmap.Height * 4;
+            Pixels = new byte[Length];
         }
 
-        #endregion
+        public byte[] Pixels { get; }
 
-        #region Public Properties
+        public int Width { get; }
 
-        public byte[] Pixels { get; private set; }
+        public int Height { get; }
 
-        public int Width { get; private set; }
-
-        public int Height { get; private set; }
-
-        public int Length { get; private set; }
-
-        #endregion
-
-        #region Public Methods
+        public int Length { get; }
 
         public void LockBits()
         {
             // create rectangle to lock
-            Rectangle rect = new Rectangle(0, 0, this.bitmap.Width, this.bitmap.Height);
+            Rectangle rect = new Rectangle(0, 0, m_bitmap.Width, m_bitmap.Height);
 
             // lock bitmap and return bitmap data
-            this.bitmapData = this.bitmap.LockBits(rect, ImageLockMode.ReadWrite, this.bitmap.PixelFormat);
+            m_bitmapData = m_bitmap.LockBits(rect, ImageLockMode.ReadWrite, m_bitmap.PixelFormat);
 
             // gets the address of the first pixel data in the bitmap
-            this.address = this.bitmapData.Scan0;
+            m_address = m_bitmapData.Scan0;
 
             // copy data from pointer to array
-            Marshal.Copy(this.address, this.Pixels, 0, this.Length);
+            Marshal.Copy(m_address, Pixels, 0, Length);
         }
 
         public void CopyPixels(Bitmap source, int px, int py)
         {
             int width = source.Width;
             int height = source.Height;
-            int maxIndex = this.Length - 4;
+            int maxIndex = Length - 4;
 
             for (int y = 0; y < height; y++)
             {
-                int row = ((py + y) * this.Width);
+                int row = ((py + y) * Width);
 
                 for (int x = 0; x < width; x++)
                 {
@@ -105,10 +89,10 @@ namespace OpenTibia.Utilities
                             continue;
                         }
 
-                        this.Pixels[i] = color.B;
-                        this.Pixels[i + 1] = color.G;
-                        this.Pixels[i + 2] = color.R;
-                        this.Pixels[i + 3] = color.A;
+                        Pixels[i] = color.B;
+                        Pixels[i + 1] = color.G;
+                        Pixels[i + 2] = color.R;
+                        Pixels[i + 3] = color.A;
                     }
                 }
             }
@@ -116,11 +100,11 @@ namespace OpenTibia.Utilities
 
         public void CopyPixels(Bitmap source, int rx, int ry, int rw, int rh, int px, int py)
         {
-            int maxIndex = this.Length - 4;
+            int maxIndex = Length - 4;
 
             for (int y = 0; y < rh; y++)
             {
-                int row = ((py + y) * this.Width);
+                int row = ((py + y) * Width);
 
                 for (int x = 0; x < rw; x++)
                 {
@@ -133,10 +117,10 @@ namespace OpenTibia.Utilities
                             continue;
                         }
 
-                        this.Pixels[i] = color.B;
-                        this.Pixels[i + 1] = color.G;
-                        this.Pixels[i + 2] = color.R;
-                        this.Pixels[i + 3] = color.A;
+                        Pixels[i] = color.B;
+                        Pixels[i + 1] = color.G;
+                        Pixels[i + 2] = color.R;
+                        Pixels[i + 3] = color.A;
                     }
                 }
             }
@@ -146,11 +130,11 @@ namespace OpenTibia.Utilities
         {
             Color rgb = Color.Transparent;
 
-            for (int y = 0; y < this.Height; y++)
+            for (int y = 0; y < Height; y++)
             {
-                int row = (y * this.Width);
+                int row = (y * Width);
 
-                for (int x = 0; x < this.Width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     int bi = (row + x) * 4; // blue index
                     int gi = bi + 1;        // green index
@@ -159,10 +143,10 @@ namespace OpenTibia.Utilities
 
                     if (grayPixels[ai] == 0 || blendPixels[ai] == 0)
                     {
-                        this.Pixels[bi] = grayPixels[bi]; // blue
-                        this.Pixels[gi] = grayPixels[gi]; // green
-                        this.Pixels[ri] = grayPixels[ri]; // red
-                        this.Pixels[ai] = grayPixels[ai]; // alpha
+                        Pixels[bi] = grayPixels[bi]; // blue
+                        Pixels[gi] = grayPixels[gi]; // green
+                        Pixels[ri] = grayPixels[ri]; // red
+                        Pixels[ai] = grayPixels[ai]; // alpha
                         continue;
                     }
 
@@ -187,10 +171,10 @@ namespace OpenTibia.Utilities
                         rgb = ColorUtils.HsiToRgb(blueChannel);
                     }
 
-                    this.Pixels[bi] = (byte)(grayPixels[bi] * (rgb.B / 255f));
-                    this.Pixels[gi] = (byte)(grayPixels[gi] * (rgb.G / 255f));
-                    this.Pixels[ri] = (byte)(grayPixels[ri] * (rgb.R / 255f));
-                    this.Pixels[ai] = grayPixels[ai];
+                    Pixels[bi] = (byte)(grayPixels[bi] * (rgb.B / 255f));
+                    Pixels[gi] = (byte)(grayPixels[gi] * (rgb.G / 255f));
+                    Pixels[ri] = (byte)(grayPixels[ri] * (rgb.R / 255f));
+                    Pixels[ai] = grayPixels[ai];
                 }
             }
         }
@@ -198,22 +182,16 @@ namespace OpenTibia.Utilities
         public void UnlockBits()
         {
             // copy data from byte array to pointer
-            Marshal.Copy(this.Pixels, 0, this.address, this.Length);
+            Marshal.Copy(Pixels, 0, m_address, Length);
 
             // unlock bitmap data
-            this.bitmap.UnlockBits(this.bitmapData);
+            m_bitmap.UnlockBits(m_bitmapData);
         }
 
         public void Dispose()
         {
-            this.bitmap = null;
-            this.bitmapData = null;
-            this.Pixels = null;
-            this.Width = 0;
-            this.Height = 0;
-            this.Length = 0;
+            m_bitmap = null;
+            m_bitmapData = null;
         }
-
-        #endregion
     }
 }

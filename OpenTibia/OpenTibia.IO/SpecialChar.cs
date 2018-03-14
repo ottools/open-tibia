@@ -18,10 +18,6 @@
 */
 #endregion
 
-#region Using Statements
-using System;
-#endregion
-
 namespace OpenTibia.IO
 {
     public enum SpecialChar : byte

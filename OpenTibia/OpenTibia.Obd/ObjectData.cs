@@ -22,10 +22,8 @@
 */
 #endregion
 
-#region Using Statements
 using OpenTibia.Animation;
 using OpenTibia.Assets;
-using OpenTibia.Collections;
 using OpenTibia.Geom;
 using OpenTibia.Utilities;
 using OpenTibia.Utils;
@@ -34,152 +32,73 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-#endregion
 
 namespace OpenTibia.Obd
 {
     public class ObjectData
     {
-        #region | Private Properties |
-
-        private static readonly OutfitData OUTFIT_DATA = new OutfitData();
-
-        private ThingType type;
-        private SpriteGroup sprites;
-
-        #endregion
-
-        #region | Constructor |
+        private ThingType m_type;
+        private SpriteGroup m_sprites;
 
         public ObjectData(ThingType type, SpriteGroup sprites, MetadataFormat format)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (sprites == null)
-            {
-                throw new ArgumentNullException(nameof(sprites));
-            }
-
-            this.type = type;
-            this.sprites = sprites;
-            this.Format = format;
+            m_type = type ?? throw new ArgumentNullException(nameof(type));
+            m_sprites = sprites ?? throw new ArgumentNullException(nameof(sprites));
+            Format = format;
         }
 
         public ObjectData(ThingType type, SpriteGroup sprites)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (sprites == null)
-            {
-                throw new ArgumentNullException(nameof(sprites));
-            }
-
-            this.type = type;
-            this.sprites = sprites;
-            this.Format = MetadataFormat.Format_Last;
+            m_type = type ?? throw new ArgumentNullException(nameof(type));
+            m_sprites = sprites ?? throw new ArgumentNullException(nameof(sprites));
+            Format = MetadataFormat.Format_Last;
         }
-
-        #endregion
-
-        #region | Public Properties |
 
         public ThingType ThingType
         {
-            get
-            {
-                return this.type;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("ThingType");
-                }
-
-                this.type = value;
-            }
+            get => m_type;
+            set => m_type = value ?? throw new ArgumentNullException(nameof(ThingType));
         }
 
         public SpriteGroup Sprites
         {
-            get
-            {
-                return this.sprites;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("Sprites");
-                }
-
-                this.sprites = value;
-            }
+            get => m_sprites;
+            set => m_sprites = value ?? throw new ArgumentNullException(nameof(Sprites));
         }
 
-        public ushort ID
-        {
-            get
-            {
-                return this.type.ID;
-            }
-        }
+        public ushort ID => m_type.ID;
 
-        public ThingCategory Category
-        {
-            get
-            {
-                return this.type.Category;
-            }
-        }
+        public ThingCategory Category => m_type.Category;
 
-        public byte FrameGroupCount
-        {
-            get
-            {
-                return (byte)this.ThingType.FrameGroupCount;
-            }
-        }
+        public int FrameGroupCount => ThingType.FrameGroupCount;
 
-        public MetadataFormat Format { get; private set; }
-
-        #endregion
-
-        #region | Public Methods |
+        public MetadataFormat Format { get; }
 
         public override string ToString()
         {
-            return $"(ThingData id={this.ID}, category={this.Category}";
+            return $"({nameof(ObjectData)} id={ID}, category={Category}";
         }
 
         public bool HasFrameGroup(FrameGroupType type)
         {
-            return this.type.FrameGroups.ContainsKey(type);
+            return m_type.FrameGroups.ContainsKey(type);
         }
 
         public FrameGroup GetFrameGroup(FrameGroupType groupType)
         {
-            return this.type.GetFrameGroup(groupType);
+            return m_type.GetFrameGroup(groupType);
         }
 
         public FrameGroup GetFrameGroup()
         {
-            return this.type.GetFrameGroup(FrameGroupType.Default);
+            return m_type.GetFrameGroup(FrameGroupType.Default);
         }
 
         public Sprite[] GetSprites(FrameGroupType groupType)
         {
-            if (this.sprites.ContainsKey(groupType))
+            if (m_sprites.ContainsKey(groupType))
             {
-                return this.sprites[groupType];
+                return m_sprites[groupType];
             }
 
             return null;
@@ -187,15 +106,15 @@ namespace OpenTibia.Obd
 
         public SpriteSheet GetSpriteSheet(FrameGroupType groupType)
         {
-            FrameGroup frameGroup = this.GetFrameGroup(groupType);
+            FrameGroup frameGroup = GetFrameGroup(groupType);
             if (frameGroup == null)
             {
                 return null;
             }
 
-            Sprite[] sprites = this.sprites[groupType];
-            int totalX = frameGroup.PatternZ * frameGroup.PatternX * frameGroup.Layers;
-            int totalY = frameGroup.Frames * frameGroup.PatternY;
+            Sprite[] sprites = m_sprites[groupType];
+            int totalX = frameGroup.PatternsZ * frameGroup.PatternsX * frameGroup.Layers;
+            int totalY = frameGroup.Frames * frameGroup.PatternsY;
             int bitmapWidth = (totalX * frameGroup.Width) * Sprite.DefaultSize;
             int bitmapHeight = (totalY * frameGroup.Height) * Sprite.DefaultSize;
             int pixelsWidth = frameGroup.Width * Sprite.DefaultSize;
@@ -208,11 +127,11 @@ namespace OpenTibia.Obd
 
             for (int f = 0; f < frameGroup.Frames; f++)
             {
-                for (int z = 0; z < frameGroup.PatternZ; z++)
+                for (int z = 0; z < frameGroup.PatternsZ; z++)
                 {
-                    for (int y = 0; y < frameGroup.PatternY; y++)
+                    for (int y = 0; y < frameGroup.PatternsY; y++)
                     {
-                        for (int x = 0; x < frameGroup.PatternX; x++)
+                        for (int x = 0; x < frameGroup.PatternsX; x++)
                         {
                             for (int l = 0; l < frameGroup.Layers; l++)
                             {
@@ -245,18 +164,16 @@ namespace OpenTibia.Obd
 
         public SpriteSheet GetSpriteSheet(FrameGroupType groupType, OutfitData outfitData)
         {
-            SpriteSheet rawSpriteSheet = this.GetSpriteSheet(groupType);
+            SpriteSheet rawSpriteSheet = GetSpriteSheet(groupType);
 
-            FrameGroup group = this.ThingType.GetFrameGroup(groupType);
+            FrameGroup group = ThingType.GetFrameGroup(groupType);
             if (group.Layers < 2)
             {
                 return rawSpriteSheet;
             }
 
-            outfitData = outfitData == null ? OUTFIT_DATA : outfitData;
-
-            int totalX = group.PatternZ * group.PatternX * group.Layers;
-            int totalY = group.Frames * group.PatternY;
+            int totalX = group.PatternsZ * group.PatternsX * group.Layers;
+            int totalY = group.Frames * group.PatternsY;
             int bitmapWidth = (totalX * group.Width) * Sprite.DefaultSize;
             int bitmapHeight = (totalY * group.Height) * Sprite.DefaultSize;
             int pixelsWidth = group.Width * Sprite.DefaultSize;
@@ -268,12 +185,12 @@ namespace OpenTibia.Obd
 
             for (int f = 0; f < group.Frames; f++)
             {
-                for (int z = 0; z < group.PatternZ; z++)
+                for (int z = 0; z < group.PatternsZ; z++)
                 {
-                    for (int x = 0; x < group.PatternX; x++)
+                    for (int x = 0; x < group.PatternsX; x++)
                     {
-                        int index = (((f % group.Frames * group.PatternZ + z) * group.PatternY) * group.PatternX + x) * group.Layers;
-                        rectList[index] = new Rect((z * group.PatternX + x) * pixelsWidth, f * pixelsHeight, pixelsWidth, pixelsHeight);
+                        int index = (((f % group.Frames * group.PatternsZ + z) * group.PatternsY) * group.PatternsX + x) * group.Layers;
+                        rectList[index] = new Rect((z * group.PatternsX + x) * pixelsWidth, f * pixelsHeight, pixelsWidth, pixelsHeight);
                     }
                 }
             }
@@ -286,24 +203,24 @@ namespace OpenTibia.Obd
             blendLocker.LockBits();
             bitmapLocker.LockBits();
 
-            for (int y = 0; y < group.PatternY; y++)
+            for (int y = 0; y < group.PatternsY; y++)
             {
                 if (y == 0 || (outfitData.Addons & 1 << (y - 1)) != 0)
                 {
                     for (int f = 0; f < group.Frames; f++)
                     {
-                        for (int z = 0; z < group.PatternZ; z++)
+                        for (int z = 0; z < group.PatternsZ; z++)
                         {
-                            for (int x = 0; x < group.PatternX; x++)
+                            for (int x = 0; x < group.PatternsX; x++)
                             {
                                 // gets gray bitmap
-                                int i = (((f % group.Frames * group.PatternZ + z) * group.PatternY + y) * group.PatternX + x) * group.Layers;
+                                int i = (((f % group.Frames * group.PatternsZ + z) * group.PatternsY + y) * group.PatternsX + x) * group.Layers;
                                 Rect rect = rawSpriteSheet.RectList[i];
                                 int rx = rect.X;
                                 int ry = rect.Y;
                                 int rw = rect.Width;
                                 int rh = rect.Height;
-                                int index = (((f * group.PatternZ + z) * group.PatternY) * group.PatternX + x) * group.Layers;
+                                int index = (((f * group.PatternsZ + z) * group.PatternsY) * group.PatternsX + x) * group.Layers;
                                 rect = rectList[index];
                                 int px = rect.X;
                                 int py = rect.Y;
@@ -338,17 +255,13 @@ namespace OpenTibia.Obd
 
         public SpriteSheet GetSpriteSheet()
         {
-            return this.GetSpriteSheet(FrameGroupType.Default);
+            return GetSpriteSheet(FrameGroupType.Default);
         }
 
         public ObjectData Clone()
         {
-            return new ObjectData(this.type.Clone(), this.sprites.Clone());
+            return new ObjectData(m_type.Clone(), m_sprites.Clone());
         }
-
-        #endregion
-
-        #region | Public Static Methods |
 
         public static ObjectData Load(string path)
         {
@@ -394,7 +307,5 @@ namespace OpenTibia.Obd
         {
             return Save(path, data, ObdVersion.Version2);
         }
-
-        #endregion
     }
 }

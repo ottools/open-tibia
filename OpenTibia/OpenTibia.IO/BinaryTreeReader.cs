@@ -18,24 +18,16 @@
 */
 #endregion
 
-#region Using Statements
 using System;
 using System.IO;
-#endregion
 
 namespace OpenTibia.IO
 {
     public class BinaryTreeReader : IDisposable
     {
-        #region Private Properties
-
-        private BinaryReader reader;
-        private long currentNodePosition;
-        private uint currentNodeSize;
-
-        #endregion
-
-        #region Constructor
+        private BinaryReader m_reader;
+        private long m_currentNodePosition;
+        private uint m_currentNodeSize;
 
         public BinaryTreeReader(string path)
         {
@@ -44,53 +36,44 @@ namespace OpenTibia.IO
                 throw new ArgumentNullException(nameof(path));
             }
 
-            this.reader = new BinaryReader(new FileStream(path, FileMode.Open));
-            this.Disposed = false;
+            m_reader = new BinaryReader(new FileStream(path, FileMode.Open));
         }
-
-        #endregion
-
-        #region Public Properties
 
         public bool Disposed { get; private set; }
 
-        #endregion
-
-        #region Public Properties
-
         public BinaryReader GetRootNode()
         {
-            return this.GetChildNode();
+            return GetChildNode();
         }
 
         public BinaryReader GetChildNode()
         {
-            this.Advance();
-            return this.GetNodeData();
+            Advance();
+            return GetNodeData();
         }
 
         public BinaryReader GetNextNode()
         {
-            this.reader.BaseStream.Seek(this.currentNodePosition, SeekOrigin.Begin);
+            m_reader.BaseStream.Seek(m_currentNodePosition, SeekOrigin.Begin);
 
-            SpecialChar value = (SpecialChar)this.reader.ReadByte();
+            SpecialChar value = (SpecialChar)m_reader.ReadByte();
             if (value != SpecialChar.NodeStart)
             {
                 return null;
             }
 
-            value = (SpecialChar)this.reader.ReadByte();
+            value = (SpecialChar)m_reader.ReadByte();
 
             int level = 1;
             while (true)
             {
-                value = (SpecialChar)this.reader.ReadByte();
+                value = (SpecialChar)m_reader.ReadByte();
                 if (value == SpecialChar.NodeEnd)
                 {
                     --level;
                     if (level == 0)
                     {
-                        value = (SpecialChar)this.reader.ReadByte();
+                        value = (SpecialChar)m_reader.ReadByte();
                         if (value == SpecialChar.NodeEnd)
                         {
                             return null;
@@ -101,8 +84,8 @@ namespace OpenTibia.IO
                         }
                         else
                         {
-                            this.currentNodePosition = this.reader.BaseStream.Position - 1;
-                            return this.GetNodeData();
+                            m_currentNodePosition = m_reader.BaseStream.Position - 1;
+                            return GetNodeData();
                         }
                     }
                 }
@@ -112,31 +95,27 @@ namespace OpenTibia.IO
                 }
                 else if (value == SpecialChar.EscapeChar)
                 {
-                    this.reader.ReadByte();
+                    m_reader.ReadByte();
                 }
             }
         }
 
         public void Dispose()
         {
-            if (this.reader != null)
+            if (m_reader != null)
             {
-                this.reader.Dispose();
-                this.reader = null;
-                this.Disposed = true;
+                m_reader.Dispose();
+                m_reader = null;
+                Disposed = true;
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private BinaryReader GetNodeData()
         {
-            this.reader.BaseStream.Seek(this.currentNodePosition, SeekOrigin.Begin);
+            m_reader.BaseStream.Seek(m_currentNodePosition, SeekOrigin.Begin);
 
             // read node type
-            byte value = this.reader.ReadByte();
+            byte value = m_reader.ReadByte();
 
             if ((SpecialChar)value != SpecialChar.NodeStart)
             {
@@ -145,24 +124,24 @@ namespace OpenTibia.IO
 
             MemoryStream ms = new MemoryStream(200);
 
-            this.currentNodeSize = 0;
+            m_currentNodeSize = 0;
             while (true)
             {
-                value = this.reader.ReadByte();
+                value = m_reader.ReadByte();
                 if ((SpecialChar)value == SpecialChar.NodeEnd || (SpecialChar)value == SpecialChar.NodeStart)
                 {
                     break;
                 }
                 else if ((SpecialChar)value == SpecialChar.EscapeChar)
                 {
-                    value = this.reader.ReadByte();
+                    value = m_reader.ReadByte();
                 }
 
-                this.currentNodeSize++;
+                m_currentNodeSize++;
                 ms.WriteByte(value);
             }
 
-            this.reader.BaseStream.Seek(this.currentNodePosition, SeekOrigin.Begin);
+            m_reader.BaseStream.Seek(m_currentNodePosition, SeekOrigin.Begin);
             ms.Position = 0;
             return new BinaryReader(ms);
         }
@@ -172,47 +151,47 @@ namespace OpenTibia.IO
             try
             {
                 long seekPos = 0;
-                if (this.currentNodePosition == 0)
+                if (m_currentNodePosition == 0)
                 {
                     seekPos = 4;
                 }
                 else
                 {
-                    seekPos = this.currentNodePosition;
+                    seekPos = m_currentNodePosition;
                 }
 
-                this.reader.BaseStream.Seek(seekPos, SeekOrigin.Begin);
+                m_reader.BaseStream.Seek(seekPos, SeekOrigin.Begin);
 
-                SpecialChar value = (SpecialChar)this.reader.ReadByte();
+                SpecialChar value = (SpecialChar)m_reader.ReadByte();
                 if (value != SpecialChar.NodeStart)
                 {
                     return false;
                 }
 
-                if (this.currentNodePosition == 0)
+                if (m_currentNodePosition == 0)
                 {
-                    this.currentNodePosition = this.reader.BaseStream.Position - 1;
+                    m_currentNodePosition = m_reader.BaseStream.Position - 1;
                     return true;
                 }
                 else
                 {
-                    value = (SpecialChar)this.reader.ReadByte();
+                    value = (SpecialChar)m_reader.ReadByte();
 
                     while (true)
                     {
-                        value = (SpecialChar)this.reader.ReadByte();
+                        value = (SpecialChar)m_reader.ReadByte();
                         if (value == SpecialChar.NodeEnd)
                         {
                             return false;
                         }
                         else if (value == SpecialChar.NodeStart)
                         {
-                            this.currentNodePosition = this.reader.BaseStream.Position - 1;
+                            m_currentNodePosition = m_reader.BaseStream.Position - 1;
                             return true;
                         }
                         else if (value == SpecialChar.EscapeChar)
                         {
-                            this.reader.ReadByte();
+                            m_reader.ReadByte();
                         }
                     }
                 }
@@ -222,7 +201,5 @@ namespace OpenTibia.IO
                 return false;
             }
         }
-
-        #endregion
     }
 }

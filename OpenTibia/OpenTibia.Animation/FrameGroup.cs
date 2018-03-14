@@ -32,8 +32,6 @@ namespace OpenTibia.Animation
 
     public class FrameGroup
     {
-        #region Public Properties
-
         public byte Width { get; set; }
 
         public byte Height { get; set; }
@@ -42,11 +40,11 @@ namespace OpenTibia.Animation
 
         public byte Layers { get; set; }
 
-        public byte PatternX { get; set; }
+        public byte PatternsX { get; set; }
 
-        public byte PatternY { get; set; }
+        public byte PatternsY { get; set; }
 
-        public byte PatternZ { get; set; }
+        public byte PatternsZ { get; set; }
 
         public byte Frames { get; set; }
 
@@ -62,79 +60,74 @@ namespace OpenTibia.Animation
 
         public FrameDuration[] FrameDurations { get; set; }
 
-        #endregion
-
-        #region Public Methods
-
         public int GetTotalSprites()
         {
-            return this.Width * this.Height * this.PatternX * this.PatternY * this.PatternZ * this.Frames * this.Layers;
+            return Width * Height * PatternsX * PatternsY * PatternsZ * Frames * Layers;
         }
 
         public int GetSpriteIndex(int width, int height, int layers, int patternX, int patternY, int patternZ, int frames)
         {
-            return ((((((frames % this.Frames) * this.PatternZ + patternZ) * this.PatternY + patternY) * this.PatternX + patternX) * this.Layers + layers) * this.Height + height) * this.Width + width;
+            return ((((((frames % Frames) * PatternsZ + patternZ) * PatternsY + patternY) * PatternsX + patternX) * Layers + layers) * Height + height) * Width + width;
         }
 
         public int GetTextureIndex(int layer, int patternX, int patternY, int patternZ, int frame)
         {
-            return (((frame % this.Frames * this.PatternZ + patternZ) * this.PatternY + patternY) * this.PatternX + patternX) * this.Layers + layer;
+            return (((frame % Frames * PatternsZ + patternZ) * PatternsY + patternY) * PatternsX + patternX) * Layers + layer;
         }
 
         public FrameGroup Clone()
         {
-            FrameGroup group = new FrameGroup();
-            group.Width = this.Width;
-            group.Height = this.Height;
-            group.Layers = this.Layers;
-            group.Frames = this.Frames;
-            group.PatternX = this.PatternX;
-            group.PatternY = this.PatternY;
-            group.PatternZ = this.PatternZ;
-            group.ExactSize = this.ExactSize;
-            group.SpriteIDs = (uint[])this.SpriteIDs.Clone();
-            group.AnimationMode = this.AnimationMode;
-            group.LoopCount = this.LoopCount;
-            group.StartFrame = this.StartFrame;
+            FrameGroup group = new FrameGroup
+            {
+                Width = Width,
+                Height = Height,
+                Layers = Layers,
+                Frames = Frames,
+                PatternsX = PatternsX,
+                PatternsY = PatternsY,
+                PatternsZ = PatternsZ,
+                ExactSize = ExactSize,
+                SpriteIDs = (uint[])SpriteIDs.Clone(),
+                AnimationMode = AnimationMode,
+                LoopCount = LoopCount,
+                StartFrame = StartFrame
+            };
 
-            if (this.Frames > 1)
+            if (Frames > 1)
             {
                 group.IsAnimation = true;
-                group.FrameDurations = new FrameDuration[this.Frames];
+                group.FrameDurations = new FrameDuration[Frames];
 
-                for (int i = 0; i < this.Frames; i++)
+                for (int i = 0; i < Frames; i++)
                 {
-                    group.FrameDurations[i] = this.FrameDurations[i].Clone();
+                    group.FrameDurations[i] = FrameDurations[i].Clone();
                 }
             }
 
             return group;
         }
 
-        #endregion
-
-        #region Public Static Methods
-
         public static FrameGroup Create()
         {
-            FrameGroup group = new FrameGroup();
-            group.Width = 1;
-            group.Height = 1;
-            group.Layers = 1;
-            group.Frames = 1;
-            group.PatternX = 1;
-            group.PatternY = 1;
-            group.PatternZ = 1;
-            group.ExactSize = 32;
-            group.SpriteIDs = new uint[1];
-            group.IsAnimation = false;
-            group.AnimationMode = AnimationMode.Asynchronous;
-            group.LoopCount = 0;
-            group.StartFrame = 0;
-            group.FrameDurations = null;
+            FrameGroup group = new FrameGroup
+            {
+                Width = 1,
+                Height = 1,
+                Layers = 1,
+                Frames = 1,
+                PatternsX = 1,
+                PatternsY = 1,
+                PatternsZ = 1,
+                ExactSize = 32,
+                SpriteIDs = new uint[1],
+                IsAnimation = false,
+                AnimationMode = AnimationMode.Asynchronous,
+                LoopCount = 0,
+                StartFrame = 0,
+                FrameDurations = null
+            };
+
             return group;
         }
-
-        #endregion
     }
 }

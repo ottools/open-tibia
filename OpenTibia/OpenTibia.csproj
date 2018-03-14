@@ -65,7 +65,7 @@
     <Compile Include="OpenTibia.Assets\Things\ThingType.cs" />
     <Compile Include="OpenTibia.Assets\Things\ThingTypeSerializer.cs" />
     <Compile Include="OpenTibia.Assets\Things\ThingTypeStorage.cs" />
-    <Compile Include="OpenTibia.Collections\SpriteGroup.cs" />
+    <Compile Include="OpenTibia.Assets\Sprites\SpriteGroup.cs" />
     <Compile Include="OpenTibia.Controls\ColorChangedArgs.cs" />
     <Compile Include="OpenTibia.Controls\EightBitColorGrid.cs">
       <SubType>Component</SubType>
@@ -96,7 +96,6 @@
     <Compile Include="OpenTibia.Utils\LZMACoder.cs" />
     <Compile Include="OpenTibia.Utils\OutfitData.cs" />
     <Compile Include="OpenTibia.Utils\PathUtils.cs" />
-    <Compile Include="OpenTibia.Utils\PropertySorter.cs" />
     <Compile Include="OpenTibia.Utils\SpriteCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

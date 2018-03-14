@@ -23,18 +23,14 @@
 using System;
 #endregion
 
-#region Using Statements
 using SevenZip;
 using System.IO;
 using SevenZip.Compression.LZMA;
-#endregion
 
 namespace OpenTibia.Utils
 {
     public static class LZMACoder
     {
-        #region Private Static Properties
-
         private static CoderPropID[] propIDs =
         {
             CoderPropID.DictionarySize,
@@ -49,19 +45,15 @@ namespace OpenTibia.Utils
 
         private static object[] properties =
         {
-            (int)(1 << 21), // DictionarySize
-            (int)(2),       // PosStateBits
-            (int)(3),       // LitContextBits
-            (int)(0),       // LitPosBits
-            (int)(2),       // Algorithm
-            (int)(128),     // NumFastBytes
-            "bt4",          // MatchFinder
-            false           // EndMarker
+            1 << 21, // DictionarySize
+            2,       // PosStateBits
+            3,       // LitContextBits
+            0,       // LitPosBits
+            2,       // Algorithm
+            128,     // NumFastBytes
+            "bt4",   // MatchFinder
+            false    // EndMarker
         };
-
-        #endregion
-
-        #region Public Static Methods
 
         public static byte[] Uncompress(byte[] bytes)
         {
@@ -123,7 +115,5 @@ namespace OpenTibia.Utils
                 return output.ToArray();
             }
         }
-
-        #endregion
     }
 }
