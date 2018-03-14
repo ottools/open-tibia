@@ -33,16 +33,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OpenTibia.Assets
 {
     public class AssetsManager : IAssetsManager
     {
         private SpriteCache m_spriteCache;
+        private Rectangle m_rectangle;
 
         public AssetsManager()
         {
             m_spriteCache = new SpriteCache();
+            m_rectangle = new Rectangle(0, 0, Sprite.DefaultSize, Sprite.DefaultSize);
         }
 
         public event EventHandler AssetsLoaded;
@@ -206,6 +209,31 @@ namespace OpenTibia.Assets
             return GetThingData(id, category, false);
         }
 
+        public Bitmap GetSpriteBitmap(uint id)
+        {
+            if (!Loaded)
+            {
+                return null;
+            }
+
+            Sprite sprite = Sprites.GetSprite(id);
+            if (sprite == null)
+            {
+                return null;
+            }
+
+            Bitmap bitmap = new Bitmap(Sprite.DefaultSize, Sprite.DefaultSize, PixelFormat.Format32bppArgb);
+
+            if (!sprite.IsEmpty)
+            {
+                BitmapData bitmapData = bitmap.LockBits(m_rectangle, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+                Marshal.Copy(sprite.Pixels, 0, bitmapData.Scan0, sprite.Pixels.Length);
+                bitmap.UnlockBits(bitmapData);
+            }
+
+            return bitmap;
+        }
+
         public Bitmap GetObjectImage(ushort id, ThingCategory category, FrameGroupType groupType)
         {
             ThingType thing = Things.GetThing(id, category);
@@ -250,7 +278,7 @@ namespace OpenTibia.Assets
                         int px = (group.Width - w - 1) * Sprite.DefaultSize;
                         int py = (group.Height - h - 1) * Sprite.DefaultSize;
 
-                        lockBitmap.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
+                        lockBitmap.CopyPixels(GetSpriteBitmap(spriteId), px, py);
                     }
                 }
             }
@@ -310,11 +338,11 @@ namespace OpenTibia.Assets
                             uint spriteId = group.SpriteIDs[index];
                             int px = (group.Width - w - 1) * Sprite.DefaultSize;
                             int py = (group.Height - h - 1) * Sprite.DefaultSize;
-                            grayLocker.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
+                            grayLocker.CopyPixels(GetSpriteBitmap(spriteId), px, py);
 
                             index = group.GetSpriteIndex(w, h, 1, x, y, z, 0);
                             spriteId = group.SpriteIDs[index];
-                            blendLocker.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px, py);
+                            blendLocker.CopyPixels(GetSpriteBitmap(spriteId), px, py);
                         }
                     }
 
@@ -402,7 +430,7 @@ namespace OpenTibia.Assets
                                         int px = ((group.Width - w - 1) * Sprite.DefaultSize);
                                         int py = ((group.Height - h - 1) * Sprite.DefaultSize);
                                         uint spriteId = group.SpriteIDs[index];
-                                        lockBitmap.CopyPixels(Sprites.GetSpriteBitmap(spriteId), px + fx, py + fy);
+                                        lockBitmap.CopyPixels(GetSpriteBitmap(spriteId), px + fx, py + fy);
                                     }
                                 }
                             }

@@ -30,65 +30,87 @@ namespace OpenTibia.Controls
 {
     public class SpriteListBox : ListBox
     {
-        #region Private Properties
+        private struct ListElement
+        {
+            private Bitmap m_bitmap;
+
+            public ListElement(AssetsManager manager, Sprite sprite)
+            {
+                AssetsManager = manager;
+                Sprite = sprite;
+                m_bitmap = null;
+            }
+
+            public AssetsManager AssetsManager { get; }
+            public Sprite Sprite { get; }
+            public Bitmap Bitmap
+            {
+                get
+                {
+                    if (m_bitmap != null)
+                    {
+                        return m_bitmap;
+                    }
+
+                    m_bitmap = AssetsManager.GetSpriteBitmap(Sprite.ID);
+                    return m_bitmap;
+                }
+            }
+
+            public override string ToString()
+            {
+                return Sprite.ID.ToString();
+            }
+        }
 
         private const int ItemMargin = 5;
 
-        private Rectangle layoutRect;
-        private Rectangle destRect;
-        private Rectangle sourceRect;
-        private Pen pen;
-
-        #endregion
-
-        #region Constructor
+        private Rectangle m_layoutRect;
+        private Rectangle m_destRect;
+        private Rectangle m_sourceRect;
+        private Pen m_pen;
 
         public SpriteListBox()
         {
-            this.layoutRect = new Rectangle();
-            this.destRect = new Rectangle(ItemMargin, 0, Sprite.DefaultSize, Sprite.DefaultSize);
-            this.sourceRect = new Rectangle();
-            this.pen = new Pen(Color.DimGray);
-            this.MeasureItem += new MeasureItemEventHandler(this.MeasureItemHandler);
-            this.DrawItem += new DrawItemEventHandler(this.DrawItemHandler);
-            this.DrawMode = DrawMode.OwnerDrawVariable;
+            m_layoutRect = new Rectangle();
+            m_destRect = new Rectangle(ItemMargin, 0, Sprite.DefaultSize, Sprite.DefaultSize);
+            m_sourceRect = new Rectangle();
+            m_pen = new Pen(Color.DimGray);
+
+            MeasureItem += MeasureItemHandler;
+            DrawItem += DrawItemHandler;
+            DrawMode = DrawMode.OwnerDrawVariable;
         }
 
-        #endregion
-
-        #region Public Methods
+        public AssetsManager AssetsManager { get; set; }
 
         public void Add(Sprite sprite)
         {
-            this.Items.Add(sprite);
+            Items.Add(sprite);
         }
 
         public void AddRange(Sprite[] sprites)
         {
-            this.Items.AddRange(sprites);
+            Items.AddRange(sprites);
         }
 
         public void RemoveSelectedSprites()
         {
-            if (this.SelectedIndex != -1)
+            if (SelectedIndex != -1)
             {
-                SelectedObjectCollection selectedItems = this.SelectedItems;
+                SelectedObjectCollection selectedItems = SelectedItems;
 
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    this.Items.Remove(selectedItems[i]);
+                    Items.Remove(selectedItems[i]);
                 }
             }
         }
 
         public void Clear()
         {
-            this.Items.Clear();
+            Items.Clear();
         }
-
-        #endregion
-
-        #region Event Handlers
 
         private void MeasureItemHandler(object sender, MeasureItemEventArgs e)
         {
@@ -97,7 +119,7 @@ namespace OpenTibia.Controls
 
         private void DrawItemHandler(object sender, DrawItemEventArgs ev)
         {
-            if (this.Items.Count == 0 || ev.Index == -1)
+            if (Items.Count == 0 || ev.Index == -1)
             {
                 return;
             }
@@ -110,50 +132,44 @@ namespace OpenTibia.Controls
             // draw border
             ev.Graphics.DrawRectangle(Pens.Gray, bounds);
 
-            Sprite sprite = (Sprite)this.Items[ev.Index];
+            ListElement element = (ListElement)Items[ev.Index];
 
             // find the area in which to put the text and draw.
-            this.layoutRect.X = bounds.Left + Sprite.DefaultSize + (3 * ItemMargin);
-            this.layoutRect.Y = bounds.Top + (ItemMargin * 2);
-            this.layoutRect.Width = bounds.Right - ItemMargin - this.layoutRect.X;
-            this.layoutRect.Height = bounds.Bottom - ItemMargin - this.layoutRect.Y;
+            m_layoutRect.X = bounds.Left + Sprite.DefaultSize + (3 * ItemMargin);
+            m_layoutRect.Y = bounds.Top + (ItemMargin * 2);
+            m_layoutRect.Width = bounds.Right - ItemMargin - m_layoutRect.X;
+            m_layoutRect.Height = bounds.Bottom - ItemMargin - m_layoutRect.Y;
 
             // draw sprite id
             if ((ev.State & DrawItemState.Selected) == DrawItemState.Selected)
             {
-                this.pen.Brush = WhiteBrush;
-                ev.Graphics.DrawString(sprite.ToString(), this.Font, WhiteBrush, this.layoutRect);
+                m_pen.Brush = WhiteBrush;
+                ev.Graphics.DrawString(element.ToString(), Font, WhiteBrush, m_layoutRect);
             }
             else
             {
-                this.pen.Brush = BlackBrush;
-                ev.Graphics.DrawString(sprite.ToString(), this.Font, BlackBrush, this.layoutRect);
+                m_pen.Brush = BlackBrush;
+                ev.Graphics.DrawString(element.ToString(), Font, BlackBrush, m_layoutRect);
             }
 
-            this.destRect.Y = bounds.Top + ItemMargin;
+            m_destRect.Y = bounds.Top + ItemMargin;
 
-            Bitmap bitmap = sprite.GetBitmap();
+            Bitmap bitmap = element.Bitmap;
             if (bitmap != null)
             {
-                this.sourceRect.Width = bitmap.Width;
-                this.sourceRect.Height = bitmap.Height;
-                ev.Graphics.DrawImage(bitmap, this.destRect, this.sourceRect, GraphicsUnit.Pixel);
+                m_sourceRect.Width = bitmap.Width;
+                m_sourceRect.Height = bitmap.Height;
+                ev.Graphics.DrawImage(bitmap, m_destRect, m_sourceRect, GraphicsUnit.Pixel);
             }
 
             // draw sprite border
-            ev.Graphics.DrawRectangle(this.pen, this.destRect);
+            ev.Graphics.DrawRectangle(m_pen, m_destRect);
 
             // draw focus rectangle
             ev.DrawFocusRectangle();
         }
 
-        #endregion
-
-        #region Class Properties
-
         private static readonly Brush WhiteBrush = new SolidBrush(Color.White);
         private static readonly Brush BlackBrush = new SolidBrush(Color.Black);
-
-        #endregion
     }
 }

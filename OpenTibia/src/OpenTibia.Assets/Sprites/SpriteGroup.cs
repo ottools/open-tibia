@@ -25,7 +25,6 @@
 using OpenTibia.Animation;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenTibia.Assets
 {
@@ -53,33 +52,6 @@ namespace OpenTibia.Assets
             if (index >= 0 && index < group.Length)
             {
                 return group[index];
-            }
-
-            return null;
-        }
-
-        public Bitmap GetSpriteBitmap(int index, FrameGroupType groupType)
-        {
-            if (ContainsKey(groupType))
-            {
-                Sprite[] group = this[groupType];
-
-                if (index >= 0 && index < group.Length)
-                {
-                    return group[index].GetBitmap();
-                }
-            }
-
-            return null;
-        }
-
-        public Bitmap GetSpriteBitmap(int index)
-        {
-            Sprite[] group = this[FrameGroupType.Default];
-
-            if (index >= 0 && index < group.Length)
-            {
-                return group[index].GetBitmap();
             }
 
             return null;

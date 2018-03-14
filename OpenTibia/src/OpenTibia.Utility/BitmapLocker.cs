@@ -68,6 +68,35 @@ namespace OpenTibia.Utilities
             Marshal.Copy(m_address, Pixels, 0, Length);
         }
 
+        public void CopyPixels(byte[] pixels, int width, int height, int px, int py)
+        {
+            int maxIndex = Length - 4;
+            int pos = 0;
+
+            for (int y = 0; y < height; y++)
+            {
+                int row = ((py + y) * Width);
+
+                for (int x = 0; x < width; x++)
+                {
+                    if (pixels[pos + 3] != 0)
+                    {
+                        int i = (row + (px + x)) * 4;
+                        if (i > maxIndex)
+                        {
+                            continue;
+                        }
+
+                        Pixels[i]     = pixels[pos];
+                        Pixels[i + 1] = pixels[pos + 1];
+                        Pixels[i + 2] = pixels[pos + 2];
+                        Pixels[i + 3] = pixels[pos + 3];
+                        pos += 4;
+                    }
+                }
+            }
+        }
+
         public void CopyPixels(Bitmap source, int px, int py)
         {
             int width = source.Width;

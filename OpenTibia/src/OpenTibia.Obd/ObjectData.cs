@@ -147,7 +147,7 @@ namespace OpenTibia.Obd
                                         index = frameGroup.GetSpriteIndex(w, h, l, x, y, z, f);
                                         int px = (frameGroup.Width - w - 1) * Sprite.DefaultSize;
                                         int py = (frameGroup.Height - h - 1) * Sprite.DefaultSize;
-                                        lockBitmap.CopyPixels(sprites[index].GetBitmap(), px + fx, py + fy);
+                                        lockBitmap.CopyPixels(sprites[index].Pixels, Sprite.DefaultSize, Sprite.DefaultSize, px + fx, py + fy);
                                     }
                                 }
                             }

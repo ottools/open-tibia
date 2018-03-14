@@ -26,7 +26,6 @@ using OpenTibia.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 
@@ -140,39 +139,6 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public bool AddSprite(Bitmap bitmap)
-        {
-            if (bitmap == null)
-            {
-                throw new ArgumentNullException(nameof(bitmap));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
-            if (!Loaded || Compiling || bitmap.Width != Sprite.DefaultSize || bitmap.Height != Sprite.DefaultSize)
-            {
-                return false;
-            }
-
-            if (IsFull)
-            {
-                throw new Exception("The limit of sprites was reached.");
-            }
-
-            uint id = ++Count;
-            Sprite sprite = new Sprite(id, m_transparent);
-            sprite.SetBitmap(bitmap);
-            m_sprites.Add(id, sprite);
-            Changed = true;
-
-            StorageChanged?.Invoke(this, new SpriteListChangedArgs(new Sprite[] { sprite }, StorageChangeType.Add));
-
-            return true;
-        }
-
         public bool AddSprites(Sprite[] sprites)
         {
             if (sprites == null)
@@ -207,55 +173,6 @@ namespace OpenTibia.Assets
                 uint id = ++Count;
                 sprite.ID = id;
                 sprite.Transparent = m_transparent;
-                m_sprites.Add(id, sprite);
-                changedSprites.Add(sprite);
-            }
-
-            if (changedSprites.Count != 0)
-            {
-                Changed = true;
-
-                StorageChanged?.Invoke(this, new SpriteListChangedArgs(changedSprites.ToArray(), StorageChangeType.Add));
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool AddSprites(Bitmap[] sprites)
-        {
-            if (sprites == null)
-            {
-                throw new ArgumentNullException(nameof(sprites));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
-            if (!Loaded || Compiling || sprites.Length == 0)
-            {
-                return false;
-            }
-
-            List<Sprite> changedSprites = new List<Sprite>();
-
-            foreach (Bitmap bitmap in sprites)
-            {
-                if (bitmap == null || bitmap.Width != Sprite.DefaultSize || bitmap.Height != Sprite.DefaultSize)
-                {
-                    continue;
-                }
-
-                if (IsFull)
-                {
-                    throw new Exception("The limit of sprites was reached.");
-                }
-
-                uint id = ++Count;
-                Sprite sprite = new Sprite(id, m_transparent);
                 m_sprites.Add(id, sprite);
                 changedSprites.Add(sprite);
             }
@@ -330,44 +247,6 @@ namespace OpenTibia.Assets
             }
 
             return false;
-        }
-
-        public bool ReplaceSprite(Bitmap newBitmap, uint replaceId)
-        {
-            if (newBitmap == null)
-            {
-                throw new ArgumentNullException(nameof(newBitmap));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
-            if (!Loaded || Compiling || newBitmap.Width != Sprite.DefaultSize || newBitmap.Height != Sprite.DefaultSize || replaceId == 0 || replaceId > Count)
-            {
-                return false;
-            }
-
-            Sprite newSprite = new Sprite(replaceId, m_transparent);
-            Sprite replacedSprite = null;
-
-            if (m_sprites.ContainsKey(replaceId))
-            {
-                replacedSprite = m_sprites[replaceId];
-                m_sprites[replaceId] = newSprite;
-            }
-            else
-            {
-                replacedSprite = ReadSprite(replaceId);
-                m_sprites.Add(replaceId, newSprite);
-            }
-
-            Changed = true;
-
-            StorageChanged?.Invoke(this, new SpriteListChangedArgs(new Sprite[] { replacedSprite }, StorageChangeType.Replace));
-
-            return true;
         }
 
         public bool ReplaceSprites(Sprite[] newSprites)
@@ -566,36 +445,6 @@ namespace OpenTibia.Assets
             if (id >= 0)
             {
                 return GetSprite((uint)id);
-            }
-
-            return null;
-        }
-
-        public Bitmap GetSpriteBitmap(uint id)
-        {
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
-            if (id <= Count)
-            {
-                return ReadSprite(id).GetBitmap();
-            }
-
-            return null;
-        }
-
-        public Bitmap GetSpriteBitmap(int id)
-        {
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
-            if (id >= 0 && id <= Count)
-            {
-                return ReadSprite((uint)id).GetBitmap();
             }
 
             return null;
@@ -890,7 +739,7 @@ namespace OpenTibia.Assets
                 ushort pixelDataSize = m_reader.ReadUInt16();
                 if (pixelDataSize != 0)
                 {
-                    sprite.CompressedPixels = m_reader.ReadBytes(pixelDataSize);
+                    sprite.Data = m_reader.ReadBytes(pixelDataSize);
                 }
 
                 return sprite;
@@ -963,7 +812,7 @@ namespace OpenTibia.Assets
                         }
                         else
                         {
-                            bytes = sprite.CompressedPixels;
+                            bytes = sprite.Data;
 
                             // write address
                             writer.Write((uint)address);
