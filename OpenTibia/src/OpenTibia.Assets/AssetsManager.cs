@@ -38,7 +38,6 @@ namespace OpenTibia.Assets
 {
     public class AssetsManager : IAssetsManager
     {
-        private readonly OutfitData outfitDataHelper = new OutfitData();
         private SpriteCache m_spriteCache;
 
         public AssetsManager()
