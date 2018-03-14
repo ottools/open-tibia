@@ -88,11 +88,9 @@ namespace OpenTibia.Assets
             Things.ProgressChanged += StorageProgressChanged_Handler;
             Things.StorageChanged += ThingListChanged_Handler;
             Things.StorageCompiled += StorageCompiled_Handler;
-            Things.StorageDisposed += StorageDisposed_Handler;
             Sprites.StorageChanged += SpriteListChanged_Handler;
             Sprites.ProgressChanged += StorageProgressChanged_Handler;
             Sprites.StorageCompiled += StorageCompiled_Handler;
-            Sprites.StorageDisposed += StorageDisposed_Handler;
 
             if (Loaded && AssetsLoaded != null)
             {
@@ -139,11 +137,9 @@ namespace OpenTibia.Assets
             Things.ProgressChanged += StorageProgressChanged_Handler;
             Things.StorageChanged += ThingListChanged_Handler;
             Things.StorageCompiled += StorageCompiled_Handler;
-            Things.StorageDisposed += StorageDisposed_Handler;
             Sprites.StorageChanged += SpriteListChanged_Handler;
             Sprites.ProgressChanged += StorageProgressChanged_Handler;
             Sprites.StorageCompiled += StorageCompiled_Handler;
-            Sprites.StorageDisposed += StorageDisposed_Handler;
 
             if (Loaded && AssetsLoaded != null)
             {
@@ -613,7 +609,6 @@ namespace OpenTibia.Assets
                 Things.ProgressChanged -= StorageProgressChanged_Handler;
                 Things.StorageChanged -= ThingListChanged_Handler;
                 Things.StorageCompiled -= StorageCompiled_Handler;
-                Things.StorageDisposed -= StorageDisposed_Handler;
                 Things.Dispose();
                 Things = null;
             }
@@ -623,7 +618,6 @@ namespace OpenTibia.Assets
                 Sprites.ProgressChanged -= StorageProgressChanged_Handler;
                 Sprites.StorageChanged -= SpriteListChanged_Handler;
                 Sprites.StorageCompiled -= StorageCompiled_Handler;
-                Sprites.StorageDisposed -= StorageDisposed_Handler;
                 Sprites.Dispose();
                 Sprites = null;
             }
@@ -645,14 +639,6 @@ namespace OpenTibia.Assets
             if (!Changed && sender == Sprites && AssetsCompiled != null)
             {
                 AssetsCompiled(this, new EventArgs());
-            }
-        }
-
-        private void StorageDisposed_Handler(IStorage sender)
-        {
-            if (!Loaded && AssetsUnloaded != null)
-            {
-                AssetsUnloaded(this, new EventArgs());
             }
         }
 

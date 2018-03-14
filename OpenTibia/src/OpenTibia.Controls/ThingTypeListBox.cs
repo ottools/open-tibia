@@ -30,39 +30,25 @@ namespace OpenTibia.Controls
 {
     public class ThingTypeListBox : ListBox
     {
-        #region Private Properties
-
         private const int ItemMargin = 5;
 
-        private Rectangle layoutRect;
-        private Rectangle destRect;
-        private Rectangle sourceRect;
-        private Pen pen;
-
-        #endregion
-
-        #region Constructor
+        private Rectangle m_layoutRect;
+        private Rectangle m_destRect;
+        private Rectangle m_sourceRect;
+        private Pen m_pen;
 
         public ThingTypeListBox()
         {
-            this.layoutRect = new Rectangle();
-            this.destRect = new Rectangle(ItemMargin, 0, 32, 32);
-            this.sourceRect = new Rectangle();
-            this.pen = new Pen(Color.Transparent);
-            this.MeasureItem += new MeasureItemEventHandler(this.MeasureItemHandler);
-            this.DrawItem += new DrawItemEventHandler(this.DrawItemHandler);
-            this.DrawMode = DrawMode.OwnerDrawVariable;
+            m_layoutRect = new Rectangle();
+            m_destRect = new Rectangle(ItemMargin, 0, 32, 32);
+            m_sourceRect = new Rectangle();
+            m_pen = new Pen(Color.Transparent);
+            MeasureItem += MeasureItem_Handler;
+            DrawItem += DrawItem_Handler;
+            DrawMode = DrawMode.OwnerDrawVariable;
         }
 
-        #endregion
-
-        #region Public Properties
-
-        public IAssetsManager Client { get; set; }
-
-        #endregion
-
-        #region Public Methods
+        public IAssetsManager AssetsManager { get; set; }
 
         public void Add(ThingType thing)
         {
@@ -76,13 +62,13 @@ namespace OpenTibia.Controls
 
         public void RemoveSelectedThings()
         {
-            if (this.SelectedIndex != -1)
+            if (SelectedIndex != -1)
             {
-                SelectedObjectCollection selectedItems = this.SelectedItems;
+                SelectedObjectCollection selectedItems = SelectedItems;
 
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    this.Items.Remove(selectedItems[i]);
+                    Items.Remove(selectedItems[i]);
                 }
             }
         }
@@ -92,16 +78,12 @@ namespace OpenTibia.Controls
             Items.Clear();
         }
 
-        #endregion
-
-        #region Event Handlers
-
-        private void MeasureItemHandler(object sender, MeasureItemEventArgs e)
+        private void MeasureItem_Handler(object sender, MeasureItemEventArgs e)
         {
             e.ItemHeight = (int)(32 + (2 * ItemMargin));
         }
 
-        private void DrawItemHandler(object sender, DrawItemEventArgs ev)
+        private void DrawItem_Handler(object sender, DrawItemEventArgs ev)
         {
             Rectangle bounds = ev.Bounds;
             bounds.Width--;
@@ -112,53 +94,48 @@ namespace OpenTibia.Controls
             // draw border
             ev.Graphics.DrawRectangle(Pens.Gray, bounds);
 
-            if (this.Client != null && ev.Index != -1)
+            if (AssetsManager != null && ev.Index != -1)
             {
-                ThingType thing = (ThingType)this.Items[ev.Index];
+                ThingType thing = (ThingType)Items[ev.Index];
 
                 // find the area in which to put the text and draw.
-                this.layoutRect.X = bounds.Left + 32 + (3 * ItemMargin);
-                this.layoutRect.Y = bounds.Top + (ItemMargin * 2);
-                this.layoutRect.Width = bounds.Right - ItemMargin - this.layoutRect.X;
-                this.layoutRect.Height = bounds.Bottom - ItemMargin - this.layoutRect.Y;
+                m_layoutRect.X = bounds.Left + 32 + (3 * ItemMargin);
+                m_layoutRect.Y = bounds.Top + (ItemMargin * 2);
+                m_layoutRect.Width = bounds.Right - ItemMargin - m_layoutRect.X;
+                m_layoutRect.Height = bounds.Bottom - ItemMargin - m_layoutRect.Y;
 
                 // draw thing id end name
                 if ((ev.State & DrawItemState.Selected) == DrawItemState.Selected)
                 {
-                    this.pen.Brush = WhiteBrush;
-                    ev.Graphics.DrawString(thing.ToString(), this.Font, WhiteBrush, this.layoutRect);
+                    m_pen.Brush = WhiteBrush;
+                    ev.Graphics.DrawString(thing.ToString(), Font, WhiteBrush, m_layoutRect);
                 }
                 else
                 {
-                    this.pen.Brush = BlackBrush;
-                    ev.Graphics.DrawString(thing.ToString(), this.Font, BlackBrush, this.layoutRect);
+                    m_pen.Brush = BlackBrush;
+                    ev.Graphics.DrawString(thing.ToString(), Font, BlackBrush, m_layoutRect);
                 }
 
-                this.destRect.Y = bounds.Top + ItemMargin;
+                m_destRect.Y = bounds.Top + ItemMargin;
 
-                Bitmap bitmap = this.Client.GetObjectImage(thing);
+                Bitmap bitmap = AssetsManager.GetObjectImage(thing);
                 if (bitmap != null)
                 {
-                    this.sourceRect.Width = bitmap.Width;
-                    this.sourceRect.Height = bitmap.Height;
-                    ev.Graphics.DrawImage(bitmap, this.destRect, this.sourceRect, GraphicsUnit.Pixel);
+                    m_sourceRect.Width = bitmap.Width;
+                    m_sourceRect.Height = bitmap.Height;
+                    ev.Graphics.DrawImage(bitmap, m_destRect, m_sourceRect, GraphicsUnit.Pixel);
                 }
             }
 
             // draw view border
-            ev.Graphics.DrawRectangle(this.pen, this.destRect);
+            ev.Graphics.DrawRectangle(m_pen, m_destRect);
 
             // draw focus rect
             ev.DrawFocusRectangle();
         }
 
-        #endregion
-
-        #region Class Properties
 
         private static readonly Brush WhiteBrush = new SolidBrush(Color.White);
         private static readonly Brush BlackBrush = new SolidBrush(Color.Black);
-
-        #endregion
     }
 }

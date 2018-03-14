@@ -74,8 +74,6 @@ namespace OpenTibia.Assets
 
         public event StorageHandler StorageCompilationCanceled;
 
-        public event StorageHandler StorageDisposed;
-
         public event ProgressHandler ProgressChanged;
 
         public string FilePath { get; private set; }
@@ -113,14 +111,14 @@ namespace OpenTibia.Assets
 
         public bool AddSprite(Sprite sprite)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (sprite == null)
             {
                 throw new ArgumentNullException(nameof(sprite));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling)
@@ -136,24 +134,21 @@ namespace OpenTibia.Assets
             m_sprites.Add(id, sprite);
             Changed = true;
 
-            if (StorageChanged != null)
-            {
-                StorageChanged(this, new SpriteListChangedArgs(new Sprite[] { sprite }, StorageChangeType.Add));
-            }
+            StorageChanged?.Invoke(this, new SpriteListChangedArgs(new Sprite[] { sprite }, StorageChangeType.Add));
 
             return true;
         }
 
         public bool AddSprites(Sprite[] sprites)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (sprites == null)
             {
                 throw new ArgumentNullException(nameof(sprites));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling || sprites.Length == 0)
@@ -196,14 +191,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceSprite(Sprite newSprite, uint replaceId)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (newSprite == null)
             {
                 throw new ArgumentNullException(nameof(newSprite));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling || replaceId == 0 || replaceId > Count)
@@ -236,14 +231,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceSprite(Sprite newSprite)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (newSprite == null)
             {
                 throw new ArgumentNullException(nameof(newSprite));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling)
@@ -256,14 +251,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceSprites(Sprite[] newSprites)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (newSprites == null)
             {
                 throw new ArgumentNullException(nameof(newSprites));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling || newSprites.Length == 0)
@@ -315,7 +310,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             if (!Loaded || Compiling || id == 0 || id > Count)
@@ -357,7 +352,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             if (!Loaded || Compiling || ids == null || ids.Length == 0)
@@ -412,6 +407,11 @@ namespace OpenTibia.Assets
 
         public bool HasSpriteID(uint id)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             return id <= Count;
         }
 
@@ -419,7 +419,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             if (id <= Count)
@@ -444,7 +444,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             if (id >= 0)
@@ -457,6 +457,11 @@ namespace OpenTibia.Assets
 
         public bool Save(string path, AssetsVersion version, AssetsFeatures features)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
             if (path == null)
             {
                 throw new ArgumentNullException(nameof(path));
@@ -465,11 +470,6 @@ namespace OpenTibia.Assets
             if (version == null)
             {
                 throw new ArgumentNullException(nameof(version));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || Compiling)
@@ -524,7 +524,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             return Save(path, version, AssetsFeatures.None);
@@ -534,7 +534,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(SpriteStorage));
             }
 
             if (Changed && !IsTemporary)
@@ -559,12 +559,12 @@ namespace OpenTibia.Assets
 
         public void Dispose()
         {
-            Disposed = true;
-
-            if (!Loaded)
+            if (Disposed)
             {
                 return;
             }
+
+            Disposed = true;
 
             if (m_stream != null)
             {
@@ -584,8 +584,6 @@ namespace OpenTibia.Assets
             Loaded = false;
             Compiling = false;
             m_blankSprite = null;
-
-            StorageDisposed?.Invoke(this);
         }
 
         private bool InternalCreate(AssetsVersion version, AssetsFeatures features)

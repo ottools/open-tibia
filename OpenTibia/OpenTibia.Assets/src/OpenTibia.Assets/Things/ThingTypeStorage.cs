@@ -44,8 +44,6 @@ namespace OpenTibia.Assets
 
         public event StorageHandler StorageCompiled;
 
-        public event StorageHandler StorageDisposed;
-
         public event ProgressHandler ProgressChanged;
 
         public string FilePath { get; private set; }
@@ -70,13 +68,7 @@ namespace OpenTibia.Assets
 
         public AssetsFeatures ClientFeatures { get; private set; }
 
-        public bool IsTemporary
-        {
-            get
-            {
-                return Loaded && FilePath == null;
-            }
-        }
+        public bool IsTemporary => Loaded && FilePath == null;
 
         public bool Changed { get; private set; }
 
@@ -86,14 +78,14 @@ namespace OpenTibia.Assets
 
         public bool AddThing(ThingType thing)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (thing == null)
             {
                 throw new ArgumentNullException(nameof(thing));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded)
@@ -106,10 +98,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Add));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Add));
 
                 return true;
             }
@@ -119,14 +108,14 @@ namespace OpenTibia.Assets
 
         public bool AddThings(ThingType[] things)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (things == null)
             {
                 throw new ArgumentNullException(nameof(things));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || things.Length == 0)
@@ -149,10 +138,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Add));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Add));
 
                 return true;
             }
@@ -162,14 +148,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceThing(ThingType thing, ushort replaceId)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (thing == null)
             {
                 throw new ArgumentNullException(nameof(thing));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded)
@@ -182,10 +168,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
 
                 return true;
             }
@@ -195,14 +178,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceThing(ThingType thing)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (thing == null)
             {
                 throw new ArgumentNullException(nameof(thing));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded)
@@ -215,10 +198,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Replace));
 
                 return true;
             }
@@ -228,14 +208,14 @@ namespace OpenTibia.Assets
 
         public bool ReplaceThings(ThingType[] things)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (things == null)
             {
                 throw new ArgumentNullException(nameof(things));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || things.Length == 0)
@@ -262,10 +242,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Replace));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Replace));
 
                 return true;
             }
@@ -277,7 +254,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (!Loaded || category == ObjectCategory.Invalid)
@@ -290,10 +267,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
 
                 return true;
             }
@@ -303,14 +277,14 @@ namespace OpenTibia.Assets
 
         public bool RemoveThing(ThingType thing)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (thing == null)
             {
                 throw new ArgumentNullException(nameof(thing));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || thing.Category == ObjectCategory.Invalid)
@@ -323,10 +297,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(new ThingType[] { changedThing }, StorageChangeType.Remove));
 
                 return true;
             }
@@ -336,14 +307,14 @@ namespace OpenTibia.Assets
 
         public bool RemoveThings(ThingType[] things)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (things == null)
             {
                 throw new ArgumentNullException(nameof(things));
-            }
-
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
             }
 
             if (!Loaded || things.Length == 0)
@@ -370,10 +341,7 @@ namespace OpenTibia.Assets
             {
                 Changed = true;
 
-                if (StorageChanged != null)
-                {
-                    StorageChanged(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Remove));
-                }
+                StorageChanged?.Invoke(this, new ThingListChangedArgs(changedThings.ToArray(), StorageChangeType.Remove));
 
                 return true;
             }
@@ -383,6 +351,11 @@ namespace OpenTibia.Assets
 
         public bool HasThing(ushort id, ObjectCategory category)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (!Loaded || category == ObjectCategory.Invalid)
             {
                 return false;
@@ -410,7 +383,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (!Loaded || id == 0 || category == ObjectCategory.Invalid)
@@ -468,7 +441,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (Loaded && Items.ContainsKey(id))
@@ -483,7 +456,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (Loaded && Outfits.ContainsKey(id))
@@ -498,7 +471,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (Loaded && Effects.ContainsKey(id))
@@ -513,7 +486,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (Loaded && Missiles.ContainsKey(id))
@@ -526,6 +499,11 @@ namespace OpenTibia.Assets
 
         public bool Save(string path, AssetsVersion version, AssetsFeatures features)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
             if (path == null)
             {
                 throw new ArgumentNullException(nameof(path));
@@ -536,11 +514,6 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            if (Disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-
             if (!Loaded)
             {
                 return false;
@@ -548,10 +521,10 @@ namespace OpenTibia.Assets
 
             if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
-                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
+                features |= version.Format >= MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Format >= MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Format >= MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Format >= MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
             string directory = Path.GetDirectoryName(path);
@@ -566,10 +539,7 @@ namespace OpenTibia.Assets
                 // just copy the content if nothing has changed.
                 File.Copy(FilePath, path, true);
 
-                if (ProgressChanged != null)
-                {
-                    ProgressChanged(this, 100);
-                }
+                ProgressChanged?.Invoke(this, 100);
             }
             else
             {
@@ -678,10 +648,7 @@ namespace OpenTibia.Assets
             ClientFeatures = features;
             Changed = false;
 
-            if (StorageCompiled != null)
-            {
-                StorageCompiled(this);
-            }
+            StorageCompiled?.Invoke(this);
 
             return true;
         }
@@ -690,7 +657,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             return Save(path, version, AssetsFeatures.None);
@@ -700,7 +667,7 @@ namespace OpenTibia.Assets
         {
             if (Disposed)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
             }
 
             if (Changed && !IsTemporary)
@@ -713,12 +680,12 @@ namespace OpenTibia.Assets
 
         public void Dispose()
         {
-            Disposed = true;
-
-            if (!Loaded)
+            if (Disposed)
             {
                 return;
             }
+
+            Disposed = true;
 
             FilePath = null;
             Version = null;
@@ -736,11 +703,6 @@ namespace OpenTibia.Assets
             MissileCount = 0;
             Changed = false;
             Loaded = false;
-
-            if (StorageDisposed != null)
-            {
-                StorageDisposed(this);
-            }
         }
 
         private bool InternalCreate(AssetsVersion version, AssetsFeatures features)
