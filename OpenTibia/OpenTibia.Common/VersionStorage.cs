@@ -31,7 +31,7 @@ using System.IO;
 using System.Xml;
 #endregion
 
-namespace OpenTibia.Core
+namespace OpenTibia.Common
 {
     public delegate void VersionListChangedHandler(object sender, VersionListChangedArgs e);
 

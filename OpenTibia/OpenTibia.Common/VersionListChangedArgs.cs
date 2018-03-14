@@ -24,7 +24,7 @@
 
 using OpenTibia.Assets;
 
-namespace OpenTibia.Core
+namespace OpenTibia.Common
 {
     public class VersionListChangedArgs
     {

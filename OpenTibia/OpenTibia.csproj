@@ -79,10 +79,10 @@
     <Compile Include="OpenTibia.Controls\ThingTypeListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenTibia.Core\IStorage.cs" />
+    <Compile Include="OpenTibia.Common\IStorage.cs" />
     <Compile Include="OpenTibia.Assets\AssetsVersion.cs" />
-    <Compile Include="OpenTibia.Core\VersionListChangedArgs.cs" />
-    <Compile Include="OpenTibia.Core\VersionStorage.cs" />
+    <Compile Include="OpenTibia.Common\VersionListChangedArgs.cs" />
+    <Compile Include="OpenTibia.Common\VersionStorage.cs" />
     <Compile Include="OpenTibia.Geom\Direction.cs" />
     <Compile Include="OpenTibia.Geom\Position.cs" />
     <Compile Include="OpenTibia.Geom\Rect.cs" />

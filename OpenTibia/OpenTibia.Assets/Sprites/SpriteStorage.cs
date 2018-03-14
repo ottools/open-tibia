@@ -23,7 +23,7 @@
 #endregion
 
 #region Using Statements
-using OpenTibia.Core;
+using OpenTibia.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

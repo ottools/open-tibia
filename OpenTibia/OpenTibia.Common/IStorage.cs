@@ -22,11 +22,7 @@
 */
 #endregion
 
-#region Using Statements
-using System;
-#endregion
-
-namespace OpenTibia.Core
+namespace OpenTibia.Common
 {
     public enum StorageChangeType
     {

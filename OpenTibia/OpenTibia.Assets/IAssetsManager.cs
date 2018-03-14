@@ -24,7 +24,7 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Core;
+using OpenTibia.Common;
 using OpenTibia.Geom;
 using OpenTibia.Obd;
 using OpenTibia.Utils;
