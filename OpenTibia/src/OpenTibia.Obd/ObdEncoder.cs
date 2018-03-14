@@ -108,9 +108,10 @@ namespace OpenTibia.Obd
                 for (int i = 0; i < sprites.Length; i++)
                 {
                     Sprite sprite = sprites[i];
+                    byte[] pixels = sprite.GetPixelsAs(SpritePixelFormat.Argb);
                     writer.Write((uint)sprite.ID);
-                    writer.Write((uint)sprite.Length);
-                    writer.Write(sprite.Pixels);
+                    writer.Write((uint)pixels.Length);
+                    writer.Write(pixels);
                 }
 
                 return LZMACoder.Compress(((MemoryStream)writer.BaseStream).ToArray());
@@ -179,7 +180,7 @@ namespace OpenTibia.Obd
                 {
                     Sprite sprite = sprites[i];
                     writer.Write(sprite.ID);
-                    writer.Write(sprite.Pixels);
+                    writer.Write(sprite.GetPixelsAs(SpritePixelFormat.Argb));
                 }
 
                 return LZMACoder.Compress(((MemoryStream)writer.BaseStream).ToArray());

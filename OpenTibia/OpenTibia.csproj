@@ -47,7 +47,6 @@
     <Compile Include="src\OpenTibia.Assets\SpriteSheet.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdDecoder.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdEncoder.cs" />
-    <Compile Include="src\OpenTibia.Obd\ObdFlags.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdVersion.cs" />
     <Compile Include="src\OpenTibia.Obd\ObjectData.cs" />
     <Compile Include="src\OpenTibia.Controls\ColorChangedArgs.cs" />

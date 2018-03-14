@@ -160,7 +160,7 @@ namespace OpenTibia.Obd
                 }
 
                 byte[] pixels = reader.ReadBytes((int)dataSize);
-                sprites[i] = new Sprite(spriteID, pixels, true);
+                sprites[i] = new Sprite(spriteID, pixels, true, SpritePixelFormat.Bgra);
             }
 
             thing.SetFrameGroup(FrameGroupType.Default, group);

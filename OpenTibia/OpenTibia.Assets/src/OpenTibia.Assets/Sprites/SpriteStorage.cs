@@ -51,11 +51,14 @@ namespace OpenTibia.Assets
         private byte m_headSize;
         private Sprite m_blankSprite;
         private bool m_transparent;
+        private SpritePixelFormat m_format;
         private BackgroundWorker m_worker;
         private CompilationData m_compilationData;
 
-        private SpriteStorage()
+        private SpriteStorage(SpritePixelFormat format)
         {
+            PixelFormat = format;
+
             m_sprites = new Dictionary<uint, Sprite>();
             m_worker = new BackgroundWorker();
             m_worker.WorkerSupportsCancellation = true;
@@ -82,6 +85,8 @@ namespace OpenTibia.Assets
         public uint Count { get; private set; }
 
         public AssetsFeatures ClientFeatures { get; private set; }
+
+        public SpritePixelFormat PixelFormat { get; }
 
         public bool IsTemporary => Loaded && FilePath == null;
 
@@ -306,7 +311,7 @@ namespace OpenTibia.Assets
             return false;
         }
 
-        public bool RemoveSprite(uint id)
+        public bool RemoveSprite(uint id, SpritePixelFormat format)
         {
             if (Disposed)
             {
@@ -333,11 +338,11 @@ namespace OpenTibia.Assets
             {
                 if (m_sprites.ContainsKey(id))
                 {
-                    m_sprites[id] = new Sprite(id, m_transparent);
+                    m_sprites[id] = new Sprite(id, m_transparent, format);
                 }
                 else
                 {
-                    m_sprites.Add(id, new Sprite(id, m_transparent));
+                    m_sprites.Add(id, new Sprite(id, m_transparent, format));
                 }
             }
 
@@ -386,11 +391,11 @@ namespace OpenTibia.Assets
                 {
                     if (m_sprites.ContainsKey(id))
                     {
-                        m_sprites[id] = new Sprite(id, m_transparent);
+                        m_sprites[id] = new Sprite(id, m_transparent, PixelFormat);
                     }
                     else
                     {
-                        m_sprites.Add(id, new Sprite(id, m_transparent));
+                        m_sprites.Add(id, new Sprite(id, m_transparent, PixelFormat));
                     }
                 }
             }
@@ -607,8 +612,8 @@ namespace OpenTibia.Assets
             ClientFeatures = features;
             m_transparent = features.HasFlag(AssetsFeatures.Transparency);
             m_headSize = features.HasFlag(AssetsFeatures.Extended) ? HeaderU32 : HeaderU16;
-            m_blankSprite = new Sprite(0, m_transparent);
-            m_sprites.Add(1, new Sprite(1, m_transparent));
+            m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
+            m_sprites.Add(1, new Sprite(1, m_transparent, PixelFormat));
             m_rawSpriteCount = 0;
             Count = 1;
             Changed = true;
@@ -688,7 +693,7 @@ namespace OpenTibia.Assets
             ClientFeatures = features;
             m_transparent = features.HasFlag(AssetsFeatures.Transparency);
             Count = m_rawSpriteCount;
-            m_blankSprite = new Sprite(0, m_transparent);
+            m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
             Changed = false;
             Loaded = true;
             Disposed = false;
@@ -721,7 +726,7 @@ namespace OpenTibia.Assets
                 // então retornamos um sprite sem a leitura dos dados.
                 if (spriteAddress == 0)
                 {
-                    return new Sprite(id, m_transparent);
+                    return new Sprite(id, m_transparent, PixelFormat);
                 }
 
                 // Posiciona o stream para o endereço do sprite.
@@ -733,7 +738,7 @@ namespace OpenTibia.Assets
                 m_reader.ReadByte(); // green key color
                 m_reader.ReadByte(); // blue key color
 
-                Sprite sprite = new Sprite(id, m_transparent);
+                Sprite sprite = new Sprite(id, m_transparent, PixelFormat);
 
                 // O tamanho dos pixels compressados.
                 ushort pixelDataSize = m_reader.ReadUInt16();
@@ -928,7 +933,7 @@ namespace OpenTibia.Assets
 
         public static SpriteStorage Create(AssetsVersion version, AssetsFeatures features)
         {
-            SpriteStorage storage = new SpriteStorage();
+            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
             if (storage.InternalCreate(version, features))
             {
                 return storage;
@@ -939,7 +944,7 @@ namespace OpenTibia.Assets
 
         public static SpriteStorage Create(AssetsVersion version)
         {
-            SpriteStorage storage = new SpriteStorage();
+            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
             if (storage.InternalCreate(version, AssetsFeatures.None))
             {
                 return storage;
@@ -950,7 +955,7 @@ namespace OpenTibia.Assets
 
         public static SpriteStorage Load(string path, AssetsVersion version, AssetsFeatures features)
         {
-            SpriteStorage storage = new SpriteStorage();
+            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
             if (storage.InternalLoad(path, version, features, false))
             {
                 return storage;
@@ -961,7 +966,7 @@ namespace OpenTibia.Assets
 
         public static SpriteStorage Load(string path, AssetsVersion version)
         {
-            SpriteStorage storage = new SpriteStorage();
+            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
             if (storage.InternalLoad(path, version, AssetsFeatures.None, false))
             {
                 return storage;

@@ -5,6 +5,8 @@ debug/
 # Visual studio intermediate directories
 bin/
 obj/
+packages/
+.vs/
 *.suo
 *.csproj.user
 
