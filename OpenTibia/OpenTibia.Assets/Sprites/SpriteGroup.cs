@@ -23,14 +23,13 @@
 #endregion
 
 #region Using Statements
-using System;
 using OpenTibia.Animation;
-using OpenTibia.Assets;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 #endregion
 
-namespace OpenTibia.Collections
+namespace OpenTibia.Assets
 {
     public class SpriteGroup : Dictionary<FrameGroupType, Sprite[]>
     {
