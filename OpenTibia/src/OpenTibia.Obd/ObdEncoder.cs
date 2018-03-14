@@ -63,19 +63,19 @@ namespace OpenTibia.Obd
                 string category = string.Empty;
                 switch (data.Category)
                 {
-                    case ThingCategory.Item:
+                    case ObjectCategory.Item:
                         category = "item";
                         break;
 
-                    case ThingCategory.Outfit:
+                    case ObjectCategory.Outfit:
                         category = "outfit";
                         break;
 
-                    case ThingCategory.Effect:
+                    case ObjectCategory.Effect:
                         category = "effect";
                         break;
 
-                    case ThingCategory.Missile:
+                    case ObjectCategory.Missile:
                         category = "missile";
                         break;
                 }
@@ -134,7 +134,7 @@ namespace OpenTibia.Obd
                 int patternsPosition = (int)writer.BaseStream.Position;
                 writer.Seek(4, SeekOrigin.Current);
 
-                if (!WriteProperties(data.ThingType, writer))
+                if (!ThingTypeSerializer.WriteProperties(data.ThingType, MetadataFormat.Format_1050, writer))
                 {
                     return null;
                 }
@@ -189,242 +189,6 @@ namespace OpenTibia.Obd
         private static byte[] EncodeV3(ObjectData data)
         {
             throw new NotImplementedException();
-        }
-
-        public static bool WriteProperties(ThingType thing, FlagsBinaryWriter output)
-        {
-            if (thing.Category == ThingCategory.Item)
-            {
-                if (thing.StackOrder == StackOrder.Ground)
-                {
-                    output.Write(ObdFlags.Ground);
-                    output.Write(thing.GroundSpeed);
-                }
-                else if (thing.StackOrder == StackOrder.Border)
-                {
-                    output.Write(ObdFlags.GroundBorder);
-                }
-                else if (thing.StackOrder == StackOrder.Bottom)
-                {
-                    output.Write(ObdFlags.OnBottom);
-                }
-                else if (thing.StackOrder == StackOrder.Top)
-                {
-                    output.Write(ObdFlags.OnTop);
-                }
-
-                if (thing.IsContainer)
-                {
-                    output.Write(ObdFlags.Container);
-                }
-
-                if (thing.Stackable)
-                {
-                    output.Write(ObdFlags.Stackable);
-                }
-
-                if (thing.ForceUse)
-                {
-                    output.Write(ObdFlags.ForceUse);
-                }
-
-                if (thing.MultiUse)
-                {
-                    output.Write(ObdFlags.MultiUse);
-                }
-
-                if (thing.Writable)
-                {
-                    output.Write(ObdFlags.Writable);
-                    output.Write(thing.MaxTextLength);
-                }
-
-                if (thing.WritableOnce)
-                {
-                    output.Write(ObdFlags.WritableOnce);
-                    output.Write(thing.MaxTextLength);
-                }
-
-                if (thing.IsFluidContainer)
-                {
-                    output.Write(ObdFlags.FluidContainer);
-                }
-
-                if (thing.IsFluid)
-                {
-                    output.Write(ObdFlags.Fluid);
-                }
-
-                if (thing.Unpassable)
-                {
-                    output.Write(ObdFlags.IsUnpassable);
-                }
-
-                if (thing.Unmovable)
-                {
-                    output.Write(ObdFlags.IsUnmovable);
-                }
-
-                if (thing.BlockMissiles)
-                {
-                    output.Write(ObdFlags.BlockMissiles);
-                }
-
-                if (thing.BlockPathfinder)
-                {
-                    output.Write(ObdFlags.BlockPathfinder);
-                }
-
-                if (thing.NoMoveAnimation)
-                {
-                    output.Write(ObdFlags.NoMoveAnimation);
-                }
-
-                if (thing.Pickupable)
-                {
-                    output.Write(ObdFlags.Pickupable);
-                }
-
-                if (thing.Hangable)
-                {
-                    output.Write(ObdFlags.Hangable);
-                }
-
-                if (thing.HookSouth)
-                {
-                    output.Write(ObdFlags.HookSouth);
-                }
-
-                if (thing.HookEast)
-                {
-                    output.Write(ObdFlags.HookEast);
-                }
-
-                if (thing.Rotatable)
-                {
-                    output.Write(ObdFlags.Rotatable);
-                }
-
-                if (thing.DontHide)
-                {
-                    output.Write(ObdFlags.DontHide);
-                }
-
-                if (thing.Translucent)
-                {
-                    output.Write(ObdFlags.Translucent);
-                }
-
-                if (thing.HasElevation)
-                {
-                    output.Write(ObdFlags.HasElevation);
-                    output.Write(thing.Elevation);
-                }
-
-                if (thing.LyingObject)
-                {
-                    output.Write(ObdFlags.LyingObject);
-                }
-
-                if (thing.Minimap)
-                {
-                    output.Write(ObdFlags.Minimap);
-                    output.Write(thing.MinimapColor);
-                }
-
-                if (thing.IsLensHelp)
-                {
-                    output.Write(ObdFlags.LensHelp);
-                    output.Write(thing.LensHelp);
-                }
-
-                if (thing.FullGround)
-                {
-                    output.Write(ObdFlags.FullGround);
-                }
-
-                if (thing.IgnoreLook)
-                {
-                    output.Write(ObdFlags.IgnoreLook);
-                }
-
-                if (thing.IsCloth)
-                {
-                    output.Write(ObdFlags.Cloth);
-                    output.Write((ushort)thing.ClothSlot);
-                }
-
-                if (thing.IsMarketItem)
-                {
-                    output.Write(ObdFlags.Market);
-                    output.Write((ushort)thing.MarketCategory);
-                    output.Write(thing.MarketTradeAs);
-                    output.Write(thing.MarketShowAs);
-                    output.Write((ushort)thing.MarketName.Length);
-                    output.Write(thing.MarketName);
-                    output.Write(thing.MarketRestrictVocation);
-                    output.Write(thing.MarketRestrictLevel);
-                }
-
-                if (thing.HasAction)
-                {
-                    output.Write(ObdFlags.DefaultAction);
-                    output.Write((ushort)thing.DefaultAction);
-                }
-
-                if (thing.HasCharges)
-                {
-                    output.Write(ObdFlags.HasChanges);
-                }
-
-                if (thing.FloorChange)
-                {
-                    output.Write(ObdFlags.FloorChange);
-                }
-
-                if (thing.Wrappable)
-                {
-                    output.Write(ObdFlags.Wrappable);
-                }
-
-                if (thing.Unwrappable)
-                {
-                    output.Write(ObdFlags.Unwrappable);
-                }
-
-                if (thing.IsTopEffect)
-                {
-                    output.Write(ObdFlags.TopEffect);
-                }
-
-                if (thing.Usable)
-                {
-                    output.Write(ObdFlags.Usable);
-                }
-            }
-
-            if (thing.HasLight)
-            {
-                output.Write(ObdFlags.HasLight);
-                output.Write(thing.LightLevel);
-                output.Write(thing.LightColor);
-            }
-
-            if (thing.HasOffset)
-            {
-                output.Write(ObdFlags.HasOffset);
-                output.Write(thing.OffsetX);
-                output.Write(thing.OffsetY);
-            }
-
-            if (thing.AnimateAlways)
-            {
-                output.Write(ObdFlags.AnimateAlways);
-            }
-
-            // close flags
-            output.Write(ObdFlags.LastFlag);
-            return true;
         }
     }
 }

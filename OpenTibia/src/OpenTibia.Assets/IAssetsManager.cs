@@ -60,15 +60,15 @@ namespace OpenTibia.Assets
 
         bool Load(string datPath, string sprPath, AssetsVersion version);
 
-        FrameGroup GetFrameGroup(ushort id, ThingCategory category, FrameGroupType groupType);
+        FrameGroup GetFrameGroup(ushort id, ObjectCategory category, FrameGroupType groupType);
 
-        ObjectData GetThingData(ushort id, ThingCategory category, bool singleFrameGroup);
+        ObjectData GetThingData(ushort id, ObjectCategory category, bool singleFrameGroup);
 
-        ObjectData GetThingData(ushort id, ThingCategory category);
+        ObjectData GetThingData(ushort id, ObjectCategory category);
 
-        Bitmap GetObjectImage(ushort id, ThingCategory category, FrameGroupType groupType);
+        Bitmap GetObjectImage(ushort id, ObjectCategory category, FrameGroupType groupType);
 
-        Bitmap GetObjectImage(ushort id, ThingCategory category);
+        Bitmap GetObjectImage(ushort id, ObjectCategory category);
 
         Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data, bool mount);
 
@@ -78,9 +78,9 @@ namespace OpenTibia.Assets
 
         Bitmap GetObjectImage(ThingType thing);
 
-        SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType);
+        SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType);
 
-        SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType, OutfitData outfitData);
+        SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType, OutfitData outfitData);
 
         ThingType[] GetAllItems();
 

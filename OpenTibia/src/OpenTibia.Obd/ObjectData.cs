@@ -68,7 +68,7 @@ namespace OpenTibia.Obd
 
         public ushort ID => m_type.ID;
 
-        public ThingCategory Category => m_type.Category;
+        public ObjectCategory Category => m_type.Category;
 
         public int FrameGroupCount => ThingType.FrameGroupCount;
 
@@ -81,7 +81,7 @@ namespace OpenTibia.Obd
 
         public bool HasFrameGroup(FrameGroupType type)
         {
-            return m_type.FrameGroups.ContainsKey(type);
+            return m_type.HasFrameGroup(type);
         }
 
         public FrameGroup GetFrameGroup(FrameGroupType groupType)

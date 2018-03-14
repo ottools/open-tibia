@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "7zip", "..\ThirdParty\7zip\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTibia.Common", "OpenTibia.Common\OpenTibia.Common.csproj", "{565F1A81-5F3C-4E11-B909-321D02ADC028}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBDExporter", "..\..\OBDExporter\OBDExporter\OBDExporter.csproj", "{8BA4DB67-343A-4893-93B8-F46445D2EACE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTibia.Assets", "OpenTibia.Assets\OpenTibia.Assets.csproj", "{64BE6F25-84E9-41E8-94C2-414FE0D58777}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA4DB67-343A-4893-93B8-F46445D2EACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA4DB67-343A-4893-93B8-F46445D2EACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA4DB67-343A-4893-93B8-F46445D2EACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA4DB67-343A-4893-93B8-F46445D2EACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64BE6F25-84E9-41E8-94C2-414FE0D58777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BE6F25-84E9-41E8-94C2-414FE0D58777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64BE6F25-84E9-41E8-94C2-414FE0D58777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64BE6F25-84E9-41E8-94C2-414FE0D58777}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

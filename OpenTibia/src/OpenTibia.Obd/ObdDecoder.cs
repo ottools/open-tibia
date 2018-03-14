@@ -76,24 +76,24 @@ namespace OpenTibia.Obd
             ushort nameLength = reader.ReadUInt16();
             byte[] buffer = reader.ReadBytes(nameLength);
             string categoryStr = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-            ThingCategory category = ThingCategory.Invalid;
+            ObjectCategory category = ObjectCategory.Invalid;
 
             switch (categoryStr)
             {
                 case "item":
-                    category = ThingCategory.Item;
+                    category = ObjectCategory.Item;
                     break;
 
                 case "outfit":
-                    category = ThingCategory.Outfit;
+                    category = ObjectCategory.Outfit;
                     break;
 
                 case "effect":
-                    category = ThingCategory.Effect;
+                    category = ObjectCategory.Effect;
                     break;
 
                 case "missile":
-                    category = ThingCategory.Missile;
+                    category = ObjectCategory.Missile;
                     break;
             }
 

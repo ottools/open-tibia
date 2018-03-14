@@ -26,15 +26,6 @@ using System.Collections.Generic;
 
 namespace OpenTibia.Assets
 {
-    public enum ThingCategory : byte
-    {
-        Invalid = 0,
-        Item = 1,
-        Outfit = 2,
-        Effect = 3,
-        Missile = 4
-    }
-
     public enum StackOrder : byte
     {
         Commom = 0,
@@ -55,7 +46,7 @@ namespace OpenTibia.Assets
 
     public class ThingType
     {
-        public ThingType(ushort id, ThingCategory category)
+        public ThingType(ushort id, ObjectCategory category)
         {
             ID = id;
             Category = category;
@@ -63,13 +54,13 @@ namespace OpenTibia.Assets
             FrameGroups = new Dictionary<FrameGroupType, FrameGroup>();
         }
 
-        public ThingType(ThingCategory category) : this(0, category)
+        public ThingType(ObjectCategory category) : this(0, category)
         {
             ////
         }
 
         public ushort ID { get; set; }
-        public ThingCategory Category { get; private set; }
+        public ObjectCategory Category { get; private set; }
         public StackOrder StackOrder { get; set; }
 
         public ushort GroundSpeed { get; set; }
@@ -141,6 +132,11 @@ namespace OpenTibia.Assets
             return ID.ToString();
         }
 
+        public bool HasFrameGroup(FrameGroupType type)
+        {
+            return FrameGroups.ContainsKey(type);
+        }
+
         public FrameGroup GetFrameGroup(FrameGroupType groupType)
         {
             if (FrameGroups.ContainsKey(groupType))
@@ -179,16 +175,16 @@ namespace OpenTibia.Assets
             return clone;
         }
 
-        public static ThingType Create(ushort id, ThingCategory category)
+        public static ThingType Create(ushort id, ObjectCategory category)
         {
-            if (category == ThingCategory.Invalid)
+            if (category == ObjectCategory.Invalid)
             {
                 throw new ArgumentException("Invalid category.");
             }
 
             ThingType thing = new ThingType(id, category);
 
-            if (category == ThingCategory.Outfit)
+            if (category == ObjectCategory.Outfit)
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -211,7 +207,7 @@ namespace OpenTibia.Assets
             {
                 FrameGroup group = FrameGroup.Create();
 
-                if (category == ThingCategory.Missile)
+                if (category == ObjectCategory.Missile)
                 {
                     group.PatternsX = 3;
                     group.PatternsY = 3;
@@ -226,7 +222,7 @@ namespace OpenTibia.Assets
 
         public static ThingType ToSingleFrameGroup(ThingType thing)
         {
-            if (thing.Category != ThingCategory.Outfit || thing.FrameGroupCount != 2)
+            if (thing.Category != ObjectCategory.Outfit || thing.FrameGroupCount != 2)
             {
                 return thing;
             }
@@ -249,7 +245,7 @@ namespace OpenTibia.Assets
                     }
                     else
                     {
-                        newGroup.FrameDurations[i] = new FrameDuration(ThingCategory.Outfit);
+                        newGroup.FrameDurations[i] = new FrameDuration(ObjectCategory.Outfit);
                     }
                 }
             }

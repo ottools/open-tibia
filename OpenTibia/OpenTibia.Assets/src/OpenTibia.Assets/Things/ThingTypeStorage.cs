@@ -273,14 +273,14 @@ namespace OpenTibia.Assets
             return false;
         }
 
-        public bool RemoveThing(ushort id, ThingCategory category)
+        public bool RemoveThing(ushort id, ObjectCategory category)
         {
             if (Disposed)
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!Loaded || category == ThingCategory.Invalid)
+            if (!Loaded || category == ObjectCategory.Invalid)
             {
                 return false;
             }
@@ -313,7 +313,7 @@ namespace OpenTibia.Assets
                 throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!Loaded || thing.Category == ThingCategory.Invalid)
+            if (!Loaded || thing.Category == ObjectCategory.Invalid)
             {
                 return false;
             }
@@ -381,46 +381,46 @@ namespace OpenTibia.Assets
             return false;
         }
 
-        public bool HasThing(ushort id, ThingCategory category)
+        public bool HasThing(ushort id, ObjectCategory category)
         {
-            if (!Loaded || category == ThingCategory.Invalid)
+            if (!Loaded || category == ObjectCategory.Invalid)
             {
                 return false;
             }
 
             switch (category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     return Items.ContainsKey(id);
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     return Outfits.ContainsKey(id);
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     return Effects.ContainsKey(id);
 
-                case ThingCategory.Missile:
+                case ObjectCategory.Missile:
                     return Missiles.ContainsKey(id);
             }
 
             return false;
         }
 
-        public ThingType GetThing(ushort id, ThingCategory category)
+        public ThingType GetThing(ushort id, ObjectCategory category)
         {
             if (Disposed)
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
 
-            if (!Loaded || id == 0 || category == ThingCategory.Invalid)
+            if (!Loaded || id == 0 || category == ObjectCategory.Invalid)
             {
                 return null;
             }
 
             switch (category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     {
                         if (Items.ContainsKey(id))
                         {
@@ -430,7 +430,7 @@ namespace OpenTibia.Assets
                         break;
                     }
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     {
                         if (Outfits.ContainsKey(id))
                         {
@@ -440,7 +440,7 @@ namespace OpenTibia.Assets
                         break;
                     }
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     {
                         if (Effects.ContainsKey(id))
                         {
@@ -450,7 +450,7 @@ namespace OpenTibia.Assets
                         break;
                     }
 
-                case ThingCategory.Missile:
+                case ObjectCategory.Missile:
                     {
                         if (Missiles.ContainsKey(id))
                         {
@@ -765,13 +765,13 @@ namespace OpenTibia.Assets
 
             Version = version;
             ClientFeatures = features;
-            Items.Add(100, ThingType.Create(100, ThingCategory.Item));
+            Items.Add(100, ThingType.Create(100, ObjectCategory.Item));
             ItemCount = 100;
-            Outfits.Add(1, ThingType.Create(1, ThingCategory.Outfit));
+            Outfits.Add(1, ThingType.Create(1, ObjectCategory.Outfit));
             OutfitCount = 1;
-            Effects.Add(1, ThingType.Create(1, ThingCategory.Effect));
+            Effects.Add(1, ThingType.Create(1, ObjectCategory.Effect));
             EffectCount = 1;
-            Missiles.Add(1, ThingType.Create(1, ThingCategory.Missile));
+            Missiles.Add(1, ThingType.Create(1, ObjectCategory.Missile));
             MissileCount = 1;
             Changed = true;
             Loaded = true;
@@ -831,7 +831,7 @@ namespace OpenTibia.Assets
                 // load item list.
                 for (ushort id = 100; id <= ItemCount; id++)
                 {
-                    ThingType item = new ThingType(id, ThingCategory.Item);
+                    ThingType item = new ThingType(id, ObjectCategory.Item);
                     if (!ThingTypeSerializer.ReadProperties(item, version.Format, reader) ||
                         !ThingTypeSerializer.ReadTexturePatterns(item, features, reader))
                     {
@@ -851,7 +851,7 @@ namespace OpenTibia.Assets
                 // load outfit list.
                 for (ushort id = 1; id <= OutfitCount; id++)
                 {
-                    ThingType outfit = new ThingType(id, ThingCategory.Outfit);
+                    ThingType outfit = new ThingType(id, ObjectCategory.Outfit);
                     if (!ThingTypeSerializer.ReadProperties(outfit, version.Format, reader) ||
                         !ThingTypeSerializer.ReadTexturePatterns(outfit, features, reader))
                     {
@@ -871,7 +871,7 @@ namespace OpenTibia.Assets
                 // load effect list.
                 for (ushort id = 1; id <= EffectCount; id++)
                 {
-                    ThingType effect = new ThingType(id, ThingCategory.Effect);
+                    ThingType effect = new ThingType(id, ObjectCategory.Effect);
                     if (!ThingTypeSerializer.ReadProperties(effect, version.Format, reader) ||
                         !ThingTypeSerializer.ReadTexturePatterns(effect, features, reader))
                     {
@@ -891,7 +891,7 @@ namespace OpenTibia.Assets
                 // load missile list.
                 for (ushort id = 1; id <= MissileCount; id++)
                 {
-                    ThingType missile = new ThingType(id, ThingCategory.Missile);
+                    ThingType missile = new ThingType(id, ObjectCategory.Missile);
                     if (!ThingTypeSerializer.ReadProperties(missile, version.Format, reader) ||
                         !ThingTypeSerializer.ReadTexturePatterns(missile, features, reader))
                     {
@@ -920,7 +920,7 @@ namespace OpenTibia.Assets
 
         private ThingType InternalAddThing(ThingType thing)
         {
-            if (thing == null || thing.Category == ThingCategory.Invalid)
+            if (thing == null || thing.Category == ObjectCategory.Invalid)
             {
                 return null;
             }
@@ -929,22 +929,22 @@ namespace OpenTibia.Assets
 
             switch (thing.Category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     id = ++ItemCount;
                     Items.Add(id, thing);
                     break;
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     id = ++OutfitCount;
                     Outfits.Add(id, thing);
                     break;
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     id = ++EffectCount;
                     Effects.Add(id, thing);
                     break;
 
-                case ThingCategory.Missile:
+                case ObjectCategory.Missile:
                     id = ++MissileCount;
                     Missiles.Add(id, thing);
                     break;
@@ -963,19 +963,19 @@ namespace OpenTibia.Assets
 
             switch (oldThing.Category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     Items[oldThing.ID] = newThing;
                     break;
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     Outfits[oldThing.ID] = newThing;
                     break;
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     Effects[oldThing.ID] = newThing;
                     break;
 
-                case ThingCategory.Missile:
+                case ObjectCategory.Missile:
                     Missiles[oldThing.ID] = newThing;
                     break;
             }
@@ -984,16 +984,16 @@ namespace OpenTibia.Assets
             return oldThing;
         }
 
-        private ThingType InternalRemoveThing(ushort id, ThingCategory category)
+        private ThingType InternalRemoveThing(ushort id, ObjectCategory category)
         {
-            if (id == 0 || category == ThingCategory.Invalid || !HasThing(id, category))
+            if (id == 0 || category == ObjectCategory.Invalid || !HasThing(id, category))
             {
                 return null;
             }
 
             ThingType changedThing = null;
 
-            if (category == ThingCategory.Item)
+            if (category == ObjectCategory.Item)
             {
                 changedThing = Items[id];
 
@@ -1007,7 +1007,7 @@ namespace OpenTibia.Assets
                     Items[id] = ThingType.Create(id, category);
                 }
             }
-            else if (category == ThingCategory.Outfit)
+            else if (category == ObjectCategory.Outfit)
             {
                 changedThing = Outfits[id];
 
@@ -1021,7 +1021,7 @@ namespace OpenTibia.Assets
                     Outfits[id] = ThingType.Create(id, category);
                 }
             }
-            else if (category == ThingCategory.Effect)
+            else if (category == ObjectCategory.Effect)
             {
                 changedThing = Effects[id];
 
@@ -1035,7 +1035,7 @@ namespace OpenTibia.Assets
                     Effects[id] = ThingType.Create(id, category);
                 }
             }
-            else if (category == ThingCategory.Missile)
+            else if (category == ObjectCategory.Missile)
             {
                 changedThing = Missiles[id];
 

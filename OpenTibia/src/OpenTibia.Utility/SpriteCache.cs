@@ -43,43 +43,43 @@ namespace OpenTibia.Utility
             m_missiles = new Dictionary<ushort, Bitmap>();
         }
 
-        public void SetPicture(ushort id, ThingCategory category, Bitmap bitmap)
+        public void SetPicture(ushort id, ObjectCategory category, Bitmap bitmap)
         {
             switch (category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     m_items[id] = bitmap;
                     break;
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     m_outfits[id] = bitmap;
                     break;
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     m_effects[id] = bitmap;
                     break;
 
-                case ThingCategory.Missile:
+                case ObjectCategory.Missile:
                     m_missiles[id] = bitmap;
                     break;
             }
         }
 
-        public Bitmap GetPicture(ushort id, ThingCategory category)
+        public Bitmap GetPicture(ushort id, ObjectCategory category)
         {
-            if (category == ThingCategory.Item && m_items.ContainsKey(id))
+            if (category == ObjectCategory.Item && m_items.ContainsKey(id))
             {
                 return m_items[id];
             }
-            else if (category == ThingCategory.Outfit && m_outfits.ContainsKey(id))
+            else if (category == ObjectCategory.Outfit && m_outfits.ContainsKey(id))
             {
                 return m_outfits[id];
             }
-            else if (category == ThingCategory.Effect && m_effects.ContainsKey(id))
+            else if (category == ObjectCategory.Effect && m_effects.ContainsKey(id))
             {
                 return m_effects[id];
             }
-            else if (category == ThingCategory.Missile && m_missiles.ContainsKey(id))
+            else if (category == ObjectCategory.Missile && m_missiles.ContainsKey(id))
             {
                 return m_missiles[id];
             }

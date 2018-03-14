@@ -53,7 +53,7 @@ namespace OpenTibia.Assets
             bool frameGroupsEnabled = (features & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups;
 
             byte groupCount = 1;
-            if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
+            if (frameGroupsEnabled && thing.Category == ObjectCategory.Outfit)
             {
                 groupCount = reader.ReadByte();
             }
@@ -61,7 +61,7 @@ namespace OpenTibia.Assets
             for (byte k = 0; k < groupCount; k++)
             {
                 FrameGroupType groupType = FrameGroupType.Default;
-                if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
+                if (frameGroupsEnabled && thing.Category == ObjectCategory.Outfit)
                 {
                     groupType = (FrameGroupType)reader.ReadByte();
                 }
@@ -153,7 +153,7 @@ namespace OpenTibia.Assets
             int groupCount = 1;
 
             // write frame group count.
-            if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
+            if (frameGroupsEnabled && thing.Category == ObjectCategory.Outfit)
             {
                 groupCount = thing.FrameGroupCount;
                 writer.Write(groupCount);
@@ -162,7 +162,7 @@ namespace OpenTibia.Assets
             for (byte k = 0; k < groupCount; k++)
             {
                 // write frame group type.
-                if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
+                if (frameGroupsEnabled && thing.Category == ObjectCategory.Outfit)
                 {
                     writer.Write(k);
                 }
@@ -428,7 +428,7 @@ namespace OpenTibia.Assets
 
         private static bool WriteProperties_1010_1099(ThingType thing, FlagsBinaryWriter writer, MetadataFormat format)
         {
-            if (thing.Category == ThingCategory.Item)
+            if (thing.Category == ObjectCategory.Item)
             {
                 if (thing.StackOrder == StackOrder.Ground)
                 {

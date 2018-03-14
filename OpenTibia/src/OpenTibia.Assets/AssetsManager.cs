@@ -158,7 +158,7 @@ namespace OpenTibia.Assets
             return Load(datPath, sprPath, version, AssetsFeatures.None);
         }
 
-        public FrameGroup GetFrameGroup(ushort id, ThingCategory category, FrameGroupType groupType)
+        public FrameGroup GetFrameGroup(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
             ThingType type = Things.GetThing(id, category);
             if (type != null)
@@ -169,7 +169,7 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public ObjectData GetThingData(ushort id, ThingCategory category, bool singleFrameGroup)
+        public ObjectData GetThingData(ushort id, ObjectCategory category, bool singleFrameGroup)
         {
             ThingType thing = Things.GetThing(id, category);
             if (thing == null)
@@ -204,7 +204,7 @@ namespace OpenTibia.Assets
             return new ObjectData(thing, spriteGroups);
         }
 
-        public ObjectData GetThingData(ushort id, ThingCategory category)
+        public ObjectData GetThingData(ushort id, ObjectCategory category)
         {
             return GetThingData(id, category, false);
         }
@@ -234,7 +234,7 @@ namespace OpenTibia.Assets
             return bitmap;
         }
 
-        public Bitmap GetObjectImage(ushort id, ThingCategory category, FrameGroupType groupType)
+        public Bitmap GetObjectImage(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
             ThingType thing = Things.GetThing(id, category);
             if (thing == null)
@@ -260,7 +260,7 @@ namespace OpenTibia.Assets
             byte layers = group.Layers;
             byte x = 0;
 
-            if (category == ThingCategory.Outfit)
+            if (category == ObjectCategory.Outfit)
             {
                 layers = 1;
                 x = (byte)(2 % group.PatternsX);
@@ -290,14 +290,14 @@ namespace OpenTibia.Assets
             return bitmap;
         }
 
-        public Bitmap GetObjectImage(ushort id, ThingCategory category)
+        public Bitmap GetObjectImage(ushort id, ObjectCategory category)
         {
             return GetObjectImage(id, category, FrameGroupType.Default);
         }
 
         public Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data, bool mount)
         {
-            ThingType thing = Things.GetThing(id, ThingCategory.Outfit);
+            ThingType thing = Things.GetThing(id, ObjectCategory.Outfit);
             if (thing == null)
             {
                 return null;
@@ -306,7 +306,7 @@ namespace OpenTibia.Assets
             FrameGroup group = thing.GetFrameGroup(FrameGroupType.Default);
             if (group.Layers < 2)
             {
-                return GetObjectImage(id, ThingCategory.Outfit, FrameGroupType.Default);
+                return GetObjectImage(id, ObjectCategory.Outfit, FrameGroupType.Default);
             }
 
             int width = Sprite.DefaultSize * group.Width;
@@ -386,7 +386,7 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType)
+        public SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
             ThingType thing = Things.GetThing(id, category);
             if (thing == null)
@@ -444,7 +444,7 @@ namespace OpenTibia.Assets
             return new SpriteSheet(bitmap, rectList);
         }
 
-        public SpriteSheet GetSpriteSheet(ushort id, ThingCategory category, FrameGroupType groupType, OutfitData outfitData)
+        public SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType, OutfitData outfitData)
         {
             ThingType thing = Things.GetThing(id, category);
             if (thing == null)

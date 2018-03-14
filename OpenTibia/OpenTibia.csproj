@@ -42,28 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\OpenTibia.Animation\Animator.cs" />
-    <Compile Include="src\OpenTibia.Animation\FrameDuration.cs" />
-    <Compile Include="src\OpenTibia.Animation\FrameGroup.cs" />
     <Compile Include="src\OpenTibia.Assets\AssetsManager.cs" />
     <Compile Include="src\OpenTibia.Assets\IAssetsManager.cs" />
-    <Compile Include="src\OpenTibia.Assets\Sprites\Sprite.cs" />
-    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteListChangedArgs.cs" />
-    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteSheet.cs" />
-    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteStorage.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\ClothSlot.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\MetadataFlags.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\MarketCategory.cs" />
+    <Compile Include="src\OpenTibia.Assets\SpriteSheet.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdDecoder.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdEncoder.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdFlags.cs" />
     <Compile Include="src\OpenTibia.Obd\ObdVersion.cs" />
     <Compile Include="src\OpenTibia.Obd\ObjectData.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\ThingListChangedArgs.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\ThingType.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\ThingTypeSerializer.cs" />
-    <Compile Include="src\OpenTibia.Assets\Things\ThingTypeStorage.cs" />
-    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteGroup.cs" />
     <Compile Include="src\OpenTibia.Controls\ColorChangedArgs.cs" />
     <Compile Include="src\OpenTibia.Controls\EightBitColorGrid.cs">
       <SubType>Component</SubType>
@@ -80,14 +66,8 @@
     <Compile Include="src\OpenTibia.Geom\Direction.cs" />
     <Compile Include="src\OpenTibia.Geom\Position.cs" />
     <Compile Include="src\OpenTibia.Geom\Rect.cs" />
-    <Compile Include="src\OpenTibia.IO\BinaryTreeReader.cs" />
-    <Compile Include="src\OpenTibia.IO\BinaryTreeWriter.cs" />
-    <Compile Include="src\OpenTibia.IO\FlagsWriter.cs" />
-    <Compile Include="src\OpenTibia.IO\SpecialChar.cs" />
     <Compile Include="src\OpenTibia.Utility\BitmapLocker.cs" />
-    <Compile Include="src\OpenTibia.Utility\Clock.cs" />
     <Compile Include="src\OpenTibia.Utility\ColorUtils.cs" />
-    <Compile Include="src\OpenTibia.Utility\LZMACoder.cs" />
     <Compile Include="src\OpenTibia.Utility\OutfitData.cs" />
     <Compile Include="src\OpenTibia.Utility\PathUtils.cs" />
     <Compile Include="src\OpenTibia.Utility\SpriteCache.cs" />
@@ -97,6 +77,10 @@
     <ProjectReference Include="..\ThirdParty\7zip\7zip.csproj">
       <Project>{cd9d40f7-4d62-4ca3-bac1-237e69e2f3a7}</Project>
       <Name>7zip</Name>
+    </ProjectReference>
+    <ProjectReference Include="OpenTibia.Assets\OpenTibia.Assets.csproj">
+      <Project>{64be6f25-84e9-41e8-94c2-414fe0d58777}</Project>
+      <Name>OpenTibia.Assets</Name>
     </ProjectReference>
     <ProjectReference Include="OpenTibia.Common\OpenTibia.Common.csproj">
       <Project>{565f1a81-5f3c-4e11-b909-321d02adc028}</Project>

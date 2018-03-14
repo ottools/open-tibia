@@ -41,19 +41,19 @@ namespace OpenTibia.Animation
             SetTo((int)minimum, (int)maximum);
         }
 
-        public FrameDuration(ThingCategory category)
+        public FrameDuration(ObjectCategory category)
         {
             switch (category)
             {
-                case ThingCategory.Item:
+                case ObjectCategory.Item:
                     SetTo(500, 500);
                     break;
 
-                case ThingCategory.Outfit:
+                case ObjectCategory.Outfit:
                     SetTo(300, 300);
                     break;
 
-                case ThingCategory.Effect:
+                case ObjectCategory.Effect:
                     SetTo(100, 100);
                     break;
             }

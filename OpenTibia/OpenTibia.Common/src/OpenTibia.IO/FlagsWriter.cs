@@ -23,7 +23,6 @@
 #endregion
 
 using OpenTibia.Assets;
-using OpenTibia.Obd;
 using System.IO;
 
 namespace OpenTibia.IO
@@ -42,11 +41,6 @@ namespace OpenTibia.IO
         #region | Public Methods |
 
         public void Write(MetadataFlags_1010_1099 value)
-        {
-            base.Write((byte)value);
-        }
-
-        public void Write(ObdFlags value)
         {
             base.Write((byte)value);
         }
