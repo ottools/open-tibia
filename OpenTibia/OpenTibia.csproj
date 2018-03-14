@@ -42,67 +42,65 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenTibia.Animation\Animator.cs" />
-    <Compile Include="OpenTibia.Animation\FrameDuration.cs" />
-    <Compile Include="OpenTibia.Animation\FrameGroup.cs" />
-    <Compile Include="OpenTibia.Assets\AssetsFeatures.cs" />
-    <Compile Include="OpenTibia.Assets\AssetsManager.cs" />
-    <Compile Include="OpenTibia.Assets\IAssetsManager.cs" />
-    <Compile Include="OpenTibia.Assets\Sprites\Sprite.cs" />
-    <Compile Include="OpenTibia.Assets\Sprites\SpriteListChangedArgs.cs" />
-    <Compile Include="OpenTibia.Assets\Sprites\SpriteSheet.cs" />
-    <Compile Include="OpenTibia.Assets\Sprites\SpriteStorage.cs" />
-    <Compile Include="OpenTibia.Assets\Things\ClothSlot.cs" />
-    <Compile Include="OpenTibia.Assets\Things\MetadataFlags.cs" />
-    <Compile Include="OpenTibia.Assets\Things\MetadataFormat.cs" />
-    <Compile Include="OpenTibia.Assets\Things\MarketCategory.cs" />
-    <Compile Include="OpenTibia.Obd\ObdDecoder.cs" />
-    <Compile Include="OpenTibia.Obd\ObdEncoder.cs" />
-    <Compile Include="OpenTibia.Obd\ObdFlags.cs" />
-    <Compile Include="OpenTibia.Obd\ObdVersion.cs" />
-    <Compile Include="OpenTibia.Obd\ObjectData.cs" />
-    <Compile Include="OpenTibia.Assets\Things\ThingListChangedArgs.cs" />
-    <Compile Include="OpenTibia.Assets\Things\ThingType.cs" />
-    <Compile Include="OpenTibia.Assets\Things\ThingTypeSerializer.cs" />
-    <Compile Include="OpenTibia.Assets\Things\ThingTypeStorage.cs" />
-    <Compile Include="OpenTibia.Assets\Sprites\SpriteGroup.cs" />
-    <Compile Include="OpenTibia.Controls\ColorChangedArgs.cs" />
-    <Compile Include="OpenTibia.Controls\EightBitColorGrid.cs">
+    <Compile Include="src\OpenTibia.Animation\Animator.cs" />
+    <Compile Include="src\OpenTibia.Animation\FrameDuration.cs" />
+    <Compile Include="src\OpenTibia.Animation\FrameGroup.cs" />
+    <Compile Include="src\OpenTibia.Assets\AssetsManager.cs" />
+    <Compile Include="src\OpenTibia.Assets\IAssetsManager.cs" />
+    <Compile Include="src\OpenTibia.Assets\Sprites\Sprite.cs" />
+    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteListChangedArgs.cs" />
+    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteSheet.cs" />
+    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteStorage.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\ClothSlot.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\MetadataFlags.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\MarketCategory.cs" />
+    <Compile Include="src\OpenTibia.Obd\ObdDecoder.cs" />
+    <Compile Include="src\OpenTibia.Obd\ObdEncoder.cs" />
+    <Compile Include="src\OpenTibia.Obd\ObdFlags.cs" />
+    <Compile Include="src\OpenTibia.Obd\ObdVersion.cs" />
+    <Compile Include="src\OpenTibia.Obd\ObjectData.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\ThingListChangedArgs.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\ThingType.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\ThingTypeSerializer.cs" />
+    <Compile Include="src\OpenTibia.Assets\Things\ThingTypeStorage.cs" />
+    <Compile Include="src\OpenTibia.Assets\Sprites\SpriteGroup.cs" />
+    <Compile Include="src\OpenTibia.Controls\ColorChangedArgs.cs" />
+    <Compile Include="src\OpenTibia.Controls\EightBitColorGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenTibia.Controls\HsiColorGrid.cs">
+    <Compile Include="src\OpenTibia.Controls\HsiColorGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenTibia.Controls\SpriteListBox.cs">
+    <Compile Include="src\OpenTibia.Controls\SpriteListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenTibia.Controls\ThingTypeListBox.cs">
+    <Compile Include="src\OpenTibia.Controls\ThingTypeListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenTibia.Common\IStorage.cs" />
-    <Compile Include="OpenTibia.Assets\AssetsVersion.cs" />
-    <Compile Include="OpenTibia.Common\VersionListChangedArgs.cs" />
-    <Compile Include="OpenTibia.Common\VersionStorage.cs" />
-    <Compile Include="OpenTibia.Geom\Direction.cs" />
-    <Compile Include="OpenTibia.Geom\Position.cs" />
-    <Compile Include="OpenTibia.Geom\Rect.cs" />
-    <Compile Include="OpenTibia.IO\BinaryTreeReader.cs" />
-    <Compile Include="OpenTibia.IO\BinaryTreeWriter.cs" />
-    <Compile Include="OpenTibia.IO\FlagsWriter.cs" />
-    <Compile Include="OpenTibia.IO\SpecialChar.cs" />
-    <Compile Include="OpenTibia.Utils\BitmapLocker.cs" />
-    <Compile Include="OpenTibia.Utils\Clock.cs" />
-    <Compile Include="OpenTibia.Utils\ColorUtils.cs" />
-    <Compile Include="OpenTibia.Utils\LZMACoder.cs" />
-    <Compile Include="OpenTibia.Utils\OutfitData.cs" />
-    <Compile Include="OpenTibia.Utils\PathUtils.cs" />
-    <Compile Include="OpenTibia.Utils\SpriteCache.cs" />
+    <Compile Include="src\OpenTibia.Geom\Direction.cs" />
+    <Compile Include="src\OpenTibia.Geom\Position.cs" />
+    <Compile Include="src\OpenTibia.Geom\Rect.cs" />
+    <Compile Include="src\OpenTibia.IO\BinaryTreeReader.cs" />
+    <Compile Include="src\OpenTibia.IO\BinaryTreeWriter.cs" />
+    <Compile Include="src\OpenTibia.IO\FlagsWriter.cs" />
+    <Compile Include="src\OpenTibia.IO\SpecialChar.cs" />
+    <Compile Include="src\OpenTibia.Utils\BitmapLocker.cs" />
+    <Compile Include="src\OpenTibia.Utils\Clock.cs" />
+    <Compile Include="src\OpenTibia.Utils\ColorUtils.cs" />
+    <Compile Include="src\OpenTibia.Utils\LZMACoder.cs" />
+    <Compile Include="src\OpenTibia.Utils\OutfitData.cs" />
+    <Compile Include="src\OpenTibia.Utils\PathUtils.cs" />
+    <Compile Include="src\OpenTibia.Utils\SpriteCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdParty\7zip\7zip.csproj">
       <Project>{cd9d40f7-4d62-4ca3-bac1-237e69e2f3a7}</Project>
       <Name>7zip</Name>
+    </ProjectReference>
+    <ProjectReference Include="OpenTibia.Common\OpenTibia.Common.csproj">
+      <Project>{565f1a81-5f3c-4e11-b909-321d02adc028}</Project>
+      <Name>OpenTibia.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

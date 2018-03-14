@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTibia", "OpenTibia.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "7zip", "..\ThirdParty\7zip\7zip.csproj", "{CD9D40F7-4D62-4CA3-BAC1-237E69E2F3A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTibia.Common", "OpenTibia.Common\OpenTibia.Common.csproj", "{565F1A81-5F3C-4E11-B909-321D02ADC028}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CD9D40F7-4D62-4CA3-BAC1-237E69E2F3A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD9D40F7-4D62-4CA3-BAC1-237E69E2F3A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD9D40F7-4D62-4CA3-BAC1-237E69E2F3A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{565F1A81-5F3C-4E11-B909-321D02ADC028}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
