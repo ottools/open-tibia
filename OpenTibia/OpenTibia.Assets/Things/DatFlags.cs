@@ -22,32 +22,51 @@
 */
 #endregion
 
-#region Using Statements
-using OpenTibia.Core;
-#endregion
-
-namespace OpenTibia.Client.Sprites
+namespace OpenTibia.Assets
 {
-    public delegate void SpriteListChangedHandler(object sender, SpriteListChangedArgs e);
-
-    public class SpriteListChangedArgs
+    public enum DatFlags1010 : byte
     {
-        #region Constructor
+        Ground = 0x00,
+        GroundBorder = 0x01,
+        OnBottom = 0x02,
+        OnTop = 0x03,
+        Container = 0x04,
+        Stackable = 0x05,
+        ForceUse = 0x06,
+        MultiUse = 0x07,
+        Writable = 0x08,
+        WritableOnce = 0x09,
+        FluidContainer = 0x0A,
+        Fluid = 0x0B,
+        IsUnpassable = 0x0C,
+        IsUnmovable = 0x0D,
+        BlockMissiles = 0x0E,
+        BlockPathfinder = 0x0F,
+        NoMoveAnimation = 0x10,
+        Pickupable = 0x11,
+        Hangable = 0x12,
+        HookSouth = 0x13,
+        HookEast = 0x14,
+        Rotatable = 0x15,
+        HasLight = 0x16,
+        DontHide = 0x17,
+        Translucent = 0x18,
+        HasOffset = 0x19,
+        HasElevation = 0x1A,
+        LyingObject = 0x1B,
+        AnimateAlways = 0x1C,
+        Minimap = 0x1D,
+        LensHelp = 0x1E,
+        FullGround = 0x1F,
+        IgnoreLook = 0x20,
+        Cloth = 0x21,
+        Market = 0x22,
+        DefaultAction = 0x23,
+        Wrappable = 0x24,
+        Unwrappable = 0x25,
+        TopEffect = 0x26,
+        Usable = 0xFE,
 
-        public SpriteListChangedArgs(Sprite[] changedSprites, StorageChangeType changeType)
-        {
-            this.ChangedSprites = changedSprites;
-            this.ChangeType = changeType;
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        public Sprite[] ChangedSprites { get; private set; }
-
-        public StorageChangeType ChangeType { get; private set; }
-
-        #endregion
+        LastFlag = 0xFF
     }
 }

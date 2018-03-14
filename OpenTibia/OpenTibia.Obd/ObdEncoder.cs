@@ -24,8 +24,8 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Client.Sprites;
-using OpenTibia.Client.Things;
+using OpenTibia.Assets;
+using OpenTibia.Assets;
 using OpenTibia.IO;
 using OpenTibia.Utils;
 using System;

@@ -24,8 +24,6 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Client.Sprites;
-using OpenTibia.Client.Things;
 using OpenTibia.Collections;
 using OpenTibia.Core;
 using OpenTibia.Geom;
@@ -39,9 +37,9 @@ using System.Drawing.Imaging;
 using System.Linq;
 #endregion
 
-namespace OpenTibia.Client
+namespace OpenTibia.Assets
 {
-    public class ClientImpl : IClient
+    public class AssetsManager : IAssetsManager
     {
         #region | Private properties |
 
@@ -52,7 +50,7 @@ namespace OpenTibia.Client
 
         #region | Constructor |
 
-        public ClientImpl()
+        public AssetsManager()
         {
             this.spriteCache = new SpriteCache();
         }

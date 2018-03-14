@@ -22,33 +22,32 @@
 */
 #endregion
 
-namespace OpenTibia.Client.Things
+#region Using Statements
+using OpenTibia.Core;
+#endregion
+
+namespace OpenTibia.Assets
 {
-    public enum MarketCategory : ushort
+    public delegate void SpriteListChangedHandler(object sender, SpriteListChangedArgs e);
+
+    public class SpriteListChangedArgs
     {
-        None = 0,
-        Armors = 1,
-        Amulets = 2,
-        Boots = 3,
-        Containers = 4,
-        Decoration = 5,
-        Food = 6,
-        HelmetsAndHats = 7,
-        Legs = 8,
-        Others = 9,
-        Potions = 10,
-        Rings = 11,
-        Runes = 12,
-        Shields = 13,
-        Tools = 14,
-        Valuables = 15,
-        Ammunition = 16,
-        Axes = 17,
-        Clubs = 18,
-        DistanceWeapons = 19,
-        Swords = 20,
-        WandsAndRods = 21,
-        PremiumScrolls = 22,
-        MetaWeapons = 255
+        #region Constructor
+
+        public SpriteListChangedArgs(Sprite[] changedSprites, StorageChangeType changeType)
+        {
+            this.ChangedSprites = changedSprites;
+            this.ChangeType = changeType;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public Sprite[] ChangedSprites { get; private set; }
+
+        public StorageChangeType ChangeType { get; private set; }
+
+        #endregion
     }
 }

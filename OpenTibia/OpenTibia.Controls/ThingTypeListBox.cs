@@ -23,8 +23,8 @@
 #endregion
 
 #region Using Statements
-using OpenTibia.Client;
-using OpenTibia.Client.Things;
+using OpenTibia.Assets;
+using OpenTibia.Assets;
 using System.Drawing;
 using System.Windows.Forms;
 #endregion
@@ -61,7 +61,7 @@ namespace OpenTibia.Controls
 
         #region Public Properties
 
-        public IClient Client { get; set; }
+        public IAssetsManager Client { get; set; }
 
         #endregion
 

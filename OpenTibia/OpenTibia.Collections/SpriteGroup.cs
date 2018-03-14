@@ -25,7 +25,7 @@
 #region Using Statements
 using System;
 using OpenTibia.Animation;
-using OpenTibia.Client.Sprites;
+using OpenTibia.Assets;
 using System.Collections.Generic;
 using System.Drawing;
 #endregion

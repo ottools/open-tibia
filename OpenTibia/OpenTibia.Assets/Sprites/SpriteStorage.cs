@@ -23,17 +23,16 @@
 #endregion
 
 #region Using Statements
+using OpenTibia.Core;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
-using OpenTibia.Client.Things;
-using OpenTibia.Core;
-using System.ComponentModel;
 using System.Threading;
 #endregion
 
-namespace OpenTibia.Client.Sprites
+namespace OpenTibia.Assets
 {
     public class SpriteStorage : IStorage, IDisposable
     {

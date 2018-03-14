@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
     public class ThingTypeStorage : IStorage, IDisposable
     {

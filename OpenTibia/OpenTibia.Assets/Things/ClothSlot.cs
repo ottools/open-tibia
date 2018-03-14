@@ -22,7 +22,7 @@
 */
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
     public enum ClothSlot : ushort
     {

@@ -23,25 +23,59 @@
 #endregion
 
 #region Using Statements
+using OpenTibia.Geom;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
-    public enum DatFormat : ushort
+    public class SpriteSheet
     {
-        InvalidFormat = 0,
-        Format_710  = 710,
-        Format_740  = 740,
-        Format_755  = 755,
-        Format_780  = 780,
-        Format_860  = 860,
-        Format_960  = 960,
-        Format_1010 = 1010,
-        Format_1050 = 1050,
-        Format_1057 = 1057,
-        Format_1092 = 1092,
-        Format_1093 = 1093,
-        Format_Last = Format_1093
+        #region Constructor
+
+        public SpriteSheet(Bitmap bitmap, Dictionary<int, Rect> rectList)
+        {
+            if (bitmap == null)
+            {
+                throw new ArgumentNullException(nameof(bitmap));
+            }
+
+            if (rectList == null || rectList.Count == 0)
+            {
+                throw new ArgumentNullException(nameof(rectList));
+            }
+
+            this.Bitmap = bitmap;
+            this.RectList = rectList;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public Bitmap Bitmap { get; private set; }
+
+        public Dictionary<int, Rect> RectList { get; private set; }
+
+        #endregion
+
+        #region Public Methods
+
+        public bool Save(string path, ImageFormat format)
+        {
+            this.Bitmap.Save(path, format);
+            return true;
+        }
+
+        public bool Save(string path)
+        {
+            this.Bitmap.Save(path, ImageFormat.Png);
+            return true;
+        }
+
+        #endregion
     }
 }

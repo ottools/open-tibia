@@ -24,8 +24,6 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Client.Sprites;
-using OpenTibia.Client.Things;
 using OpenTibia.Core;
 using OpenTibia.Geom;
 using OpenTibia.Obd;
@@ -34,7 +32,7 @@ using System;
 using System.Drawing;
 #endregion
 
-namespace OpenTibia.Client
+namespace OpenTibia.Assets
 {
     [Flags]
     public enum ClientFeatures
@@ -47,7 +45,7 @@ namespace OpenTibia.Client
         Transparency = 1 << 4
     }
 
-    public interface IClient : IDisposable
+    public interface IAssetsManager : IDisposable
     {
         #region | Events |
 

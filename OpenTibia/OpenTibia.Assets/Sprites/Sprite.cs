@@ -30,7 +30,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 #endregion
 
-namespace OpenTibia.Client.Sprites
+namespace OpenTibia.Assets
 {
     public class Sprite
     {

@@ -24,14 +24,14 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Client.Sprites;
+using OpenTibia.Assets;
 using OpenTibia.IO;
 using System;
 using System.IO;
 using System.Text;
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
     public static class ThingTypeSerializer
     {

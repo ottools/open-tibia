@@ -22,51 +22,33 @@
 */
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
-    public enum DatFlags1010 : byte
+    public enum MarketCategory : ushort
     {
-        Ground = 0x00,
-        GroundBorder = 0x01,
-        OnBottom = 0x02,
-        OnTop = 0x03,
-        Container = 0x04,
-        Stackable = 0x05,
-        ForceUse = 0x06,
-        MultiUse = 0x07,
-        Writable = 0x08,
-        WritableOnce = 0x09,
-        FluidContainer = 0x0A,
-        Fluid = 0x0B,
-        IsUnpassable = 0x0C,
-        IsUnmovable = 0x0D,
-        BlockMissiles = 0x0E,
-        BlockPathfinder = 0x0F,
-        NoMoveAnimation = 0x10,
-        Pickupable = 0x11,
-        Hangable = 0x12,
-        HookSouth = 0x13,
-        HookEast = 0x14,
-        Rotatable = 0x15,
-        HasLight = 0x16,
-        DontHide = 0x17,
-        Translucent = 0x18,
-        HasOffset = 0x19,
-        HasElevation = 0x1A,
-        LyingObject = 0x1B,
-        AnimateAlways = 0x1C,
-        Minimap = 0x1D,
-        LensHelp = 0x1E,
-        FullGround = 0x1F,
-        IgnoreLook = 0x20,
-        Cloth = 0x21,
-        Market = 0x22,
-        DefaultAction = 0x23,
-        Wrappable = 0x24,
-        Unwrappable = 0x25,
-        TopEffect = 0x26,
-        Usable = 0xFE,
-
-        LastFlag = 0xFF
+        None = 0,
+        Armors = 1,
+        Amulets = 2,
+        Boots = 3,
+        Containers = 4,
+        Decoration = 5,
+        Food = 6,
+        HelmetsAndHats = 7,
+        Legs = 8,
+        Others = 9,
+        Potions = 10,
+        Rings = 11,
+        Runes = 12,
+        Shields = 13,
+        Tools = 14,
+        Valuables = 15,
+        Ammunition = 16,
+        Axes = 17,
+        Clubs = 18,
+        DistanceWeapons = 19,
+        Swords = 20,
+        WandsAndRods = 21,
+        PremiumScrolls = 22,
+        MetaWeapons = 255
     }
 }

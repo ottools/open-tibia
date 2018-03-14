@@ -23,31 +23,25 @@
 #endregion
 
 #region Using Statements
-using OpenTibia.Core;
+using System;
 #endregion
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
-    public class ThingListChangedArgs
+    public enum DatFormat : ushort
     {
-        #region | Constructor |
-
-        public ThingListChangedArgs(ThingType[] changedThings, StorageChangeType changeType)
-        {
-            this.ChangedThings = changedThings;
-            this.ChangeType = changeType;
-        }
-
-        #endregion
-
-        #region | Public Properties |
-
-        public ThingType[] ChangedThings { get; private set; }
-
-        public StorageChangeType ChangeType { get; private set; }
-
-        #endregion
+        InvalidFormat = 0,
+        Format_710  = 710,
+        Format_740  = 740,
+        Format_755  = 755,
+        Format_780  = 780,
+        Format_860  = 860,
+        Format_960  = 960,
+        Format_1010 = 1010,
+        Format_1050 = 1050,
+        Format_1057 = 1057,
+        Format_1092 = 1092,
+        Format_1093 = 1093,
+        Format_Last = Format_1093
     }
-
-    public delegate void ThingListChangedHandler(object sender, ThingListChangedArgs e);
 }

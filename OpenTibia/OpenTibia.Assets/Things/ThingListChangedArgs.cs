@@ -23,59 +23,31 @@
 #endregion
 
 #region Using Statements
-using OpenTibia.Geom;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
+using OpenTibia.Core;
 #endregion
 
-namespace OpenTibia.Client.Sprites
+namespace OpenTibia.Assets
 {
-    public class SpriteSheet
+    public class ThingListChangedArgs
     {
-        #region Constructor
+        #region | Constructor |
 
-        public SpriteSheet(Bitmap bitmap, Dictionary<int, Rect> rectList)
+        public ThingListChangedArgs(ThingType[] changedThings, StorageChangeType changeType)
         {
-            if (bitmap == null)
-            {
-                throw new ArgumentNullException(nameof(bitmap));
-            }
-
-            if (rectList == null || rectList.Count == 0)
-            {
-                throw new ArgumentNullException(nameof(rectList));
-            }
-
-            this.Bitmap = bitmap;
-            this.RectList = rectList;
+            this.ChangedThings = changedThings;
+            this.ChangeType = changeType;
         }
 
         #endregion
 
-        #region Public Properties
+        #region | Public Properties |
 
-        public Bitmap Bitmap { get; private set; }
+        public ThingType[] ChangedThings { get; private set; }
 
-        public Dictionary<int, Rect> RectList { get; private set; }
-
-        #endregion
-
-        #region Public Methods
-
-        public bool Save(string path, ImageFormat format)
-        {
-            this.Bitmap.Save(path, format);
-            return true;
-        }
-
-        public bool Save(string path)
-        {
-            this.Bitmap.Save(path, ImageFormat.Png);
-            return true;
-        }
+        public StorageChangeType ChangeType { get; private set; }
 
         #endregion
     }
+
+    public delegate void ThingListChangedHandler(object sender, ThingListChangedArgs e);
 }

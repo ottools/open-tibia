@@ -24,7 +24,7 @@ using OpenTibia.Animation;
 using System;
 using System.Collections.Generic;
 
-namespace OpenTibia.Client.Things
+namespace OpenTibia.Assets
 {
     public enum ThingCategory : byte
     {

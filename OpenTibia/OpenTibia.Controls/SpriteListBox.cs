@@ -23,7 +23,7 @@
 #endregion
 
 #region Using Statements
-using OpenTibia.Client.Sprites;
+using OpenTibia.Assets;
 using System.Drawing;
 using System.Windows.Forms;
 #endregion
