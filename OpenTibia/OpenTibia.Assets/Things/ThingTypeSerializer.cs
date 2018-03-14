@@ -24,7 +24,6 @@
 
 #region Using Statements
 using OpenTibia.Animation;
-using OpenTibia.Assets;
 using OpenTibia.IO;
 using System;
 using System.IO;
@@ -37,11 +36,11 @@ namespace OpenTibia.Assets
     {
         #region | Public Static Methods |
 
-        public static bool ReadProperties(ThingType thing, DatFormat format, BinaryReader reader)
+        public static bool ReadProperties(ThingType thing, MetadataFormat format, BinaryReader reader)
         {
-            if (format >= DatFormat.Format_1010)
+            if (format >= MetadataFormat.Format_1010)
             {
-                if (!ReadProperties_1010_1093(thing, reader, format))
+                if (!ReadProperties_1010_1099(thing, reader, format))
                 {
                     return false;
                 }
@@ -50,12 +49,12 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public static bool ReadTexturePatterns(ThingType thing, ClientFeatures features, BinaryReader reader)
+        public static bool ReadTexturePatterns(ThingType thing, AssetsFeatures features, BinaryReader reader)
         {
-            bool patternZEnabled = (features & ClientFeatures.PatternZ) == ClientFeatures.PatternZ;
-            bool extendedEnabled = (features & ClientFeatures.Extended) == ClientFeatures.Extended;
-            bool frameDurationsEnabled = (features & ClientFeatures.FrameDurations) == ClientFeatures.FrameDurations;
-            bool frameGroupsEnabled = (features & ClientFeatures.FrameGroups) == ClientFeatures.FrameGroups;
+            bool patternZEnabled = (features & AssetsFeatures.PatternsZ) == AssetsFeatures.PatternsZ;
+            bool extendedEnabled = (features & AssetsFeatures.Extended) == AssetsFeatures.Extended;
+            bool frameDurationsEnabled = (features & AssetsFeatures.FramesDuration) == AssetsFeatures.FramesDuration;
+            bool frameGroupsEnabled = (features & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups;
 
             byte groupCount = 1;
             if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
@@ -136,11 +135,11 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public static bool WriteProperties(ThingType thing, DatFormat format, FlagsBinaryWriter writer)
+        public static bool WriteProperties(ThingType thing, MetadataFormat format, FlagsBinaryWriter writer)
         {
-            if (format >= DatFormat.Format_1010)
+            if (format >= MetadataFormat.Format_1010)
             {
-                if (!WriteProperties_1010_1093(thing, writer, format))
+                if (!WriteProperties_1010_1099(thing, writer, format))
                 {
                     return false;
                 }
@@ -149,12 +148,12 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public static bool WriteTexturePatterns(ThingType thing, ClientFeatures features, BinaryWriter writer)
+        public static bool WriteTexturePatterns(ThingType thing, AssetsFeatures features, BinaryWriter writer)
         {
-            bool patternZEnabled = (features & ClientFeatures.PatternZ) == ClientFeatures.PatternZ;
-            bool extendedEnabled = (features & ClientFeatures.Extended) == ClientFeatures.Extended;
-            bool frameDurationsEnabled = (features & ClientFeatures.FrameDurations) == ClientFeatures.FrameDurations;
-            bool frameGroupsEnabled = (features & ClientFeatures.FrameGroups) == ClientFeatures.FrameGroups;
+            bool patternZEnabled = (features & AssetsFeatures.PatternsZ) == AssetsFeatures.PatternsZ;
+            bool extendedEnabled = (features & AssetsFeatures.Extended) == AssetsFeatures.Extended;
+            bool frameDurationsEnabled = (features & AssetsFeatures.FramesDuration) == AssetsFeatures.FramesDuration;
+            bool frameGroupsEnabled = (features & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups;
             int groupCount = 1;
 
             // write frame group count.
@@ -230,169 +229,169 @@ namespace OpenTibia.Assets
 
         #region | Private Static Methods |
 
-        private static bool ReadProperties_1010_1093(ThingType thing, BinaryReader reader, DatFormat format)
+        private static bool ReadProperties_1010_1099(ThingType thing, BinaryReader reader, MetadataFormat format)
         {
-            DatFlags1010 flag;
+            MetadataFlags_1010_1099 flag;
 
             do
             {
-                flag = (DatFlags1010)reader.ReadByte();
+                flag = (MetadataFlags_1010_1099)reader.ReadByte();
 
-                if (flag == DatFlags1010.LastFlag)
+                if (flag == MetadataFlags_1010_1099.LastFlag)
                 {
                     break;
                 }
 
                 switch (flag)
                 {
-                    case DatFlags1010.Ground: // 0x00
+                    case MetadataFlags_1010_1099.Ground: // 0x00
                         thing.StackOrder = StackOrder.Ground;
                         thing.GroundSpeed = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.GroundBorder: // 0x01
+                    case MetadataFlags_1010_1099.GroundBorder: // 0x01
                         thing.StackOrder = StackOrder.Border;
                         break;
 
-                    case DatFlags1010.OnBottom: // 0x02
+                    case MetadataFlags_1010_1099.OnBottom: // 0x02
                         thing.StackOrder = StackOrder.Bottom;
                         break;
 
-                    case DatFlags1010.OnTop: // 0x03
+                    case MetadataFlags_1010_1099.OnTop: // 0x03
                         thing.StackOrder = StackOrder.Top;
                         break;
 
-                    case DatFlags1010.Container: // 0x04
+                    case MetadataFlags_1010_1099.Container: // 0x04
                         thing.IsContainer = true;
                         break;
 
-                    case DatFlags1010.Stackable:
+                    case MetadataFlags_1010_1099.Stackable:
                         thing.Stackable = true;
                         break;
 
-                    case DatFlags1010.ForceUse:
+                    case MetadataFlags_1010_1099.ForceUse:
                         thing.ForceUse = true;
                         break;
 
-                    case DatFlags1010.MultiUse:
+                    case MetadataFlags_1010_1099.MultiUse:
                         thing.MultiUse = true;
                         break;
 
-                    case DatFlags1010.Writable:
+                    case MetadataFlags_1010_1099.Writable:
                         thing.Writable = true;
                         thing.MaxTextLength = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.WritableOnce:
+                    case MetadataFlags_1010_1099.WritableOnce:
                         thing.WritableOnce = true;
                         thing.MaxTextLength = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.FluidContainer:
+                    case MetadataFlags_1010_1099.FluidContainer:
                         thing.IsFluidContainer = true;
                         break;
 
-                    case DatFlags1010.Fluid:
+                    case MetadataFlags_1010_1099.Fluid:
                         thing.IsFluid = true;
                         break;
 
-                    case DatFlags1010.IsUnpassable:
+                    case MetadataFlags_1010_1099.IsUnpassable:
                         thing.Unpassable = true;
                         break;
 
-                    case DatFlags1010.IsUnmovable:
+                    case MetadataFlags_1010_1099.IsUnmovable:
                         thing.Unmovable = true;
                         break;
 
-                    case DatFlags1010.BlockMissiles:
+                    case MetadataFlags_1010_1099.BlockMissiles:
                         thing.BlockMissiles = true;
                         break;
 
-                    case DatFlags1010.BlockPathfinder:
+                    case MetadataFlags_1010_1099.BlockPathfinder:
                         thing.BlockPathfinder = true;
                         break;
 
-                    case DatFlags1010.NoMoveAnimation: // 0x10
+                    case MetadataFlags_1010_1099.NoMoveAnimation: // 0x10
                         thing.NoMoveAnimation = true;
                         break;
 
-                    case DatFlags1010.Pickupable:
+                    case MetadataFlags_1010_1099.Pickupable:
                         thing.Pickupable = true;
                         break;
 
-                    case DatFlags1010.Hangable:
+                    case MetadataFlags_1010_1099.Hangable:
                         thing.Hangable = true;
                         break;
 
-                    case DatFlags1010.HookSouth:
+                    case MetadataFlags_1010_1099.HookSouth:
                         thing.HookSouth = true;
                         break;
 
-                    case DatFlags1010.HookEast:
+                    case MetadataFlags_1010_1099.HookEast:
                         thing.HookEast = true;
                         break;
 
-                    case DatFlags1010.Rotatable:
+                    case MetadataFlags_1010_1099.Rotatable:
                         thing.Rotatable = true;
                         break;
 
-                    case DatFlags1010.HasLight:
+                    case MetadataFlags_1010_1099.HasLight:
                         thing.HasLight = true;
                         thing.LightLevel = reader.ReadUInt16();
                         thing.LightColor = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.DontHide:
+                    case MetadataFlags_1010_1099.DontHide:
                         thing.DontHide = true;
                         break;
 
-                    case DatFlags1010.Translucent:
+                    case MetadataFlags_1010_1099.Translucent:
                         thing.Translucent = true;
                         break;
 
-                    case DatFlags1010.HasOffset:
+                    case MetadataFlags_1010_1099.HasOffset:
                         thing.HasOffset = true;
                         thing.OffsetX = reader.ReadUInt16();
                         thing.OffsetY = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.HasElevation:
+                    case MetadataFlags_1010_1099.HasElevation:
                         thing.HasElevation = true;
                         thing.Elevation = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.LyingObject:
+                    case MetadataFlags_1010_1099.LyingObject:
                         thing.LyingObject = true;
                         break;
 
-                    case DatFlags1010.Minimap:
+                    case MetadataFlags_1010_1099.Minimap:
                         thing.Minimap = true;
                         thing.MinimapColor = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.AnimateAlways:
+                    case MetadataFlags_1010_1099.AnimateAlways:
                         thing.AnimateAlways = true;
                         break;
 
-                    case DatFlags1010.LensHelp:
+                    case MetadataFlags_1010_1099.LensHelp:
                         thing.IsLensHelp = true;
                         thing.LensHelp = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.FullGround:
+                    case MetadataFlags_1010_1099.FullGround:
                         thing.FullGround = true;
                         break;
 
-                    case DatFlags1010.IgnoreLook:
+                    case MetadataFlags_1010_1099.IgnoreLook:
                         thing.IgnoreLook = true;
                         break;
 
-                    case DatFlags1010.Cloth:
+                    case MetadataFlags_1010_1099.Cloth:
                         thing.IsCloth = true;
                         thing.ClothSlot = (ClothSlot)reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.Market:
+                    case MetadataFlags_1010_1099.Market:
                         thing.IsMarketItem = true;
                         thing.MarketCategory = (MarketCategory)reader.ReadUInt16();
                         thing.MarketTradeAs = reader.ReadUInt16();
@@ -405,24 +404,24 @@ namespace OpenTibia.Assets
                         thing.MarketRestrictLevel = reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.DefaultAction:
+                    case MetadataFlags_1010_1099.DefaultAction:
                         thing.HasAction = true;
                         thing.DefaultAction = (DefaultAction)reader.ReadUInt16();
                         break;
 
-                    case DatFlags1010.Wrappable:
+                    case MetadataFlags_1010_1099.Wrappable:
                         thing.Wrappable = true;
                         break;
 
-                    case DatFlags1010.Unwrappable:
+                    case MetadataFlags_1010_1099.Unwrappable:
                         thing.Unwrappable = true;
                         break;
 
-                    case DatFlags1010.TopEffect:
+                    case MetadataFlags_1010_1099.TopEffect:
                         thing.IsTopEffect = true;
                         break;
 
-                    case DatFlags1010.Usable:
+                    case MetadataFlags_1010_1099.Usable:
                         thing.Usable = true;
                         break;
 
@@ -430,177 +429,177 @@ namespace OpenTibia.Assets
                         throw new Exception(string.Format("Error while parsing, unknown flag 0x{0:X} at object id {1}, category {2}.", flag, thing.ID, thing.Category));
                 }
             }
-            while (flag != DatFlags1010.LastFlag);
+            while (flag != MetadataFlags_1010_1099.LastFlag);
 
             return true;
         }
 
-        private static bool WriteProperties_1010_1093(ThingType thing, FlagsBinaryWriter writer, DatFormat format)
+        private static bool WriteProperties_1010_1099(ThingType thing, FlagsBinaryWriter writer, MetadataFormat format)
         {
             if (thing.Category == ThingCategory.Item)
             {
                 if (thing.StackOrder == StackOrder.Ground)
                 {
-                    writer.Write(DatFlags1010.Ground);
+                    writer.Write(MetadataFlags_1010_1099.Ground);
                     writer.Write(thing.GroundSpeed);
                 }
                 else if (thing.StackOrder == StackOrder.Border)
                 {
-                    writer.Write(DatFlags1010.GroundBorder);
+                    writer.Write(MetadataFlags_1010_1099.GroundBorder);
                 }
                 else if (thing.StackOrder == StackOrder.Bottom)
                 {
-                    writer.Write(DatFlags1010.OnBottom);
+                    writer.Write(MetadataFlags_1010_1099.OnBottom);
                 }
                 else if (thing.StackOrder == StackOrder.Top)
                 {
-                    writer.Write(DatFlags1010.OnTop);
+                    writer.Write(MetadataFlags_1010_1099.OnTop);
                 }
 
                 if (thing.IsContainer)
                 {
-                    writer.Write(DatFlags1010.Container);
+                    writer.Write(MetadataFlags_1010_1099.Container);
                 }
 
                 if (thing.Stackable)
                 {
-                    writer.Write(DatFlags1010.Stackable);
+                    writer.Write(MetadataFlags_1010_1099.Stackable);
                 }
 
                 if (thing.ForceUse)
                 {
-                    writer.Write(DatFlags1010.ForceUse);
+                    writer.Write(MetadataFlags_1010_1099.ForceUse);
                 }
 
                 if (thing.MultiUse)
                 {
-                    writer.Write(DatFlags1010.MultiUse);
+                    writer.Write(MetadataFlags_1010_1099.MultiUse);
                 }
 
                 if (thing.Writable)
                 {
-                    writer.Write(DatFlags1010.Writable);
+                    writer.Write(MetadataFlags_1010_1099.Writable);
                     writer.Write(thing.MaxTextLength);
                 }
 
                 if (thing.WritableOnce)
                 {
-                    writer.Write(DatFlags1010.WritableOnce);
+                    writer.Write(MetadataFlags_1010_1099.WritableOnce);
                     writer.Write(thing.MaxTextLength);
                 }
 
                 if (thing.IsFluidContainer)
                 {
-                    writer.Write(DatFlags1010.FluidContainer);
+                    writer.Write(MetadataFlags_1010_1099.FluidContainer);
                 }
 
                 if (thing.IsFluid)
                 {
-                    writer.Write(DatFlags1010.Fluid);
+                    writer.Write(MetadataFlags_1010_1099.Fluid);
                 }
 
                 if (thing.Unpassable)
                 {
-                    writer.Write(DatFlags1010.IsUnpassable);
+                    writer.Write(MetadataFlags_1010_1099.IsUnpassable);
                 }
 
                 if (thing.Unmovable)
                 {
-                    writer.Write(DatFlags1010.IsUnmovable);
+                    writer.Write(MetadataFlags_1010_1099.IsUnmovable);
                 }
 
                 if (thing.BlockMissiles)
                 {
-                    writer.Write(DatFlags1010.BlockMissiles);
+                    writer.Write(MetadataFlags_1010_1099.BlockMissiles);
                 }
 
                 if (thing.BlockPathfinder)
                 {
-                    writer.Write(DatFlags1010.BlockPathfinder);
+                    writer.Write(MetadataFlags_1010_1099.BlockPathfinder);
                 }
 
                 if (thing.NoMoveAnimation)
                 {
-                    writer.Write(DatFlags1010.NoMoveAnimation);
+                    writer.Write(MetadataFlags_1010_1099.NoMoveAnimation);
                 }
 
                 if (thing.Pickupable)
                 {
-                    writer.Write(DatFlags1010.Pickupable);
+                    writer.Write(MetadataFlags_1010_1099.Pickupable);
                 }
 
                 if (thing.Hangable)
                 {
-                    writer.Write(DatFlags1010.Hangable);
+                    writer.Write(MetadataFlags_1010_1099.Hangable);
                 }
 
                 if (thing.HookSouth)
                 {
-                    writer.Write(DatFlags1010.HookSouth);
+                    writer.Write(MetadataFlags_1010_1099.HookSouth);
                 }
 
                 if (thing.HookEast)
                 {
-                    writer.Write(DatFlags1010.HookEast);
+                    writer.Write(MetadataFlags_1010_1099.HookEast);
                 }
 
                 if (thing.Rotatable)
                 {
-                    writer.Write(DatFlags1010.Rotatable);
+                    writer.Write(MetadataFlags_1010_1099.Rotatable);
                 }
 
                 if (thing.DontHide)
                 {
-                    writer.Write(DatFlags1010.DontHide);
+                    writer.Write(MetadataFlags_1010_1099.DontHide);
                 }
 
                 if (thing.Translucent)
                 {
-                    writer.Write(DatFlags1010.Translucent);
+                    writer.Write(MetadataFlags_1010_1099.Translucent);
                 }
 
                 if (thing.HasElevation)
                 {
-                    writer.Write(DatFlags1010.HasElevation);
+                    writer.Write(MetadataFlags_1010_1099.HasElevation);
                     writer.Write(thing.Elevation);
 
                 }
                 if (thing.LyingObject)
                 {
-                    writer.Write(DatFlags1010.LyingObject);
+                    writer.Write(MetadataFlags_1010_1099.LyingObject);
                 }
 
                 if (thing.Minimap)
                 {
-                    writer.Write(DatFlags1010.Minimap);
+                    writer.Write(MetadataFlags_1010_1099.Minimap);
                     writer.Write(thing.MinimapColor);
                 }
 
                 if (thing.IsLensHelp)
                 {
-                    writer.Write(DatFlags1010.LensHelp);
+                    writer.Write(MetadataFlags_1010_1099.LensHelp);
                     writer.Write(thing.LensHelp);
                 }
 
                 if (thing.FullGround)
                 {
-                    writer.Write(DatFlags1010.FullGround);
+                    writer.Write(MetadataFlags_1010_1099.FullGround);
                 }
 
                 if (thing.IgnoreLook)
                 {
-                    writer.Write(DatFlags1010.IgnoreLook);
+                    writer.Write(MetadataFlags_1010_1099.IgnoreLook);
                 }
 
                 if (thing.IsCloth)
                 {
-                    writer.Write(DatFlags1010.Cloth);
+                    writer.Write(MetadataFlags_1010_1099.Cloth);
                     writer.Write((ushort)thing.ClothSlot);
                 }
 
                 if (thing.IsMarketItem)
                 {
-                    writer.Write(DatFlags1010.Market);
+                    writer.Write(MetadataFlags_1010_1099.Market);
                     writer.Write((ushort)thing.MarketCategory);
                     writer.Write(thing.MarketTradeAs);
                     writer.Write(thing.MarketShowAs);
@@ -612,55 +611,55 @@ namespace OpenTibia.Assets
 
                 if (thing.HasAction)
                 {
-                    writer.Write(DatFlags1010.DefaultAction);
+                    writer.Write(MetadataFlags_1010_1099.DefaultAction);
                     writer.Write((ushort)thing.DefaultAction);
                 }
 
-                if (format >= DatFormat.Format_1092)
+                if (format >= MetadataFormat.Format_1092)
                 {
                     if (thing.Wrappable)
                     {
-                        writer.Write(DatFlags1010.Wrappable);
+                        writer.Write(MetadataFlags_1010_1099.Wrappable);
                     }
 
                     if (thing.Unwrappable)
                     {
-                        writer.Write(DatFlags1010.Unwrappable);
+                        writer.Write(MetadataFlags_1010_1099.Unwrappable);
                     }
                 }
 
-                if (format >= DatFormat.Format_1093 && thing.IsTopEffect)
+                if (format >= MetadataFormat.Format_1093 && thing.IsTopEffect)
                 {
-                    writer.Write(DatFlags1010.TopEffect);
+                    writer.Write(MetadataFlags_1010_1099.TopEffect);
                 }
 
                 if (thing.Usable)
                 {
-                    writer.Write(DatFlags1010.Usable);
+                    writer.Write(MetadataFlags_1010_1099.Usable);
                 }
             }
 
             if (thing.AnimateAlways)
             {
-                writer.Write(DatFlags1010.AnimateAlways);
+                writer.Write(MetadataFlags_1010_1099.AnimateAlways);
             }
 
             if (thing.HasLight)
             {
-                writer.Write(DatFlags1010.HasLight);
+                writer.Write(MetadataFlags_1010_1099.HasLight);
                 writer.Write(thing.LightLevel);
                 writer.Write(thing.LightColor);
             }
 
             if (thing.HasOffset)
             {
-                writer.Write(DatFlags1010.HasOffset);
+                writer.Write(MetadataFlags_1010_1099.HasOffset);
                 writer.Write(thing.OffsetX);
                 writer.Write(thing.OffsetY);
             }
 
             // close flags
-            writer.Write(DatFlags1010.LastFlag);
+            writer.Write(MetadataFlags_1010_1099.LastFlag);
             return true;
         }
 

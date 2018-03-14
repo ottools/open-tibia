@@ -97,7 +97,7 @@ namespace OpenTibia.Assets
 
         #region | Public Methods |
 
-        public bool CreateEmpty(Core.Version version, ClientFeatures features)
+        public bool CreateEmpty(AssetsVersion version, AssetsFeatures features)
         {
             if (version == null)
             {
@@ -133,12 +133,12 @@ namespace OpenTibia.Assets
             return this.Loaded;
         }
 
-        public bool CreateEmpty(Core.Version version)
+        public bool CreateEmpty(AssetsVersion version)
         {
-            return this.CreateEmpty(version, ClientFeatures.None);
+            return this.CreateEmpty(version, AssetsFeatures.None);
         }
 
-        public bool Load(string datPath, string sprPath, Core.Version version, ClientFeatures features)
+        public bool Load(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
         {
             if (datPath == null)
             {
@@ -184,9 +184,9 @@ namespace OpenTibia.Assets
             return this.Loaded;
         }
 
-        public bool Load(string datPath, string sprPath, Core.Version version)
+        public bool Load(string datPath, string sprPath, AssetsVersion version)
         {
-            return this.Load(datPath, sprPath, version, ClientFeatures.None);
+            return this.Load(datPath, sprPath, version, AssetsFeatures.None);
         }
 
         public FrameGroup GetFrameGroup(ushort id, ThingCategory category, FrameGroupType groupType)
@@ -569,7 +569,7 @@ namespace OpenTibia.Assets
             return Enumerable.ToArray(this.Things.Missiles.Values);
         }
 
-        public bool Save(string datPath, string sprPath, Core.Version version, ClientFeatures features)
+        public bool Save(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
         {
             if (datPath == null)
             {
@@ -599,9 +599,9 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public bool Save(string datPath, string sprPath, Core.Version version)
+        public bool Save(string datPath, string sprPath, AssetsVersion version)
         {
-            return this.Save(datPath, sprPath, version, ClientFeatures.None);
+            return this.Save(datPath, sprPath, version, AssetsFeatures.None);
         }
 
         public bool Save()

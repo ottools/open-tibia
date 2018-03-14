@@ -23,6 +23,7 @@
 #endregion
 
 #region Using Statements
+using OpenTibia.Assets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -40,7 +41,7 @@ namespace OpenTibia.Core
 
         public VersionStorage()
         {
-            this.Versions = new List<Version>();
+            this.Versions = new List<AssetsVersion>();
         }
 
         #endregion
@@ -59,7 +60,7 @@ namespace OpenTibia.Core
 
         #region Public Properties
 
-        public List<Version> Versions { get; private set; }
+        public List<AssetsVersion> Versions { get; private set; }
 
         public string FilePath { get; private set; }
 
@@ -121,14 +122,14 @@ namespace OpenTibia.Core
 
                 for (int i = 0; i < this.Versions.Count; i++)
                 {
-                    Version version = this.Versions[i];
+                    AssetsVersion version = this.Versions[i];
                     if (version.DatSignature == datSignature && version.SprSignature == sprSignature)
                     {
                         throw new Exception("Duplicated signatures.");
                     }
                 }
 
-                this.Versions.Add(new Version(value, description, datSignature, sprSignature, otbValue));
+                this.Versions.Add(new AssetsVersion(value, description, datSignature, sprSignature, otbValue));
             }
 
             this.FilePath = path;
@@ -143,7 +144,7 @@ namespace OpenTibia.Core
             return true;
         }
 
-        public bool AddVersion(Version version)
+        public bool AddVersion(AssetsVersion version)
         {
             if (!this.Loaded || version == null || !version.IsValid || this.GetBySignatures(version.DatSignature, version.SprSignature) != null)
             {
@@ -161,14 +162,14 @@ namespace OpenTibia.Core
             return true;
         }
 
-        public bool ReplaceVersion(Version newVersion, uint oldDatSignature, uint oldSprSignature)
+        public bool ReplaceVersion(AssetsVersion newVersion, uint oldDatSignature, uint oldSprSignature)
         {
             if (!this.Loaded || newVersion == null || !newVersion.IsValid || oldDatSignature == 0 || oldSprSignature == 0)
             {
                 return false;
             }
 
-            Version oldVersion = this.GetBySignatures(oldDatSignature, oldSprSignature);
+            AssetsVersion oldVersion = this.GetBySignatures(oldDatSignature, oldSprSignature);
             if (oldVersion == null)
             {
                 return false;
@@ -186,14 +187,14 @@ namespace OpenTibia.Core
             return true;
         }
 
-        public bool ReplaceVersion(Version newVersion)
+        public bool ReplaceVersion(AssetsVersion newVersion)
         {
             if (!this.Loaded || newVersion == null || !newVersion.IsValid)
             {
                 return false;
             }
 
-            Version oldVersion = this.GetBySignatures(newVersion.DatSignature, newVersion.SprSignature);
+            AssetsVersion oldVersion = this.GetBySignatures(newVersion.DatSignature, newVersion.SprSignature);
             if (oldVersion == null)
             {
                 return false;
@@ -218,7 +219,7 @@ namespace OpenTibia.Core
                 return false;
             }
 
-            Version version = this.GetBySignatures(datSignature, sprSignature);
+            AssetsVersion version = this.GetBySignatures(datSignature, sprSignature);
             if (version == null)
             {
                 return false;
@@ -235,13 +236,13 @@ namespace OpenTibia.Core
             return true;
         }
 
-        public Version GetBySignatures(uint dat, uint spr)
+        public AssetsVersion GetBySignatures(uint dat, uint spr)
         {
             if (dat != 0 && spr != 0)
             {
                 for (int i = 0; i < this.Versions.Count; i++)
                 {
-                    Version version = this.Versions[i];
+                    AssetsVersion version = this.Versions[i];
                     if (version.DatSignature == dat && version.SprSignature == spr)
                     {
                         return version;
@@ -252,7 +253,7 @@ namespace OpenTibia.Core
             return null;
         }
 
-        public Version GetBySignatures(int dat, int spr)
+        public AssetsVersion GetBySignatures(int dat, int spr)
         {
             if (dat > 0 && spr > 0)
             {
@@ -262,15 +263,15 @@ namespace OpenTibia.Core
             return null;
         }
 
-        public List<Version> GetByVersionValue(uint value)
+        public List<AssetsVersion> GetByVersionValue(uint value)
         {
-            List<Version> found = new List<Version>();
+            List<AssetsVersion> found = new List<AssetsVersion>();
 
             if (value != 0)
             {
                 for (int i = 0; i < this.Versions.Count; i++)
                 {
-                    Version version = this.Versions[i];
+                    AssetsVersion version = this.Versions[i];
                     if (version.Value == value)
                     {
                         found.Add(version);
@@ -281,7 +282,7 @@ namespace OpenTibia.Core
             return found;
         }
 
-        public List<Version> GetByVersionValue(int value)
+        public List<AssetsVersion> GetByVersionValue(int value)
         {
             if (value > 0)
             {
@@ -291,15 +292,15 @@ namespace OpenTibia.Core
             return null;
         }
 
-        public List<Version> GetByOtbValue(uint otb)
+        public List<AssetsVersion> GetByOtbValue(uint otb)
         {
-            List<Version> found = new List<Version>();
+            List<AssetsVersion> found = new List<AssetsVersion>();
 
             if (otb != 0)
             {
                 for (int i = 0; i < this.Versions.Count; i++)
                 {
-                    Version version = this.Versions[i];
+                    AssetsVersion version = this.Versions[i];
                     if (version.OtbValue == otb)
                     {
                         found.Add(version);
@@ -310,7 +311,7 @@ namespace OpenTibia.Core
             return found;
         }
 
-        public List<Version> GetByOtbValue(int otb)
+        public List<AssetsVersion> GetByOtbValue(int otb)
         {
             if (otb > 0)
             {
@@ -320,7 +321,7 @@ namespace OpenTibia.Core
             return null;
         }
 
-        public Version[] GetAllVersions()
+        public AssetsVersion[] GetAllVersions()
         {
             return this.Versions.ToArray();
         }
@@ -365,7 +366,7 @@ namespace OpenTibia.Core
                     writer.WriteStartDocument();
                     writer.WriteStartElement("versions");
 
-                    foreach (Version version in this.Versions)
+                    foreach (AssetsVersion version in this.Versions)
                     {
                         writer.WriteStartElement("version");
                         writer.WriteAttributeString("value", version.Value.ToString());

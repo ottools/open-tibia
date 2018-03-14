@@ -22,18 +22,13 @@
 */
 #endregion
 
-#region Using Statements
-using OpenTibia.Assets;
-using System;
-#endregion
-
-namespace OpenTibia.Core
+namespace OpenTibia.Assets
 {
-    public class Version
+    public class AssetsVersion
     {
         #region Constructor
 
-        public Version(ushort value, string description, uint datSignature, uint sprSignature, uint otbValue)
+        public AssetsVersion(ushort value, string description, uint datSignature, uint sprSignature, uint otbValue)
         {
             this.Value = value;
             this.Description = string.IsNullOrEmpty(description) ? $"Client {value / 100}.{value % 100}" : description;
@@ -43,7 +38,7 @@ namespace OpenTibia.Core
             this.Format = VesionValueToDatFormat(value);
         }
 
-        public Version(ushort value, uint datSignature, uint sprSignature, uint otbValue) : this(value, null, datSignature, sprSignature, otbValue)
+        public AssetsVersion(ushort value, uint datSignature, uint sprSignature, uint otbValue) : this(value, null, datSignature, sprSignature, otbValue)
         {
             ////
         }
@@ -62,7 +57,7 @@ namespace OpenTibia.Core
 
         public uint OtbValue { get; private set; }
 
-        public DatFormat Format { get; private set; }
+        public MetadataFormat Format { get; private set; }
 
         public bool IsValid
         {
@@ -85,59 +80,59 @@ namespace OpenTibia.Core
 
         #region Public Static Methods
 
-        public static DatFormat VesionValueToDatFormat(ushort value)
+        public static MetadataFormat VesionValueToDatFormat(ushort value)
         {
             if (value == 0)
             {
-                return DatFormat.InvalidFormat;
+                return MetadataFormat.InvalidFormat;
             }
 
             if (value < 740)
             {
-                return DatFormat.Format_710;
+                return MetadataFormat.Format_710;
             }
             else if (value < 755)
             {
-                return DatFormat.Format_740;
+                return MetadataFormat.Format_740;
             }
             else if (value < 780)
             {
-                return DatFormat.Format_755;
+                return MetadataFormat.Format_755;
             }
             else if (value < 860)
             {
-                return DatFormat.Format_780;
+                return MetadataFormat.Format_780;
             }
             else if (value < 960)
             {
-                return DatFormat.Format_860;
+                return MetadataFormat.Format_860;
             }
             else if (value < 1010)
             {
-                return DatFormat.Format_960;
+                return MetadataFormat.Format_960;
             }
             else if (value < 1050)
             {
-                return DatFormat.Format_1010;
+                return MetadataFormat.Format_1010;
             }
             else if (value < 1057)
             {
-                return DatFormat.Format_1050;
+                return MetadataFormat.Format_1050;
             }
             else if (value < 1092)
             {
-                return DatFormat.Format_1057;
+                return MetadataFormat.Format_1057;
             }
             else if (value < 1093)
             {
-                return DatFormat.Format_1092;
+                return MetadataFormat.Format_1092;
             }
-            else if (value >= 1093)
+            else if (value >= 1093 && value <= 1099)
             {
-                return DatFormat.Format_1093;
+                return MetadataFormat.Format_1093;
             }
 
-            return DatFormat.InvalidFormat;
+            return MetadataFormat.InvalidFormat;
         }
 
         #endregion

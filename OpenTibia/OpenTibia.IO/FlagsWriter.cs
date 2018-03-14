@@ -43,7 +43,7 @@ namespace OpenTibia.IO
 
         #region | Public Methods |
 
-        public void Write(DatFlags1010 value)
+        public void Write(MetadataFlags_1010_1099 value)
         {
             base.Write((byte)value);
         }

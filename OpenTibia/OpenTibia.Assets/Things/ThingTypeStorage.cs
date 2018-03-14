@@ -62,7 +62,7 @@ namespace OpenTibia.Assets
 
         public string FilePath { get; private set; }
 
-        public Core.Version Version { get; private set; }
+        public AssetsVersion Version { get; private set; }
 
         public Dictionary<ushort, ThingType> Items { get; private set; }
 
@@ -80,7 +80,7 @@ namespace OpenTibia.Assets
 
         public ushort MissileCount { get; private set; }
 
-        public ClientFeatures ClientFeatures { get; private set; }
+        public AssetsFeatures ClientFeatures { get; private set; }
 
         public bool IsTemporary
         {
@@ -540,7 +540,7 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public bool Save(string path, Core.Version version, ClientFeatures features)
+        public bool Save(string path, AssetsVersion version, AssetsFeatures features)
         {
             if (path == null)
             {
@@ -562,12 +562,12 @@ namespace OpenTibia.Assets
                 return false;
             }
 
-            if (features == ClientFeatures.None || features == ClientFeatures.Transparency)
+            if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)DatFormat.Format_755 ? ClientFeatures.PatternZ : features;
-                features |= version.Value >= (ushort)DatFormat.Format_960 ? ClientFeatures.Extended : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1050 ? ClientFeatures.FrameDurations : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1057 ? ClientFeatures.FrameGroups : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
             string directory = Path.GetDirectoryName(path);
@@ -623,8 +623,8 @@ namespace OpenTibia.Assets
                         this.ProgressChanged(this, (compiled * 100) / total);
                     }
 
-                    bool onlyOneGroup = ((this.ClientFeatures & ClientFeatures.FrameGroups) == ClientFeatures.FrameGroups) &&
-                                        ((features & ClientFeatures.FrameGroups) != ClientFeatures.FrameGroups);
+                    bool onlyOneGroup = ((this.ClientFeatures & AssetsFeatures.FrameGroups) == AssetsFeatures.FrameGroups) &&
+                                        ((features & AssetsFeatures.FrameGroups) != AssetsFeatures.FrameGroups);
 
                     // write outfit list.
                     for (ushort id = 1; id <= this.OutfitCount; id++)
@@ -702,14 +702,14 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        public bool Save(string path, Core.Version version)
+        public bool Save(string path, AssetsVersion version)
         {
             if (this.Disposed)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
 
-            return this.Save(path, version, ClientFeatures.None);
+            return this.Save(path, version, AssetsFeatures.None);
         }
 
         public bool Save()
@@ -763,7 +763,7 @@ namespace OpenTibia.Assets
 
         #region | Private Methods |
 
-        private bool InternalCreate(Core.Version version, ClientFeatures features)
+        private bool InternalCreate(AssetsVersion version, AssetsFeatures features)
         {
             if (version == null)
             {
@@ -775,12 +775,12 @@ namespace OpenTibia.Assets
                 return true;
             }
 
-            if (features == ClientFeatures.None || features == ClientFeatures.Transparency)
+            if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)DatFormat.Format_755 ? ClientFeatures.PatternZ : features;
-                features |= version.Value >= (ushort)DatFormat.Format_960 ? ClientFeatures.Extended : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1050 ? ClientFeatures.FrameDurations : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1057 ? ClientFeatures.FrameGroups : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
             this.Version = version;
@@ -799,7 +799,7 @@ namespace OpenTibia.Assets
             return true;
         }
 
-        private bool InternalLoad(string path, Core.Version version, ClientFeatures features)
+        private bool InternalLoad(string path, AssetsVersion version, AssetsFeatures features)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -821,12 +821,12 @@ namespace OpenTibia.Assets
                 return true;
             }
 
-            if (features == ClientFeatures.None || features == ClientFeatures.Transparency)
+            if (features == AssetsFeatures.None || features == AssetsFeatures.Transparency)
             {
-                features |= version.Value >= (ushort)DatFormat.Format_755 ? ClientFeatures.PatternZ : features;
-                features |= version.Value >= (ushort)DatFormat.Format_960 ? ClientFeatures.Extended : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1050 ? ClientFeatures.FrameDurations : features;
-                features |= version.Value >= (ushort)DatFormat.Format_1057 ? ClientFeatures.FrameGroups : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_755 ? AssetsFeatures.PatternsZ : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_960 ? AssetsFeatures.Extended : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1050 ? AssetsFeatures.FramesDuration : features;
+                features |= version.Value >= (ushort)MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
             using (FileStream stream = new FileStream(path, FileMode.Open))
@@ -1077,7 +1077,7 @@ namespace OpenTibia.Assets
 
         #region | Public Static Methods |
 
-        public static ThingTypeStorage Create(Core.Version version, ClientFeatures features)
+        public static ThingTypeStorage Create(AssetsVersion version, AssetsFeatures features)
         {
             ThingTypeStorage storage = new ThingTypeStorage();
             if (storage.InternalCreate(version, features))
@@ -1088,10 +1088,10 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public static ThingTypeStorage Create(Core.Version version)
+        public static ThingTypeStorage Create(AssetsVersion version)
         {
             ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalCreate(version, ClientFeatures.None))
+            if (storage.InternalCreate(version, AssetsFeatures.None))
             {
                 return storage;
             }
@@ -1099,7 +1099,7 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public static ThingTypeStorage Load(string path, Core.Version version, ClientFeatures features)
+        public static ThingTypeStorage Load(string path, AssetsVersion version, AssetsFeatures features)
         {
             ThingTypeStorage storage = new ThingTypeStorage();
             if (storage.InternalLoad(path, version, features))
@@ -1110,10 +1110,10 @@ namespace OpenTibia.Assets
             return null;
         }
 
-        public static ThingTypeStorage Load(string path, Core.Version version)
+        public static ThingTypeStorage Load(string path, AssetsVersion version)
         {
             ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalLoad(path, version, ClientFeatures.None))
+            if (storage.InternalLoad(path, version, AssetsFeatures.None))
             {
                 return storage;
             }

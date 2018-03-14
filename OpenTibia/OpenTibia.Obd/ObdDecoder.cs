@@ -60,7 +60,7 @@ namespace OpenTibia.Obd
                 {
                     return DecodeV2(reader);
                 }
-                else if (version >= (ushort)DatFormat.Format_710)
+                else if (version >= (ushort)MetadataFormat.Format_710)
                 {
                     return DecodeV1(reader);
                 }
@@ -109,7 +109,7 @@ namespace OpenTibia.Obd
 
             ThingType thing = new ThingType(category);
 
-            if (!ThingTypeSerializer.ReadProperties(thing, DatFormat.Format_1010, reader))
+            if (!ThingTypeSerializer.ReadProperties(thing, MetadataFormat.Format_1010, reader))
             {
                 return null;
             }

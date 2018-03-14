@@ -66,7 +66,7 @@ namespace OpenTibia.Obd
             using (FlagsBinaryWriter writer = new FlagsBinaryWriter(new MemoryStream()))
             {
                 // write client version
-                writer.Write((ushort)DatFormat.Format_1010);
+                writer.Write((ushort)MetadataFormat.Format_1010);
 
                 // write category
                 string category = string.Empty;
@@ -92,7 +92,7 @@ namespace OpenTibia.Obd
                 writer.Write((ushort)category.Length);
                 writer.Write(Encoding.UTF8.GetBytes(category));
 
-                if (!ThingTypeSerializer.WriteProperties(data.ThingType, DatFormat.Format_1010, writer))
+                if (!ThingTypeSerializer.WriteProperties(data.ThingType, MetadataFormat.Format_1010, writer))
                 {
                     return null;
                 }
@@ -135,7 +135,7 @@ namespace OpenTibia.Obd
                 writer.Write((ushort)ObdVersion.Version2);
 
                 // write client version
-                writer.Write((ushort)DatFormat.Format_1050);
+                writer.Write((ushort)MetadataFormat.Format_1050);
 
                 // write category
                 writer.Write((byte)data.Category);

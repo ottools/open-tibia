@@ -22,9 +22,7 @@
 */
 #endregion
 
-#region Using Statements
-using System;
-#endregion
+using OpenTibia.Assets;
 
 namespace OpenTibia.Core
 {
@@ -32,7 +30,7 @@ namespace OpenTibia.Core
     {
         #region Constructor
 
-        public VersionListChangedArgs(OpenTibia.Core.Version changedVersion, StorageChangeType changeType)
+        public VersionListChangedArgs(AssetsVersion changedVersion, StorageChangeType changeType)
         {
             this.ChangedVersion = changedVersion;
             this.ChangeType = changeType;
@@ -42,7 +40,7 @@ namespace OpenTibia.Core
 
         #region Public Properties
 
-        public OpenTibia.Core.Version ChangedVersion { get; private set; }
+        public AssetsVersion ChangedVersion { get; private set; }
 
         public StorageChangeType ChangeType { get; private set; }
 

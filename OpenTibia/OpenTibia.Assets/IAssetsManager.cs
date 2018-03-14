@@ -34,17 +34,6 @@ using System.Drawing;
 
 namespace OpenTibia.Assets
 {
-    [Flags]
-    public enum ClientFeatures
-    {
-        None = 0,
-        PatternZ = 1 << 0,
-        Extended = 1 << 1,
-        FrameDurations = 1 << 2,
-        FrameGroups = 1 << 3,
-        Transparency = 1 << 4
-    }
-
     public interface IAssetsManager : IDisposable
     {
         #region | Events |
@@ -75,13 +64,13 @@ namespace OpenTibia.Assets
 
         #region | Methods |
 
-        bool CreateEmpty(Core.Version version, ClientFeatures features);
+        bool CreateEmpty(AssetsVersion version, AssetsFeatures features);
 
-        bool CreateEmpty(Core.Version version);
+        bool CreateEmpty(AssetsVersion version);
 
-        bool Load(string datPath, string sprPath, Core.Version version, ClientFeatures features);
+        bool Load(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features);
 
-        bool Load(string datPath, string sprPath, Core.Version version);
+        bool Load(string datPath, string sprPath, AssetsVersion version);
 
         FrameGroup GetFrameGroup(ushort id, ThingCategory category, FrameGroupType groupType);
 
@@ -113,9 +102,9 @@ namespace OpenTibia.Assets
 
         ThingType[] GetAllMissiles();
 
-        bool Save(string datPath, string sprPath, Core.Version version, ClientFeatures features);
+        bool Save(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features);
 
-        bool Save(string datPath, string sprPath, Core.Version version);
+        bool Save(string datPath, string sprPath, AssetsVersion version);
 
         bool Save();
 

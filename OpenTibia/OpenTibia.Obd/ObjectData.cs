@@ -25,7 +25,6 @@
 #region Using Statements
 using OpenTibia.Animation;
 using OpenTibia.Assets;
-using OpenTibia.Assets;
 using OpenTibia.Collections;
 using OpenTibia.Geom;
 using OpenTibia.Utilities;
@@ -52,7 +51,7 @@ namespace OpenTibia.Obd
 
         #region | Constructor |
 
-        public ObjectData(ThingType type, SpriteGroup sprites, DatFormat format)
+        public ObjectData(ThingType type, SpriteGroup sprites, MetadataFormat format)
         {
             if (type == null)
             {
@@ -83,7 +82,7 @@ namespace OpenTibia.Obd
 
             this.type = type;
             this.sprites = sprites;
-            this.Format = DatFormat.Format_Last;
+            this.Format = MetadataFormat.Format_Last;
         }
 
         #endregion
@@ -150,7 +149,7 @@ namespace OpenTibia.Obd
             }
         }
 
-        public DatFormat Format { get; private set; }
+        public MetadataFormat Format { get; private set; }
 
         #endregion
 
