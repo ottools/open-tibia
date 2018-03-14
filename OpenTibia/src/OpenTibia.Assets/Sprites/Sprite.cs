@@ -69,10 +69,10 @@ namespace OpenTibia.Assets
                 {
                     if (Length != 0)
                     {
-                        byte[] pixels = UncompressPixelsBGRA(CompressedPixels, m_transparent);
+                        byte[] pixels = UncompressBGRA(CompressedPixels, m_transparent);
 
                         m_transparent = value;
-                        CompressedPixels = CompressPixelsBGRA(pixels, m_transparent);
+                        CompressedPixels = CompressBGRA(pixels, m_transparent);
                         m_bitmap = null;
                     }
                     else
@@ -95,7 +95,7 @@ namespace OpenTibia.Assets
         public byte[] GetBGRAPixels()
         {
             byte[] bytes = CompressedPixels ?? EmptyArray;
-            return UncompressPixelsBGRA(bytes, m_transparent);
+            return UncompressBGRA(bytes, m_transparent);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace OpenTibia.Assets
         public byte[] GetARGBPixels()
         {
             byte[] bytes = CompressedPixels ?? EmptyArray;
-            return UncompressPixelsARGB(bytes, m_transparent);
+            return UncompressARGB(bytes, m_transparent);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace OpenTibia.Assets
                 throw new Exception("Invalid sprite pixels length");
             }
 
-            CompressedPixels = CompressPixelsBGRA(pixels, m_transparent);
+            CompressedPixels = CompressBGRA(pixels, m_transparent);
             m_bitmap = null;
         }
 
@@ -195,7 +195,7 @@ namespace OpenTibia.Assets
             Marshal.Copy(bitmapData.Scan0, pixels, 0, PixelsDataSize);
             bitmap.UnlockBits(bitmapData);
 
-            return CompressPixelsBGRA(pixels, false);
+            return CompressBGRA(pixels, false);
         }
 
         public static byte[] CompressBitmap(Bitmap bitmap, bool transparent)
@@ -210,10 +210,10 @@ namespace OpenTibia.Assets
             Marshal.Copy(bitmapData.Scan0, pixels, 0, PixelsDataSize);
             bitmap.UnlockBits(bitmapData);
 
-            return CompressPixelsBGRA(pixels, transparent);
+            return CompressBGRA(pixels, transparent);
         }
 
-        public static byte[] CompressPixelsBGRA(byte[] pixels, bool transparent)
+        public static byte[] CompressBGRA(byte[] pixels, bool transparent)
         {
             if (pixels == null)
             {
@@ -307,7 +307,7 @@ namespace OpenTibia.Assets
 
         public static byte[] CompressPixelsBGRA(byte[] pixels)
         {
-            return CompressPixelsBGRA(pixels, false);
+            return CompressBGRA(pixels, false);
         }
 
         public static byte[] CompressPixelsARGB(byte[] pixels, bool transparent)
@@ -422,7 +422,7 @@ namespace OpenTibia.Assets
             }
 
             Bitmap bitmap = new Bitmap(DefaultSize, DefaultSize, PixelFormat.Format32bppArgb);
-            byte[] pixels = UncompressPixelsBGRA(compressedPixels, transparent);
+            byte[] pixels = UncompressBGRA(compressedPixels, transparent);
             BitmapData bitmapData = bitmap.LockBits(Rectangle, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             Marshal.Copy(pixels, 0, bitmapData.Scan0, PixelsDataSize);
             bitmap.UnlockBits(bitmapData);
@@ -430,145 +430,147 @@ namespace OpenTibia.Assets
         }
 
         /// <summary>
-        /// Used for C# Bitmap
+        /// Uncompress data to BGRA pixel format.
         /// </summary>
-        /// <param name="compressedPixels"></param>
+        /// <param name="data"></param>
         /// <param name="transparent"></param>
         /// <returns></returns>
-        public static byte[] UncompressPixelsBGRA(byte[] compressedPixels, bool transparent)
+        public static byte[] UncompressBGRA(byte[] data, bool transparent)
         {
-            if (compressedPixels == null)
+            if (data == null)
             {
-                throw new ArgumentNullException(nameof(compressedPixels));
+                throw new ArgumentNullException(nameof(data));
             }
 
-            int read = 0;
             int write = 0;
-            int pos = 0;
             int transparentPixels = 0;
             int coloredPixels = 0;
-            int length = compressedPixels.Length;
-            byte bitPerPixel = (byte)(transparent ? 4 : 3);
+            int length = data.Length;
+            int bpp = transparent ? 4 : 3;
             byte[] pixels = new byte[PixelsDataSize];
 
-            for (read = 0; read < length; read += 4 + (bitPerPixel * coloredPixels))
+            for (int read = 0, pos = 0; read < length; read += 4 + (bpp * coloredPixels))
             {
-                transparentPixels = compressedPixels[pos++] | compressedPixels[pos++] << 8;
-                coloredPixels = compressedPixels[pos++] | compressedPixels[pos++] << 8;
+                transparentPixels = data[pos++] | data[pos++] << 8;
+                coloredPixels = data[pos++] | data[pos++] << 8;
 
                 for (int i = 0; i < transparentPixels; i++)
                 {
-                    pixels[write++] = 0x00; // Blue
-                    pixels[write++] = 0x00; // Green
-                    pixels[write++] = 0x00; // Red
-                    pixels[write++] = 0x00; // Alpha
+                    pixels[write    ] = 0x00; // blue
+                    pixels[write + 1] = 0x00; // green
+                    pixels[write + 2] = 0x00; // red
+                    pixels[write + 3] = 0x00; // alpha
+                    write += 4;
                 }
 
                 for (int i = 0; i < coloredPixels; i++)
                 {
-                    byte red = compressedPixels[pos++];
-                    byte green = compressedPixels[pos++];
-                    byte blue = compressedPixels[pos++];
-                    byte alpha = transparent ? compressedPixels[pos++] : (byte)0xFF;
+                    byte red = data[pos++];
+                    byte green = data[pos++];
+                    byte blue = data[pos++];
+                    byte alpha = transparent ? data[pos++] : (byte)0xFF;
 
-                    pixels[write++] = blue;
-                    pixels[write++] = green;
-                    pixels[write++] = red;
-                    pixels[write++] = alpha;
+                    pixels[write    ] = blue;
+                    pixels[write + 1] = green;
+                    pixels[write + 2] = red;
+                    pixels[write + 3] = alpha;
+                    write += 4;
                 }
             }
 
-            // Fills the remaining pixels
+            // fills the remaining pixels
             while (write < PixelsDataSize)
             {
-                pixels[write++] = 0x00; // Blue
-                pixels[write++] = 0x00; // Green
-                pixels[write++] = 0x00; // Red
-                pixels[write++] = 0x00; // Alpha
+                pixels[write    ] = 0x00; // blue
+                pixels[write + 1] = 0x00; // green
+                pixels[write + 2] = 0x00; // red
+                pixels[write + 3] = 0x00; // alpha
+                write += 4;
             }
 
             return pixels;
         }
 
         /// <summary>
-        /// Used for c# bitmap.
+        /// Uncompress data to BGRA pixel format.
         /// </summary>
-        /// <param name="compressedPixels"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] UncompressPixelsBGRA(byte[] compressedPixels)
+        public static byte[] UncompressBGRA(byte[] data)
         {
-            return UncompressPixelsBGRA(compressedPixels, false);
+            return UncompressBGRA(data, false);
         }
 
         /// <summary>
-        /// Used for AS3 Bitmap
+        /// Uncompress data to ARGB pixel format.
         /// </summary>
-        /// <param name="compressedPixels"></param>
+        /// <param name="data"></param>
         /// <param name="transparent"></param>
         /// <returns></returns>
-        public static byte[] UncompressPixelsARGB(byte[] compressedPixels, bool transparent)
+        public static byte[] UncompressARGB(byte[] data, bool transparent)
         {
-            if (compressedPixels == null)
+            if (data == null)
             {
-                throw new ArgumentNullException(nameof(compressedPixels));
+                throw new ArgumentNullException(nameof(data));
             }
 
-            int read = 0;
             int write = 0;
-            int pos = 0;
             int transparentPixels = 0;
             int coloredPixels = 0;
-            int length = compressedPixels.Length;
-            byte bitPerPixel = (byte)(transparent ? 4 : 3);
+            int length = data.Length;
+            int bpp = transparent ? 4 : 3;
             byte[] pixels = new byte[PixelsDataSize];
 
-            for (read = 0; read < length; read += 4 + (bitPerPixel * coloredPixels))
+            for (int read = 0, pos = 0; read < length; read += 4 + (bpp * coloredPixels))
             {
-                transparentPixels = compressedPixels[pos++] | compressedPixels[pos++] << 8;
-                coloredPixels = compressedPixels[pos++] | compressedPixels[pos++] << 8;
+                transparentPixels = data[pos++] | data[pos++] << 8;
+                coloredPixels = data[pos++] | data[pos++] << 8;
 
                 for (int i = 0; i < transparentPixels; i++)
                 {
-                    pixels[write++] = 0x00; // alpha
-                    pixels[write++] = 0x00; // red
-                    pixels[write++] = 0x00; // green
-                    pixels[write++] = 0x00; // blue
+                    pixels[write]     = 0x00; // alpha
+                    pixels[write + 1] = 0x00; // red
+                    pixels[write + 2] = 0x00; // green
+                    pixels[write + 3] = 0x00; // blue
+                    write += 4;
                 }
 
                 for (int i = 0; i < coloredPixels; i++)
                 {
-                    byte red = compressedPixels[pos++];
-                    byte green = compressedPixels[pos++];
-                    byte blue = compressedPixels[pos++];
-                    byte alpha = transparent ? compressedPixels[pos++] : (byte)0xFF;
+                    byte red = data[pos++];
+                    byte green = data[pos++];
+                    byte blue = data[pos++];
+                    byte alpha = transparent ? data[pos++] : (byte)0xFF;
 
-                    pixels[write++] = alpha;
-                    pixels[write++] = red;
-                    pixels[write++] = green;
-                    pixels[write++] = blue;
+                    pixels[write]     = alpha;
+                    pixels[write + 1] = red;
+                    pixels[write + 2] = green;
+                    pixels[write + 3] = blue;
+                    write += 4;
                 }
             }
 
-            // Fills the remaining pixels
+            // fills the remaining pixels
             while (write < PixelsDataSize)
             {
-                pixels[write++] = 0x00; // alpha
-                pixels[write++] = 0x00; // red
-                pixels[write++] = 0x00; // green
-                pixels[write++] = 0x00; // blue
+                pixels[write]     = 0x00; // alpha
+                pixels[write + 1] = 0x00; // red
+                pixels[write + 2] = 0x00; // green
+                pixels[write + 3] = 0x00; // blue
+                write += 4;
             }
 
             return pixels;
         }
 
         /// <summary>
-        /// Used for AS3 bitmap.
+        /// Uncompress data to ARGB pixel format.
         /// </summary>
-        /// <param name="compressedPixels"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] UncompressPixelsARGB(byte[] compressedPixels)
+        public static byte[] UncompressARGB(byte[] data)
         {
-            return UncompressPixelsARGB(compressedPixels, false);
+            return UncompressARGB(data, false);
         }
 
         public static readonly Rectangle Rectangle = new Rectangle(0, 0, DefaultSize, DefaultSize);
