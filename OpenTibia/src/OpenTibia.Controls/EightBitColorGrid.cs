@@ -18,7 +18,7 @@
 */
 #endregion
 
-using OpenTibia.Utils;
+using OpenTibia.Utility;
 using System.Drawing;
 
 namespace OpenTibia.Controls

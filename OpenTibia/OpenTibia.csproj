@@ -84,13 +84,13 @@
     <Compile Include="src\OpenTibia.IO\BinaryTreeWriter.cs" />
     <Compile Include="src\OpenTibia.IO\FlagsWriter.cs" />
     <Compile Include="src\OpenTibia.IO\SpecialChar.cs" />
-    <Compile Include="src\OpenTibia.Utils\BitmapLocker.cs" />
-    <Compile Include="src\OpenTibia.Utils\Clock.cs" />
-    <Compile Include="src\OpenTibia.Utils\ColorUtils.cs" />
-    <Compile Include="src\OpenTibia.Utils\LZMACoder.cs" />
-    <Compile Include="src\OpenTibia.Utils\OutfitData.cs" />
-    <Compile Include="src\OpenTibia.Utils\PathUtils.cs" />
-    <Compile Include="src\OpenTibia.Utils\SpriteCache.cs" />
+    <Compile Include="src\OpenTibia.Utility\BitmapLocker.cs" />
+    <Compile Include="src\OpenTibia.Utility\Clock.cs" />
+    <Compile Include="src\OpenTibia.Utility\ColorUtils.cs" />
+    <Compile Include="src\OpenTibia.Utility\LZMACoder.cs" />
+    <Compile Include="src\OpenTibia.Utility\OutfitData.cs" />
+    <Compile Include="src\OpenTibia.Utility\PathUtils.cs" />
+    <Compile Include="src\OpenTibia.Utility\SpriteCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

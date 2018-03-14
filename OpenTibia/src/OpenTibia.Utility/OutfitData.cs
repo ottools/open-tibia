@@ -22,24 +22,30 @@
 */
 #endregion
 
-using System.Diagnostics;
-
-namespace OpenTibia.Utils
+namespace OpenTibia.Utility
 {
-    public static class Clock
+    public struct OutfitData
     {
-        private static Stopwatch stopwatch;
-
-        static Clock()
+        public OutfitData(ushort type = 0, byte head = 0, byte body = 0, byte legs = 0, byte feet = 0, byte addons = 0)
         {
-            stopwatch = new Stopwatch();
+            Type = type;
+            Head = head;
+            Body = body;
+            Legs = legs;
+            Feet = feet;
+            Addons = addons;
         }
 
-        public static long ElapsedMilliseconds => stopwatch.ElapsedMilliseconds;
+        public ushort Type { get; set; }
 
-        public static void Start()
-        {
-            stopwatch.Start();
-        }
+        public byte Head { get; set; }
+
+        public byte Body { get; set; }
+
+        public byte Legs { get; set; }
+
+        public byte Feet { get; set; }
+
+        public byte Addons { get; set; }
     }
 }

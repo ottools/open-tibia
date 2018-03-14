@@ -22,7 +22,7 @@
 */
 #endregion
 
-using OpenTibia.Utils;
+using OpenTibia.Utility;
 using System;
 
 namespace OpenTibia.Animation

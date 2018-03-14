@@ -26,7 +26,7 @@ using OpenTibia.Animation;
 using OpenTibia.Common;
 using OpenTibia.Geom;
 using OpenTibia.Obd;
-using OpenTibia.Utils;
+using OpenTibia.Utility;
 using System;
 using System.Drawing;
 

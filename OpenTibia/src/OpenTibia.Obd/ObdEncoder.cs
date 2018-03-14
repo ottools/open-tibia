@@ -25,7 +25,7 @@
 using OpenTibia.Animation;
 using OpenTibia.Assets;
 using OpenTibia.IO;
-using OpenTibia.Utils;
+using OpenTibia.Utility;
 using System;
 using System.IO;
 using System.Text;

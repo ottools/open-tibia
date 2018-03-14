@@ -22,30 +22,30 @@
 */
 #endregion
 
-namespace OpenTibia.Utils
+using System;
+using System.IO;
+using System.Windows.Forms;
+
+namespace OpenTibia.Utility
 {
-    public struct OutfitData
+    public abstract class PathUtils
     {
-        public OutfitData(ushort type = 0, byte head = 0, byte body = 0, byte legs = 0, byte feet = 0, byte addons = 0)
-        {
-            Type = type;
-            Head = head;
-            Body = body;
-            Legs = legs;
-            Feet = feet;
-            Addons = addons;
-        }
+        /// <summary>
+        /// The folder containing the application's installed files.
+        /// </summary>
+        public static string ApplicationDirectory
+            => Path.GetDirectoryName(Application.ExecutablePath);
 
-        public ushort Type { get; set; }
+        /// <summary>
+        /// Path to the user's application directory
+        /// </summary>
+        public static string UserDirectory
+            => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        public byte Head { get; set; }
-
-        public byte Body { get; set; }
-
-        public byte Legs { get; set; }
-
-        public byte Feet { get; set; }
-
-        public byte Addons { get; set; }
+        /// <summary>
+        /// Path to the plugin directory
+        /// </summary>
+        public static string PluginDirectory
+            => Path.Combine(ApplicationDirectory, "Plugins");
     }
 }

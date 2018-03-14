@@ -22,30 +22,24 @@
 */
 #endregion
 
-using System;
-using System.IO;
-using System.Windows.Forms;
+using System.Diagnostics;
 
-namespace OpenTibia.Utils
+namespace OpenTibia.Utility
 {
-    public abstract class PathUtils
+    public static class Clock
     {
-        /// <summary>
-        /// The folder containing the application's installed files.
-        /// </summary>
-        public static string ApplicationDirectory
-            => Path.GetDirectoryName(Application.ExecutablePath);
+        private static Stopwatch stopwatch;
 
-        /// <summary>
-        /// Path to the user's application directory
-        /// </summary>
-        public static string UserDirectory
-            => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        static Clock()
+        {
+            stopwatch = new Stopwatch();
+        }
 
-        /// <summary>
-        /// Path to the plugin directory
-        /// </summary>
-        public static string PluginDirectory
-            => Path.Combine(ApplicationDirectory, "Plugins");
+        public static long ElapsedMilliseconds => stopwatch.ElapsedMilliseconds;
+
+        public static void Start()
+        {
+            stopwatch.Start();
+        }
     }
 }

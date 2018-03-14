@@ -27,7 +27,7 @@ using SevenZip;
 using System.IO;
 using SevenZip.Compression.LZMA;
 
-namespace OpenTibia.Utils
+namespace OpenTibia.Utility
 {
     public static class LZMACoder
     {

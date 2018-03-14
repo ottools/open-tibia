@@ -22,7 +22,7 @@
 */
 #endregion
 
-using OpenTibia.Utils;
+using OpenTibia.Utility;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;

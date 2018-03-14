@@ -24,7 +24,7 @@
 
 using System.Drawing;
 
-namespace OpenTibia.Utils
+namespace OpenTibia.Utility
 {
     public static class ColorUtils
     {
