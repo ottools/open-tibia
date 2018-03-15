@@ -34,17 +34,15 @@ namespace OpenTibia.Assets
 {
     public interface IAssetsManager : IDisposable
     {
-        event EventHandler AssetsLoaded;
+        event AssetsHandler AssetsLoaded;
 
-        event EventHandler AssetsChanged;
+        event AssetsHandler AssetsChanged;
 
-        event EventHandler AssetsCompiled;
-
-        event EventHandler AssetsUnloaded;
+        event AssetsHandler AssetsCompiled;
 
         event ProgressHandler ProgressChanged;
 
-        ThingTypeStorage Things { get; }
+        ThingTypeStorage Objects { get; }
 
         SpriteStorage Sprites { get; }
 
@@ -52,13 +50,17 @@ namespace OpenTibia.Assets
 
         bool Loaded { get; }
 
-        bool CreateEmpty(AssetsVersion version, AssetsFeatures features);
+        void CreateEmpty(AssetsVersion version, AssetsFeatures features, SpritePixelFormat pixelFormat);
 
-        bool CreateEmpty(AssetsVersion version);
+        void CreateEmpty(AssetsVersion version, AssetsFeatures features);
 
-        bool Load(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features);
+        void CreateEmpty(AssetsVersion version);
 
-        bool Load(string datPath, string sprPath, AssetsVersion version);
+        void Load(string metadataPath, string spritesPath, AssetsVersion version, AssetsFeatures features, SpritePixelFormat pixelFormat);
+
+        void Load(string metadataPath, string spritesPath, AssetsVersion version, AssetsFeatures features);
+
+        void Load(string metadataPath, string spritesPath, AssetsVersion version);
 
         FrameGroup GetFrameGroup(ushort id, ObjectCategory category, FrameGroupType groupType);
 

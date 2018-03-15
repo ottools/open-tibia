@@ -32,13 +32,15 @@ namespace OpenTibia.Assets
 {
     public class ThingTypeStorage : IStorage, IDisposable
     {
-        private ThingTypeStorage()
+        public ThingTypeStorage()
         {
             Items = new Dictionary<ushort, ThingType>();
             Outfits = new Dictionary<ushort, ThingType>();
             Effects = new Dictionary<ushort, ThingType>();
             Missiles = new Dictionary<ushort, ThingType>();
         }
+
+        public event StorageHandler StorageLoaded;
 
         public event ThingListChangedHandler StorageChanged;
 
@@ -75,6 +77,58 @@ namespace OpenTibia.Assets
         public bool Loaded { get; private set; }
 
         public bool Disposed { get; private set; }
+
+        public void Create(AssetsVersion version, AssetsFeatures features)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
+            if (InternalCreate(version, features))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Create(AssetsVersion version)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
+            if (InternalCreate(version, AssetsFeatures.None))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Load(string path, AssetsVersion version, AssetsFeatures features)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
+            if (InternalLoad(path, version, features))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Load(string path, AssetsVersion version)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(ThingTypeStorage));
+            }
+
+            if (InternalLoad(path, version, AssetsFeatures.None))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
 
         public bool AddThing(ThingType thing)
         {
@@ -737,7 +791,7 @@ namespace OpenTibia.Assets
             MissileCount = 1;
             Changed = true;
             Loaded = true;
-            Disposed = false;
+
             return true;
         }
 
@@ -876,7 +930,7 @@ namespace OpenTibia.Assets
             ClientFeatures = features;
             Changed = false;
             Loaded = true;
-            Disposed = false;
+
             return true;
         }
 
@@ -1013,50 +1067,6 @@ namespace OpenTibia.Assets
             }
 
             return changedThing;
-        }
-
-        public static ThingTypeStorage Create(AssetsVersion version, AssetsFeatures features)
-        {
-            ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalCreate(version, features))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static ThingTypeStorage Create(AssetsVersion version)
-        {
-            ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalCreate(version, AssetsFeatures.None))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static ThingTypeStorage Load(string path, AssetsVersion version, AssetsFeatures features)
-        {
-            ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalLoad(path, version, features))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static ThingTypeStorage Load(string path, AssetsVersion version)
-        {
-            ThingTypeStorage storage = new ThingTypeStorage();
-            if (storage.InternalLoad(path, version, AssetsFeatures.None))
-            {
-                return storage;
-            }
-
-            return null;
         }
     }
 }

@@ -51,11 +51,10 @@ namespace OpenTibia.Assets
         private byte m_headSize;
         private Sprite m_blankSprite;
         private bool m_transparent;
-        private SpritePixelFormat m_format;
         private BackgroundWorker m_worker;
         private CompilationData m_compilationData;
 
-        private SpriteStorage(SpritePixelFormat format)
+        public SpriteStorage(SpritePixelFormat format)
         {
             PixelFormat = format;
 
@@ -67,6 +66,8 @@ namespace OpenTibia.Assets
             m_worker.ProgressChanged += new ProgressChangedEventHandler(WorkerProgressChanged_Handler);
             m_worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkerCompleted_Handler);
         }
+
+        public event StorageHandler StorageLoaded;
 
         public event SpriteListChangedHandler StorageChanged;
 
@@ -82,24 +83,13 @@ namespace OpenTibia.Assets
 
         public uint Count { get; private set; }
 
-        public AssetsFeatures ClientFeatures { get; private set; }
+        public AssetsFeatures Features { get; private set; }
 
         public SpritePixelFormat PixelFormat { get; }
 
         public bool IsTemporary => Loaded && FilePath == null;
 
-        public bool IsFull
-        {
-            get
-            {
-                if ((ClientFeatures & AssetsFeatures.Extended) == AssetsFeatures.Extended)
-                {
-                    return false;
-                }
-
-                return Count >= 0xFFFF;
-            }
-        }
+        public bool IsFull => !Features.HasFlag(AssetsFeatures.Extended) && Count >= 0xFFFF;
 
         public bool Changed { get; private set; }
 
@@ -108,6 +98,58 @@ namespace OpenTibia.Assets
         public bool Compiling { get; private set; }
 
         public bool Disposed { get; private set; }
+
+        public void Create(AssetsVersion version, AssetsFeatures features)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
+            if (InternalCreate(version, features))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Create(AssetsVersion version)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
+            if (InternalCreate(version, AssetsFeatures.None))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Load(string path, AssetsVersion version, AssetsFeatures features)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
+            if (InternalLoad(path, version, features, false))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
+
+        public void Load(string path, AssetsVersion version)
+        {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(SpriteStorage));
+            }
+
+            if (InternalLoad(path, version, AssetsFeatures.None, false))
+            {
+                StorageLoaded?.Invoke(this);
+            }
+        }
 
         public bool AddSprite(Sprite sprite)
         {
@@ -491,7 +533,7 @@ namespace OpenTibia.Assets
                 Directory.CreateDirectory(directory);
             }
 
-            if (!Changed && Version.Equals(version) && ClientFeatures == features)
+            if (!Changed && Version.Equals(version) && Features == features)
             {
                 //  just copy the content and reload if nothing has changed.
                 if (FilePath != null && !FilePath.Equals(path))
@@ -539,7 +581,7 @@ namespace OpenTibia.Assets
 
             if (Changed && !IsTemporary)
             {
-                return Save(FilePath, Version, ClientFeatures);
+                return Save(FilePath, Version, Features);
             }
 
             return true;
@@ -607,7 +649,7 @@ namespace OpenTibia.Assets
             }
 
             Version = version;
-            ClientFeatures = features;
+            Features = features;
             m_transparent = features.HasFlag(AssetsFeatures.Transparency);
             m_headSize = features.HasFlag(AssetsFeatures.Extended) ? HeaderU32 : HeaderU16;
             m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
@@ -617,7 +659,6 @@ namespace OpenTibia.Assets
             Changed = true;
             Loaded = true;
             Compiling = false;
-            Disposed = false;
             return true;
         }
 
@@ -688,13 +729,13 @@ namespace OpenTibia.Assets
 
             FilePath = path;
             Version = version;
-            ClientFeatures = features;
+            Features = features;
             m_transparent = features.HasFlag(AssetsFeatures.Transparency);
             Count = m_rawSpriteCount;
             m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
             Changed = false;
             Loaded = true;
-            Disposed = false;
+
             return true;
         }
 
@@ -927,50 +968,6 @@ namespace OpenTibia.Assets
             {
                 StorageCompilationCanceled(this);
             }
-        }
-
-        public static SpriteStorage Create(AssetsVersion version, AssetsFeatures features)
-        {
-            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
-            if (storage.InternalCreate(version, features))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static SpriteStorage Create(AssetsVersion version)
-        {
-            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
-            if (storage.InternalCreate(version, AssetsFeatures.None))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static SpriteStorage Load(string path, AssetsVersion version, AssetsFeatures features)
-        {
-            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
-            if (storage.InternalLoad(path, version, features, false))
-            {
-                return storage;
-            }
-
-            return null;
-        }
-
-        public static SpriteStorage Load(string path, AssetsVersion version)
-        {
-            SpriteStorage storage = new SpriteStorage(SpritePixelFormat.Bgra);
-            if (storage.InternalLoad(path, version, AssetsFeatures.None, false))
-            {
-                return storage;
-            }
-
-            return null;
         }
     }
 }

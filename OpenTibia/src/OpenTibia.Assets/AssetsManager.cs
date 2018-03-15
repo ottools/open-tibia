@@ -37,10 +37,19 @@ using System.Runtime.InteropServices;
 
 namespace OpenTibia.Assets
 {
+    public delegate void AssetsHandler(AssetsManager assets);
+
     public class AssetsManager : IAssetsManager
     {
         private SpriteCache m_spriteCache;
         private Rectangle m_rectangle;
+
+        private string m_metadataPath;
+        private string m_spritesPath;
+        private AssetsVersion m_version;
+        private AssetsFeatures m_features;
+        private SpritePixelFormat m_pixelFormat;
+        private int m_processIndex;
 
         public AssetsManager()
         {
@@ -48,115 +57,100 @@ namespace OpenTibia.Assets
             m_rectangle = new Rectangle(0, 0, Sprite.DefaultSize, Sprite.DefaultSize);
         }
 
-        public event EventHandler AssetsLoaded;
+        public event AssetsHandler AssetsLoaded;
 
-        public event EventHandler AssetsChanged;
+        public event AssetsHandler AssetsChanged;
 
-        public event EventHandler AssetsCompiled;
-
-        public event EventHandler AssetsUnloaded;
+        public event AssetsHandler AssetsCompiled;
 
         public event ProgressHandler ProgressChanged;
 
-        public ThingTypeStorage Things { get; private set; }
+        public ThingTypeStorage Objects { get; private set; }
 
         public SpriteStorage Sprites { get; private set; }
 
-        public bool Changed => Things != null && Sprites != null && (Things.Changed || Sprites.Changed);
+        public bool Changed => Objects != null && Sprites != null && (Objects.Changed || Sprites.Changed);
 
-        public bool Loaded => Things != null && Sprites != null && Things.Loaded && Sprites.Loaded;
+        public bool Loaded => Objects != null && Sprites != null && Objects.Loaded && Sprites.Loaded;
 
-        public bool CreateEmpty(AssetsVersion version, AssetsFeatures features)
+        public bool Disposed { get; private set; }
+
+        public void CreateEmpty(AssetsVersion version, AssetsFeatures features, SpritePixelFormat pixelFormat)
         {
-            if (version == null)
+            if (Disposed)
             {
-                throw new ArgumentNullException(nameof(version));
+                throw new ObjectDisposedException(nameof(AssetsManager));
             }
 
-            Things = ThingTypeStorage.Create(version, features);
-            if (Things == null)
-            {
-                return false;
-            }
+            m_version = version ?? throw new ArgumentNullException(nameof(version));
+            m_features = features;
+            m_pixelFormat = pixelFormat;
 
-            Sprites = SpriteStorage.Create(version, features);
-            if (Sprites == null)
-            {
-                return false;
-            }
+            Objects = new ThingTypeStorage();
+            Objects.StorageLoaded += StorageLoaded_Handler;
+            Objects.StorageChanged += ThingListChanged_Handler;
+            Objects.StorageCompiled += StorageCompiled_Handler;
+            Objects.ProgressChanged += StorageProgressChanged_Handler;
 
-            Things.ProgressChanged += StorageProgressChanged_Handler;
-            Things.StorageChanged += ThingListChanged_Handler;
-            Things.StorageCompiled += StorageCompiled_Handler;
+            Sprites = new SpriteStorage(m_pixelFormat);
+            Sprites.StorageLoaded += StorageLoaded_Handler;
             Sprites.StorageChanged += SpriteListChanged_Handler;
-            Sprites.ProgressChanged += StorageProgressChanged_Handler;
             Sprites.StorageCompiled += StorageCompiled_Handler;
+            Sprites.ProgressChanged += StorageProgressChanged_Handler;
 
-            if (Loaded && AssetsLoaded != null)
-            {
-                AssetsLoaded(this, new EventArgs());
-            }
-
-            return Loaded;
+            m_processIndex = -1;
+            ProcessNext();
         }
 
-        public bool CreateEmpty(AssetsVersion version)
+        public void CreateEmpty(AssetsVersion version, AssetsFeatures features)
+            => CreateEmpty(version, features, SpritePixelFormat.Bgra);
+
+        public void CreateEmpty(AssetsVersion version)
+            => CreateEmpty(version, AssetsFeatures.None);
+
+        public void Load(string metadataPath, string spritesPath, AssetsVersion version, AssetsFeatures features, SpritePixelFormat pixelFormat)
         {
-            return CreateEmpty(version, AssetsFeatures.None);
-        }
-
-        public bool Load(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
-        {
-            if (datPath == null)
+            if (Disposed)
             {
-                throw new ArgumentNullException(nameof(datPath));
+                throw new ObjectDisposedException(nameof(AssetsManager));
             }
 
-            if (sprPath == null)
-            {
-                throw new ArgumentNullException(nameof(sprPath));
-            }
+            m_metadataPath = metadataPath ?? throw new ArgumentNullException(nameof(metadataPath));
+            m_spritesPath = spritesPath ?? throw new ArgumentNullException(nameof(spritesPath));
+            m_version = version ?? throw new ArgumentNullException(nameof(version));
+            m_features = features;
+            m_pixelFormat = pixelFormat;
 
-            if (version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
+            Objects = new ThingTypeStorage();
+            Objects.StorageLoaded += StorageLoaded_Handler;
+            Objects.StorageChanged += ThingListChanged_Handler;
+            Objects.StorageCompiled += StorageCompiled_Handler;
+            Objects.ProgressChanged += StorageProgressChanged_Handler;
 
-            Things = ThingTypeStorage.Load(datPath, version, features);
-            if (Things == null)
-            {
-                return false;
-            }
-
-            Sprites = SpriteStorage.Load(sprPath, version, features);
-            if (Sprites == null)
-            {
-                return false;
-            }
-
-            Things.ProgressChanged += StorageProgressChanged_Handler;
-            Things.StorageChanged += ThingListChanged_Handler;
-            Things.StorageCompiled += StorageCompiled_Handler;
+            Sprites = new SpriteStorage(pixelFormat);
+            Sprites.StorageLoaded += StorageLoaded_Handler;
             Sprites.StorageChanged += SpriteListChanged_Handler;
-            Sprites.ProgressChanged += StorageProgressChanged_Handler;
             Sprites.StorageCompiled += StorageCompiled_Handler;
+            Sprites.ProgressChanged += StorageProgressChanged_Handler;
 
-            if (Loaded && AssetsLoaded != null)
-            {
-                AssetsLoaded(this, new EventArgs());
-            }
-
-            return Loaded;
+            m_processIndex = -1;
+            ProcessNext();
         }
 
-        public bool Load(string datPath, string sprPath, AssetsVersion version)
-        {
-            return Load(datPath, sprPath, version, AssetsFeatures.None);
-        }
+        public void Load(string metadataPath, string spritesPath, AssetsVersion version, AssetsFeatures features)
+            => Load(metadataPath, spritesPath, version, features, SpritePixelFormat.Bgra);
+
+        public void Load(string metadataPath, string spritesPath, AssetsVersion version)
+            => Load(metadataPath, spritesPath, version, AssetsFeatures.None);
 
         public FrameGroup GetFrameGroup(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
-            ThingType type = Things.GetThing(id, category);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType type = Objects.GetThing(id, category);
             if (type != null)
             {
                 return type.GetFrameGroup(groupType);
@@ -167,7 +161,12 @@ namespace OpenTibia.Assets
 
         public ObjectData GetThingData(ushort id, ObjectCategory category, bool singleFrameGroup)
         {
-            ThingType thing = Things.GetThing(id, category);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType thing = Objects.GetThing(id, category);
             if (thing == null)
             {
                 return null;
@@ -179,8 +178,6 @@ namespace OpenTibia.Assets
             }
 
             SpriteGroup spriteGroups = new SpriteGroup();
-
-            Console.WriteLine(thing.FrameGroupCount);
 
             for (byte i = 0; i < thing.FrameGroupCount; i++)
             {
@@ -202,11 +199,21 @@ namespace OpenTibia.Assets
 
         public ObjectData GetThingData(ushort id, ObjectCategory category)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             return GetThingData(id, category, false);
         }
 
         public Bitmap GetSpriteBitmap(uint id)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             if (!Loaded)
             {
                 return null;
@@ -232,7 +239,12 @@ namespace OpenTibia.Assets
 
         public Bitmap GetObjectImage(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
-            ThingType thing = Things.GetThing(id, category);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType thing = Objects.GetThing(id, category);
             if (thing == null)
             {
                 return null;
@@ -288,12 +300,22 @@ namespace OpenTibia.Assets
 
         public Bitmap GetObjectImage(ushort id, ObjectCategory category)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             return GetObjectImage(id, category, FrameGroupType.Default);
         }
 
         public Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data, bool mount)
         {
-            ThingType thing = Things.GetThing(id, ObjectCategory.Outfit);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType thing = Objects.GetThing(id, ObjectCategory.Outfit);
             if (thing == null)
             {
                 return null;
@@ -359,11 +381,21 @@ namespace OpenTibia.Assets
 
         public Bitmap GetObjectImage(ushort id, Direction direction, OutfitData data)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             return GetObjectImage(id, direction, data, false);
         }
 
         public Bitmap GetObjectImage(ThingType thing, FrameGroupType groupType)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             if (thing != null)
             {
                 return GetObjectImage(thing.ID, thing.Category, groupType);
@@ -374,6 +406,11 @@ namespace OpenTibia.Assets
 
         public Bitmap GetObjectImage(ThingType thing)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             if (thing != null)
             {
                 return GetObjectImage(thing.ID, thing.Category, FrameGroupType.Default);
@@ -384,7 +421,12 @@ namespace OpenTibia.Assets
 
         public SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType)
         {
-            ThingType thing = Things.GetThing(id, category);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType thing = Objects.GetThing(id, category);
             if (thing == null)
             {
                 return null;
@@ -442,7 +484,12 @@ namespace OpenTibia.Assets
 
         public SpriteSheet GetSpriteSheet(ushort id, ObjectCategory category, FrameGroupType groupType, OutfitData outfitData)
         {
-            ThingType thing = Things.GetThing(id, category);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            ThingType thing = Objects.GetThing(id, category);
             if (thing == null)
             {
                 return null;
@@ -539,26 +586,51 @@ namespace OpenTibia.Assets
 
         public ThingType[] GetAllItems()
         {
-            return Enumerable.ToArray(Things.Items.Values);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            return Enumerable.ToArray(Objects.Items.Values);
         }
 
         public ThingType[] GetAllOutfits()
         {
-            return Enumerable.ToArray(Things.Outfits.Values);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            return Enumerable.ToArray(Objects.Outfits.Values);
         }
 
         public ThingType[] GetAllEffects()
         {
-            return Enumerable.ToArray(Things.Effects.Values);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            return Enumerable.ToArray(Objects.Effects.Values);
         }
 
         public ThingType[] GetAllMissiles()
         {
-            return Enumerable.ToArray(Things.Missiles.Values);
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
+            return Enumerable.ToArray(Objects.Missiles.Values);
         }
 
         public bool Save(string datPath, string sprPath, AssetsVersion version, AssetsFeatures features)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             if (datPath == null)
             {
                 throw new ArgumentNullException(nameof(datPath));
@@ -574,7 +646,7 @@ namespace OpenTibia.Assets
                 throw new ArgumentNullException(nameof(version));
             }
 
-            if (!Things.Save(datPath, version, features))
+            if (!Objects.Save(datPath, version, features))
             {
                 return false;
             }
@@ -589,74 +661,116 @@ namespace OpenTibia.Assets
 
         public bool Save(string datPath, string sprPath, AssetsVersion version)
         {
+            if (Disposed)
+            {
+                throw new ObjectDisposedException(nameof(AssetsManager));
+            }
+
             return Save(datPath, sprPath, version, AssetsFeatures.None);
         }
 
         public bool Save()
         {
-            return Things.Save() && Sprites.Save();
-        }
-
-        public bool Unload()
-        {
-            if (!Loaded)
+            if (Disposed)
             {
-                return false;
+                throw new ObjectDisposedException(nameof(AssetsManager));
             }
 
-            if (Things != null)
+            return Objects.Save() && Sprites.Save();
+        }
+
+        public void Dispose()
+        {
+            if (Disposed)
             {
-                Things.ProgressChanged -= StorageProgressChanged_Handler;
-                Things.StorageChanged -= ThingListChanged_Handler;
-                Things.StorageCompiled -= StorageCompiled_Handler;
-                Things.Dispose();
-                Things = null;
+                return;
+            }
+
+            Disposed = true;
+
+            if (Objects != null)
+            {
+                Objects.StorageLoaded -= StorageLoaded_Handler;
+                Objects.StorageChanged -= ThingListChanged_Handler;
+                Objects.StorageCompiled -= StorageCompiled_Handler;
+                Objects.ProgressChanged -= StorageProgressChanged_Handler;
+                Objects.Dispose();
+                Objects = null;
             }
 
             if (Sprites != null)
             {
-                Sprites.ProgressChanged -= StorageProgressChanged_Handler;
+                Sprites.StorageLoaded -= StorageLoaded_Handler;
                 Sprites.StorageChanged -= SpriteListChanged_Handler;
                 Sprites.StorageCompiled -= StorageCompiled_Handler;
+                Sprites.ProgressChanged -= StorageProgressChanged_Handler;
                 Sprites.Dispose();
                 Sprites = null;
             }
 
             m_spriteCache.Clear();
-
-            AssetsUnloaded?.Invoke(this, new EventArgs());
-
-            return true;
+            m_spriteCache = null;
         }
 
-        public void Dispose()
+        private void ProcessNext()
         {
-            Unload();
+            m_processIndex++;
+            if (m_processIndex == 0)
+            {
+                if (m_metadataPath == null)
+                {
+                    Objects.Create(m_version, m_features);
+                }
+                else
+                {
+                    Objects.Load(m_metadataPath, m_version, m_features);
+                }
+            }
+            else if (m_processIndex == 1)
+            {
+                if (m_spritesPath == null)
+                {
+                    Sprites.Create(m_version, m_features);
+                }
+                else
+                {
+                    Sprites.Load(m_spritesPath, m_version, m_features);
+                }
+            }
+            else
+            {
+                AssetsLoaded?.Invoke(this);
+            }
+        }
+
+        private void StorageLoaded_Handler(IStorage sender)
+        {
+            ProcessNext();
         }
 
         private void StorageCompiled_Handler(IStorage sender)
         {
             if (!Changed && sender == Sprites && AssetsCompiled != null)
             {
-                AssetsCompiled(this, new EventArgs());
+                AssetsCompiled(this);
             }
         }
 
         private void ThingListChanged_Handler(object sender, ThingListChangedArgs e)
         {
-            AssetsChanged?.Invoke(this, new EventArgs());
+            AssetsChanged?.Invoke(this);
         }
 
         private void SpriteListChanged_Handler(object sender, SpriteListChangedArgs e)
         {
-            AssetsChanged?.Invoke(this, new EventArgs());
+            AssetsChanged?.Invoke(this);
         }
 
         private void StorageProgressChanged_Handler(object sender, int percentage)
         {
             if (ProgressChanged != null)
             {
-                if (sender == Things)
+                if (sender == Objects)
                 {
                     ProgressChanged(this, percentage / 2);
                 }
