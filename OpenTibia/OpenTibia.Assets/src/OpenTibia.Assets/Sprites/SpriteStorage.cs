@@ -39,17 +39,14 @@ namespace OpenTibia.Assets
             public string TmpPath;
             public AssetsVersion Version;
             public AssetsFeatures Features;
+            public SpritePixelFormat Format;
         }
 
-        private const byte HeaderU16 = 6;
-        private const byte HeaderU32 = 8;
-
-        private FileStream m_stream;
-        private BinaryReader m_reader;
+        private SpritesFileReader m_reader;
         private Dictionary<uint, Sprite> m_sprites;
         private uint m_rawSpriteCount;
-        private byte m_headSize;
-        private Sprite m_blankSprite;
+        private int m_headerSize;
+        private Sprite m_emptySprite;
         private bool m_transparent;
         private BackgroundWorker m_worker;
         private CompilationData m_compilationData;
@@ -260,7 +257,7 @@ namespace OpenTibia.Assets
             }
             else
             {
-                replacedSprite = ReadSprite(replaceId);
+                replacedSprite = m_reader.ReadSprite(replaceId);
                 m_sprites.Add(replaceId, newSprite);
             }
 
@@ -329,7 +326,7 @@ namespace OpenTibia.Assets
                 }
                 else
                 {
-                    replacedSprite = ReadSprite(id);
+                    replacedSprite = m_reader.ReadSprite(id);
                     m_sprites.Add(id, sprite);
                 }
 
@@ -468,7 +465,7 @@ namespace OpenTibia.Assets
             {
                 if (id == 0)
                 {
-                    return m_blankSprite;
+                    return m_emptySprite;
                 }
 
                 if (m_sprites.ContainsKey(id))
@@ -476,7 +473,7 @@ namespace OpenTibia.Assets
                     return m_sprites[id];
                 }
 
-                return ReadSprite(id);
+                return m_reader.ReadSprite(id);
             }
 
             return null;
@@ -552,12 +549,17 @@ namespace OpenTibia.Assets
                 return true;
             }
 
-            m_compilationData = new CompilationData();
-            m_compilationData.Path = path;
-            m_compilationData.TmpPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(path) + ".tmp");
-            m_compilationData.Version = version;
-            m_compilationData.Features = features;
+            m_compilationData = new CompilationData
+            {
+                Path = path,
+                TmpPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(path) + ".tmp"),
+                Version = version,
+                Features = features,
+                Format = PixelFormat
+            };
+
             Compiling = true;
+
             m_worker.RunWorkerAsync();
             return true;
         }
@@ -608,10 +610,8 @@ namespace OpenTibia.Assets
 
             Disposed = true;
 
-            if (m_stream != null)
+            if (m_reader != null)
             {
-                m_stream.Dispose();
-                m_stream = null;
                 m_reader.Dispose();
                 m_reader = null;
             }
@@ -625,7 +625,7 @@ namespace OpenTibia.Assets
             Changed = false;
             Loaded = false;
             Compiling = false;
-            m_blankSprite = null;
+            m_emptySprite = null;
         }
 
         private bool InternalCreate(AssetsVersion version, AssetsFeatures features)
@@ -651,8 +651,8 @@ namespace OpenTibia.Assets
             Version = version;
             Features = features;
             m_transparent = features.HasFlag(AssetsFeatures.Transparency);
-            m_headSize = features.HasFlag(AssetsFeatures.Extended) ? HeaderU32 : HeaderU16;
-            m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
+            m_headerSize = features.HasFlag(AssetsFeatures.Extended) ? SpritesFileSize.HeaderU32 : SpritesFileSize.HeaderU16;
+            m_emptySprite = new Sprite(0, m_transparent, PixelFormat);
             m_sprites.Add(1, new Sprite(1, m_transparent, PixelFormat));
             m_rawSpriteCount = 0;
             Count = 1;
@@ -689,8 +689,8 @@ namespace OpenTibia.Assets
             {
                 if (reloading)
                 {
-                    m_stream.Close();
-                    m_stream = null;
+                    m_reader.Dispose();
+                    m_reader = null;
                 }
                 else
                 {
@@ -706,127 +706,46 @@ namespace OpenTibia.Assets
                 features |= version.Format >= MetadataFormat.Format_1057 ? AssetsFeatures.FrameGroups : features;
             }
 
-            m_stream = new FileStream(path, FileMode.Open);
-            m_reader = new BinaryReader(m_stream);
+            m_reader = new SpritesFileReader(features, PixelFormat);
+            m_reader.Open(path);
 
-            uint signature = m_reader.ReadUInt32();
-            if (signature != version.SprSignature)
+            if (m_reader.Signature != version.SprSignature)
             {
                 string message = "Invalid SPR signature. Expected signature is {0:X} and loaded signature is {1:X}.";
-                throw new Exception(string.Format(message, version.SprSignature, signature));
+                throw new Exception(string.Format(message, version.SprSignature, m_reader.Signature));
             }
 
-            if (features.HasFlag(AssetsFeatures.Extended))
-            {
-                m_headSize = HeaderU32;
-                m_rawSpriteCount = m_reader.ReadUInt32();
-            }
-            else
-            {
-                m_headSize = HeaderU16;
-                m_rawSpriteCount = m_reader.ReadUInt16();
-            }
+            m_rawSpriteCount = m_reader.SpritesCount;
+            m_transparent = m_reader.Transparent;
+            m_emptySprite = new Sprite(0, m_transparent, PixelFormat);
 
             FilePath = path;
             Version = version;
             Features = features;
-            m_transparent = features.HasFlag(AssetsFeatures.Transparency);
             Count = m_rawSpriteCount;
-            m_blankSprite = new Sprite(0, m_transparent, PixelFormat);
             Changed = false;
             Loaded = true;
 
             return true;
         }
 
-        private Sprite ReadSprite(uint id)
-        {
-            try
-            {
-                if (id > m_rawSpriteCount)
-                {
-                    return null;
-                }
-
-                if (id == 0)
-                {
-                    return m_blankSprite;
-                }
-
-                // O id 1 no arquivo spr é o endereço 0, então subtraímos
-                // o id fornecido e mutiplicamos pela quantidade de bytes
-                // de cada endereço.
-                m_stream.Position = ((id - 1) * 4) + m_headSize;
-
-                // Lê o endereço do sprite.
-                uint spriteAddress = m_reader.ReadUInt32();
-
-                // O endereço 0 representa um sprite em branco,
-                // então retornamos um sprite sem a leitura dos dados.
-                if (spriteAddress == 0)
-                {
-                    return new Sprite(id, m_transparent, PixelFormat);
-                }
-
-                // Posiciona o stream para o endereço do sprite.
-                m_stream.Position = spriteAddress;
-
-                // Leitura da cor magenta usada como referência
-                // para remover o fundo do sprite.
-                m_reader.ReadByte(); // red key color
-                m_reader.ReadByte(); // green key color
-                m_reader.ReadByte(); // blue key color
-
-                Sprite sprite = new Sprite(id, m_transparent, PixelFormat);
-
-                // O tamanho dos pixels compressados.
-                ushort pixelDataSize = m_reader.ReadUInt16();
-                if (pixelDataSize != 0)
-                {
-                    sprite.Data = m_reader.ReadBytes(pixelDataSize);
-                }
-
-                return sprite;
-            }
-            catch /*(Exception ex)*/
-            {
-                // TODO ErrorManager.ShowError(ex);
-            }
-
-            return null;
-        }
-
         private void DoWork_Handler(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            using (BinaryWriter writer = new BinaryWriter(new FileStream(m_compilationData.TmpPath, FileMode.Create)))
+            using (SpritesFileWriter writer = new SpritesFileWriter(m_compilationData.Features, m_compilationData.Format))
             {
-                uint count = 0;
-                bool extended = (m_compilationData.Features & AssetsFeatures.Extended) == AssetsFeatures.Extended;
-                bool transparent = (m_compilationData.Features & AssetsFeatures.Transparency) == AssetsFeatures.Transparency;
-                bool changeTransparency = m_transparent != transparent;
+                writer.Open(m_compilationData.TmpPath);
 
                 // write the signature
-                writer.Write(m_compilationData.Version.SprSignature);
+                writer.WriteSignature(m_compilationData.Version.SprSignature);
 
                 // write the sprite count
-                if (extended)
-                {
-                    count = Count;
-                    writer.Write(count);
-                }
-                else
-                {
-                    count = Count >= 0xFFFF ? 0xFFFF : Count;
-                    writer.Write((ushort)count);
-                }
+                writer.WriteCount(Count);
 
-                int addressPosition = m_headSize;
-                int address = (int)((count * 4) + m_headSize);
-                byte[] bytes = null;
+                bool changed = m_transparent != writer.Transparent;
 
-                for (uint id = 1; id <= count; id++)
+                for (uint id = 1, count = writer.Count; id <= count; id++)
                 {
                     if (worker.CancellationPending)
                     {
@@ -834,91 +753,21 @@ namespace OpenTibia.Assets
                         break;
                     }
 
-                    writer.Seek(addressPosition, SeekOrigin.Begin);
-
-                    if (m_sprites.ContainsKey(id) || changeTransparency)
+                    if (id <= m_rawSpriteCount && !changed)
                     {
-                        Sprite sprite = null;
-                        m_sprites.TryGetValue(id, out sprite);
+                        writer.WriteRawPixels(m_reader.ReadRawPixels(id));
+                    }
+                    else
+                    {
+                        m_sprites.TryGetValue(id, out Sprite sprite);
 
                         if (sprite == null)
                         {
-                            sprite = ReadSprite(id);
+                            sprite = m_reader.ReadSprite(id);
                         }
 
-                        sprite.Transparent = transparent;
-
-                        if (sprite.Length == 0)
-                        {
-                            // write address 0
-                            writer.Write((uint)0);
-                            writer.Seek(address, SeekOrigin.Begin);
-                        }
-                        else
-                        {
-                            bytes = sprite.Data;
-
-                            // write address
-                            writer.Write((uint)address);
-                            writer.Seek(address, SeekOrigin.Begin);
-
-                            // write colorkey
-                            writer.Write((byte)0xFF); // red
-                            writer.Write((byte)0x00); // blue
-                            writer.Write((byte)0xFF); // green
-
-                            // write sprite data size
-                            writer.Write((short)bytes.Length);
-
-                            if (bytes.Length > 0)
-                            {
-                                writer.Write(bytes);
-                            }
-                        }
+                        writer.WriteSprite(sprite);
                     }
-                    else if (id <= m_rawSpriteCount)
-                    {
-                        m_stream.Seek(((id - 1) * 4) + m_headSize, SeekOrigin.Begin);
-
-                        uint spriteAddress = m_reader.ReadUInt32();
-
-                        if (spriteAddress == 0)
-                        {
-                            // write address 0
-                            writer.Write((uint)0);
-                            writer.Seek(address, SeekOrigin.Begin);
-                        }
-                        else
-                        {
-                            // write address
-                            writer.Write((uint)address);
-                            writer.Seek(address, SeekOrigin.Begin);
-
-                            // write colorkey
-                            writer.Write((byte)0xFF); // red
-                            writer.Write((byte)0x00); // blue
-                            writer.Write((byte)0xFF); // green
-
-                            // sets the position to the pixel data size.
-                            m_stream.Seek(spriteAddress + 3, SeekOrigin.Begin);
-
-                            // read the data size from the current stream
-                            ushort pixelDataSize = m_reader.ReadUInt16();
-
-                            // write sprite data size
-                            writer.Write(pixelDataSize);
-
-                            // write sprite compressed pixels
-                            if (pixelDataSize != 0)
-                            {
-                                bytes = m_reader.ReadBytes(pixelDataSize);
-                                writer.Write(bytes);
-                            }
-                        }
-                    }
-
-                    address = (int)writer.BaseStream.Position;
-                    addressPosition += 4;
 
                     if ((id % 500) == 0)
                     {
@@ -926,8 +775,6 @@ namespace OpenTibia.Assets
                         worker.ReportProgress((int)((id * 100) / count));
                     }
                 }
-
-                writer.Close();
             }
 
             if (File.Exists(m_compilationData.Path))

@@ -29,7 +29,7 @@ namespace OpenTibia.Assets
 {
     public class Sprite
     {
-        private static readonly byte[] EmptyData = new byte[0];
+        internal static readonly byte[] EmptyData = new byte[0];
 
         public const byte DefaultSize = 32;
         public const ushort PixelsDataSize = 4096; // 32*32*4
@@ -208,19 +208,17 @@ namespace OpenTibia.Assets
                         {
                             read = index * 4;
 
-                            byte blue = pixels[read++];
-                            byte green = pixels[read++];
-                            byte red = pixels[read++];
-                            byte alpha = pixels[read++];
+                            byte alpha = pixels[read + 3];
+                            read += 4;
 
                             if (alpha == 0)
                             {
                                 break;
                             }
 
-                            writer.Write(red);
-                            writer.Write(green);
-                            writer.Write(blue);
+                            writer.Write(pixels[read + 2]); // red
+                            writer.Write(pixels[read + 1]); // green
+                            writer.Write(pixels[read]);     // blue
 
                             if (transparent)
                             {
@@ -302,19 +300,17 @@ namespace OpenTibia.Assets
                         {
                             read = index * 4;
 
-                            byte alpha = pixels[read++];
-                            byte red = pixels[read++];
-                            byte green = pixels[read++];
-                            byte blue = pixels[read++];
+                            byte alpha = pixels[read];
+                            read += 4;
 
                             if (alpha == 0)
                             {
                                 break;
                             }
 
-                            writer.Write(red);
-                            writer.Write(green);
-                            writer.Write(blue);
+                            writer.Write(pixels[read + 1]); // red
+                            writer.Write(pixels[read + 2]); // green
+                            writer.Write(pixels[read + 3]); // blue
 
                             if (transparent)
                             {
