@@ -629,11 +629,6 @@ namespace OpenTibia.Client.Things
                     }
                 }
 
-                if (format >= DatFormat.Format_1093 && thing.IsTopEffect)
-                {
-                    writer.Write(DatFlags1010.TopEffect);
-                }
-
                 if (thing.Usable)
                 {
                     writer.Write(DatFlags1010.Usable);
@@ -657,6 +652,11 @@ namespace OpenTibia.Client.Things
                 writer.Write(DatFlags1010.HasOffset);
                 writer.Write(thing.OffsetX);
                 writer.Write(thing.OffsetY);
+            }
+
+            if (thing.IsTopEffect && format >= DatFormat.Format_1093)
+            {
+                writer.Write(DatFlags1010.TopEffect);
             }
 
             // close flags
