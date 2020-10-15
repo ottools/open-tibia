@@ -56,7 +56,6 @@ namespace OpenTibia.Animation
                 case ThingCategory.Item:
                     this.SetTo(500, 500);
                     break;
-
                 case ThingCategory.Outfit:
                     this.SetTo(300, 300);
                     break;
@@ -64,9 +63,10 @@ namespace OpenTibia.Animation
                 case ThingCategory.Effect:
                     this.SetTo(100, 100);
                     break;
+                default:
+                    this.SetTo(0, 0);
+                    break;
             }
-
-            this.SetTo(0, 0);
         }
 
         #endregion
