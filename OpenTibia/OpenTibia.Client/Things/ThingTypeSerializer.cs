@@ -161,7 +161,7 @@ namespace OpenTibia.Client.Things
             if (frameGroupsEnabled && thing.Category == ThingCategory.Outfit)
             {
                 groupCount = thing.FrameGroupCount;
-                writer.Write(groupCount);
+                writer.Write((byte)groupCount); // cast to 1 byte
             }
 
             for (byte k = 0; k < groupCount; k++)
@@ -400,7 +400,7 @@ namespace OpenTibia.Client.Things
 
                         ushort nameLength = reader.ReadUInt16();
                         byte[] buffer = reader.ReadBytes(nameLength);
-                        thing.MarketName = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+                        thing.MarketName = Encoding.Default.GetString(buffer, 0, buffer.Length);
                         thing.MarketRestrictVocation = reader.ReadUInt16();
                         thing.MarketRestrictLevel = reader.ReadUInt16();
                         break;
@@ -605,7 +605,7 @@ namespace OpenTibia.Client.Things
                     writer.Write(thing.MarketTradeAs);
                     writer.Write(thing.MarketShowAs);
                     writer.Write((ushort)thing.MarketName.Length);
-                    writer.Write(Encoding.UTF8.GetBytes(thing.MarketName));
+                    writer.Write(Encoding.Default.GetBytes(thing.MarketName));
                     writer.Write(thing.MarketRestrictVocation);
                     writer.Write(thing.MarketRestrictLevel);
                 }
